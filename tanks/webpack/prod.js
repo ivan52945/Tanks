@@ -23,6 +23,7 @@ module.exports = merge(base, {
           }
         }
       })
-    ]
+    ],
+    usedExports: true,
   }
 });
