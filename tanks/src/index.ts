@@ -11,7 +11,7 @@ class MyGame extends Phaser.Scene {
     }
 
     create() {
-        const logo = this.add.image(400, 150, 'logo');
+        const logo = this.add.image(600, 150, 'logo');
 
         this.tweens.add({
             targets: logo,
@@ -23,12 +23,14 @@ class MyGame extends Phaser.Scene {
         });
     }
 }
+const windowInnerWidth = document.documentElement.clientWidth;
+const windowInnerHeight = document.documentElement.clientHeight;
 
 const config = {
     type: Phaser.AUTO,
-    parent: 'phaser-example',
-    width: 800,
-    height: 600,
+    parent: 'app',
+    width: windowInnerWidth - 20,
+    height: windowInnerHeight - 20,
     scene: MyGame,
 };
 
