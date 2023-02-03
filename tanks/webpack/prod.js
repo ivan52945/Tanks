@@ -6,7 +6,8 @@ const TerserPlugin = require("terser-webpack-plugin");
 module.exports = merge(base, {
   mode: "production",
   output: {
-    filename: "bundle.min.js"
+    filename: "scrypt.js",
+    clean: true,
   },
   devtool: false,
   performance: {

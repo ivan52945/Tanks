@@ -15,7 +15,7 @@ module.exports = {
         test: /\.[jt]s$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
+          loader: "ts-loader"//"babel-loader",
         }
       },
       {
@@ -27,6 +27,9 @@ module.exports = {
         type: "asset/resource" 
       }
     ]
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
   },
   plugins: [
     new webpack.DefinePlugin({
