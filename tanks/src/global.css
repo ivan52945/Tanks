@@ -4,6 +4,12 @@
   font-style: 500;
   font-weight: normal;
 }
+@font-face {
+  font-family: "Namco";
+  src: url("./assets/fonts/Hemico.ttf") format("truetype");
+  font-style: 500;
+  font-weight: normal;
+}
 
 body {
   background-color: black;
