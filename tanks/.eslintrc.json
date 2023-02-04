@@ -22,12 +22,5 @@
     "class-methods-use-this": "off",
     "@typescript-eslint/no-explicit-any": 2
   },
-  "prettier/prettier": [
-    "error",
-    {
-      "singleQuote": true,
-      "parser": "flow"
-    }
-  ],
   "parser": "@typescript-eslint/parser"
 }
