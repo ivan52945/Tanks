@@ -17,6 +17,8 @@ class StartScene extends Phaser.Scene {
       this.load.image('cursor', cursor);
       this.add.text(350, 500, 'START GAME',{font: "32px Pixel"});
       this.add.text(350, 550, 'CONSTRUCTION',{font: "32px Pixel"});
+      const red = this.add.text(400, 600, 'NAMCOT',{font: "40px Namco"});
+      red.setTint(0x680000);
       this.add.text(150, 650, '© 1980 1985 NAMCO LTD.',{font: "32px Pixel"});
       this.add.text(180, 700, 'ALL RIGHTS RESERVED',{font: "32px Pixel"});
     }
@@ -26,7 +28,6 @@ class StartScene extends Phaser.Scene {
         this.add.image(300, 510, 'cursor').angle = 90;
     }
     update() {
-
     }
 }
 export default StartScene;
