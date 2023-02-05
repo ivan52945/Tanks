@@ -1,5 +1,5 @@
-import logoImg from '../assets/images/battle-city.png';
-import cursor from '../assets/images/tank.png';
+import logoImg from '../../assets/images/battle-city.png';
+import cursor from '../../assets/images/tank.png';
 
 class StartScene extends Phaser.Scene {
     keys: unknown;

@@ -1,4 +1,4 @@
-import logoImg from '../assets/images/battle-city.png';
+import logoImg from '../../assets/images/battle-city.png';
 
 class GameScene extends Phaser.Scene {
     keys: unknown;
