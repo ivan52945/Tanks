@@ -30,18 +30,11 @@ class GameOverScene extends Phaser.Scene {
         // this.input.keyboard.createCursorKeys();
         // const player = this.add.image(300, 510, 'cursor');
         // player.angle = 90;
-        // this.input.keyboard.on('keydown', (event: { key: string }) => {
-        //     if (event.key === 'ArrowDown') {
-        //         player.y = 565;
-        //     } else if (event.key === 'ArrowUp') {
-        //         player.y = 510;
-        //     } else if (event.key === ' ' && player.y === 510) {
-        //         console.log('Start Game');
-        //         this.scene.start('GameScene');
-        //     } else if (event.key === ' ' && player.y === 565) {
-        //         console.log('Construction');
-        //     }
-        // });
+        this.input.keyboard.on('keydown', (event: { key: string }) => {
+            if (event.key === 'p') {   // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
+                this.scene.start('StartScene')
+            }
+        });
     }
 
     update() {
