@@ -1,11 +1,9 @@
-import logoImg from '../assets/images/battle-city.png';
-import cursor from '../assets/images/tank.png';
+import logoImg from '../../../assets/images/battle-city.png';
+import cursor from '../../../assets/images/tank.png';
 
 class StartScene extends Phaser.Scene {
-    keys: unknown;
-
     constructor() {
-        super('Game');
+        super('Start');
     }
 
     preload() {
@@ -28,13 +26,15 @@ class StartScene extends Phaser.Scene {
         this.input.keyboard.createCursorKeys();
         const player = this.add.image(300, 510, 'cursor');
         player.angle = 90;
-        this.input.keyboard.on('keydown', function (event: { key: string }) {
+        this.input.keyboard.on('keydown', (event: { key: string }) => {
             if (event.key === 'ArrowDown') {
                 player.y = 565;
             } else if (event.key === 'ArrowUp') {
                 player.y = 510;
             } else if (event.key === ' ') {
-                console.log('Start Game');
+                this.scene.stop('Start');
+                this.scene.remove('Start');
+                this.scene.start('Game');
             }
         });
     }
