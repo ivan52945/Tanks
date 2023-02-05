@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import './global.css';
-import StartScene from './ts/StartScene';
-import GameScene from './ts/GameScene';
+import StartScene from './ts/scenes/StartScene';
+import GameScene from './ts/scenes/GameScene';
 
 const config = {
     type: Phaser.AUTO,
