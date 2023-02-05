@@ -25,11 +25,20 @@ class StartScene extends Phaser.Scene {
 
     create() {
         this.add.image(500, 320, 'logo');
-        this.add.image(300, 510, 'cursor').angle = 90;
+        this.input.keyboard.createCursorKeys();
+        const player = this.add.image(300, 510, 'cursor');
+        player.angle = 90;
+        this.input.keyboard.on('keydown', function (event: { key: string }) {
+            if (event.key === 'ArrowDown') {
+                player.y = 565;
+            } else if (event.key === 'ArrowUp') {
+                player.y = 510;
+            } else if (event.key === ' ') {
+                console.log('Start Game');
+            }
+        });
     }
 
-    update() {
-        console.log('1');
-    }
+    update() {}
 }
 export default StartScene;
