@@ -3,6 +3,7 @@ import cursor from '../assets/images/tank.png';
 
 class StartScene extends Phaser.Scene {
     keys: unknown;
+
     constructor() {
         super('Game');
     }
@@ -27,20 +28,17 @@ class StartScene extends Phaser.Scene {
         this.input.keyboard.createCursorKeys();
         const player = this.add.image(300, 510, 'cursor');
         player.angle = 90;
-        this.input.keyboard.on('keydown', function (event: { key: any }) {
-            console.log('event.key: ', event.key);
-
+        this.input.keyboard.on('keydown', function (event: { key: string }) {
             if (event.key === 'ArrowDown') {
                 player.y = 565;
             } else if (event.key === 'ArrowUp') {
                 player.y = 510;
             } else if (event.key === ' ') {
-                alert('Start Game');
+                console.log('Start Game');
             }
         });
     }
-    update() {
-        console.log('1');
-    }
+
+    update() {}
 }
 export default StartScene;
