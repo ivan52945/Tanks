@@ -2,6 +2,7 @@ import logoImg from '../assets/images/battle-city.png';
 import cursor from '../assets/images/tank.png';
 
 class StartScene extends Phaser.Scene {
+    keys: unknown;
     constructor() {
         super('Game');
     }
@@ -38,7 +39,8 @@ class StartScene extends Phaser.Scene {
             }
         });
     }
-
-    update() {}
+    update() {
+        console.log('1');
+    }
 }
 export default StartScene;
