@@ -33,8 +33,10 @@ class StartScene extends Phaser.Scene {
                 player.y = 565;
             } else if (event.key === 'ArrowUp') {
                 player.y = 510;
-            } else if (event.key === ' ') {
+            } else if (event.key === ' ' && player.y === 510) {
                 console.log('Start Game');
+            } else if (event.key === ' ' && player.y === 565) {
+                console.log('Construction');
             }
         });
     }
