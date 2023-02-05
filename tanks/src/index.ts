@@ -11,6 +11,13 @@ const config = {
     parent: 'app',
     with: 600,
     height: 800,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 0 },
+            debug: false,
+        },
+    },
     scene: [StartScene, GameScene, ScoreScene, HiscoreScene, GameOverScene],
 };
 
