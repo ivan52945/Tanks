@@ -7,6 +7,8 @@ class Player extends Tank {
     constructor(scene: Phaser.Scene, x: number, y: number, manual = true) {
         super(scene, x, y, false, 'main', true);
 
+        this.HP = 2;
+
         this.controller = new PlayerAI(
             1,
             (dir) => {

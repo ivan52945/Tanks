@@ -7,6 +7,8 @@ class Enemy extends Tank {
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, true, 'main');
 
+        this.HP = 2;
+
         this.controller = new EnemyAI(1, (dir) => {
             this.move(dir);
         });

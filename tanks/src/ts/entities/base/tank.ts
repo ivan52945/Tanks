@@ -14,6 +14,8 @@ import Entity from './entity';
 type Animation = Phaser.Animations.Animation;
 
 class Tank extends Entity {
+    public HP = 3;
+
     private animation: Animation;
 
     readonly sideBad: boolean;

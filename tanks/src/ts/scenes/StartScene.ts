@@ -10,6 +10,7 @@ class StartScene extends Phaser.Scene {
             key: 'StartScene',
         });
     }
+
     preload() {
         this.add.text(100, 100, 'I- ', { font: '40px Pixel' });
         this.add.text(250, 100, '00', { font: '40px Pixel' }); // кол-во очков игрока за всю кампанию
@@ -31,14 +32,14 @@ class StartScene extends Phaser.Scene {
         this.cursor = this.physics.add.sprite(300, 510, 'tanksPlr');
         this.cursor.angle = 90;
         this.anims.create({
-            //----------------- создание анимации движени гусениц курсора
+            // ----------------- создание анимации движени гусениц курсора
             key: 'tank',
             frames: this.anims.generateFrameNames('tanksPlr', { prefix: 'player_2_main_', start: 1, end: 2 }),
             repeat: -1,
         });
 
         this.input.keyboard.on('keydown', (event: { key: string }) => {
-            //------------------ перемещение курсора при нажатии вверх и вниз, при нажатии пробела выбор
+            // ------------------ перемещение курсора при нажатии вверх и вниз, при нажатии пробела выбор
             if (event.key === 'ArrowDown') {
                 this.cursor.y = 565;
             } else if (event.key === 'ArrowUp') {
