@@ -1,26 +1,26 @@
 import logoImg from '../../assets/images/battle-city.png';
-import cursor from '../../assets/images/tank.png';
+import tanksPlayerImge from '../../assets/images/tanks-1.png';
+import tanksPlayerJSON from '../../assets/images/tanks-1.json';
 
 class StartScene extends Phaser.Scene {
-    keys: unknown;
+    private cursor!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
     constructor() {
         super({
             key: 'StartScene',
         });
     }
-
     preload() {
         this.add.text(100, 100, 'I- ', { font: '40px Pixel' });
-        this.add.text(250, 100, '00', { font: '40px Pixel' });
+        this.add.text(250, 100, '00', { font: '40px Pixel' }); // кол-во очков игрока за всю кампанию
         this.add.text(400, 100, 'HI- ', { font: '40px Pixel' });
-        this.add.text(550, 100, '00', { font: '40px Pixel' });
+        this.add.text(550, 100, '00', { font: '40px Pixel' }); // рекорд очков
         this.load.image('logo', logoImg);
-        this.load.image('cursor', cursor);
+        this.load.atlas('tanksPlr', tanksPlayerImge, tanksPlayerJSON);
+
         this.add.text(350, 500, 'START GAME', { font: '32px Pixel' });
         this.add.text(350, 550, 'CONSTRUCTION', { font: '32px Pixel' });
-        const red = this.add.text(400, 600, 'NAMCOT', { font: '40px Namco' });
-        red.setTint(0x680000);
+        this.add.text(400, 600, 'NAMCOT', { font: '40px Namco', color: '#680000' });
         this.add.text(150, 650, '© 1980 1985 NAMCO LTD.', { font: '32px Pixel' });
         this.add.text(180, 700, 'ALL RIGHTS RESERVED', { font: '32px Pixel' });
     }
@@ -28,17 +28,25 @@ class StartScene extends Phaser.Scene {
     create() {
         this.add.image(500, 320, 'logo');
         this.input.keyboard.createCursorKeys();
-        const player = this.add.image(300, 510, 'cursor');
-        player.angle = 90;
+        this.cursor = this.physics.add.sprite(300, 510, 'tanksPlr');
+        this.cursor.angle = 90;
+        this.anims.create({
+            //----------------- создание анимации движени гусениц курсора
+            key: 'tank',
+            frames: this.anims.generateFrameNames('tanksPlr', { prefix: 'player_2_main_', start: 1, end: 2 }),
+            repeat: -1,
+        });
+
         this.input.keyboard.on('keydown', (event: { key: string }) => {
+            //------------------ перемещение курсора при нажатии вверх и вниз, при нажатии пробела выбор
             if (event.key === 'ArrowDown') {
-                player.y = 565;
+                this.cursor.y = 565;
             } else if (event.key === 'ArrowUp') {
-                player.y = 510;
-            } else if (event.key === ' ' && player.y === 510) {
+                this.cursor.y = 510;
+            } else if (event.key === ' ' && this.cursor.y === 510) {
                 console.log('Start Game');
                 this.scene.start('GameScene');
-            } else if (event.key === ' ' && player.y === 565) {
+            } else if (event.key === ' ' && this.cursor.y === 565) {
                 console.log('Construction');
             } else if (event.key === 'p') {
                 // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
@@ -47,6 +55,8 @@ class StartScene extends Phaser.Scene {
         });
     }
 
-    update() {}
+    update() {
+        this.cursor.anims.play('tank', true); // запуск анимации
+    }
 }
 export default StartScene;
