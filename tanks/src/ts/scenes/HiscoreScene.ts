@@ -14,15 +14,15 @@ class HiscoreScene extends Phaser.Scene {
 
     create() {
         this.input.keyboard.on('keydown', (event: { key: string }) => {
-            if (event.key === 'p') {   // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
-                this.scene.start('GameOverScene')
+            if (event.key === 'p') {
+                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
+                this.scene.start('GameOverScene');
             }
         });
-
     }
 
     update() {
-        console.log('HiscoreScene')
+        console.log('HiscoreScene');
     }
 }
 export default HiscoreScene;

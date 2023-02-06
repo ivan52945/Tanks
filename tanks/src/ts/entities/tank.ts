@@ -1,48 +1,71 @@
+import TankAI from '../modules/TanksAI';
 import Entity from './entity';
+/**
+ * Class for all tanks. Can be used for making NPC tanks
+ *
+ * @param {Phaser.Scene} scene scene
+ * @param {number} x x of position
+ * @param {number} y y of position
+ * @param {boolean} sideBad is it a bad boy?
+ * @param {string} type  type of tank. can be main up1...up7
+ *
+ * @return {Tank} tank width phisix
+ */
 
 class Tank extends Entity {
-    private controller = 'keyboard';
+    // this.ani
+
+    private sideBad = true;
 
     private moving = false;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, sideBad: boolean, type: string) {
+    private manual = false;
+
+    readonly controller: TankAI;
+
+    constructor(scene: Phaser.Scene, x: number, y: number, sideBad: boolean, type: string, manual = false) {
         const key = sideBad ? 'tanksEnm' : 'tanksPlr';
 
         const spriteKey = sideBad ? 'enemy' : 'player_1';
 
         super(scene, x, y, 'tank', key, `${spriteKey}_${type}_1`);
 
-        this.setData('type', 'tank');
+        this.controller = new TankAI(1, (direction) => {
+            this.move(direction);
+        });
+
+        this.manual = manual;
         this.setData('sideBad', sideBad);
+        this.sideBad = sideBad;
 
         this.anims.create({
-            key: 'playerMain',
+            key: 'moving',
             frames: this.anims.generateFrameNames(key, { prefix: `${spriteKey}_${type}_`, start: 1, end: 2 }),
-            repeat: 0,
+            repeat: -1,
         });
     }
 
-    update() {
-        if (this.moving) {
-            this.direction %= 4;
-            if (this.direction % 2 !== 0) {
-                this.x += (this.direction - 2) * -3;
-            } else {
-                this.y += (this.direction - 1) * 3;
-            }
-            this.anims.play('playerMain', true);
+    move(direction: number) {
+        this.direction = direction % 4;
+
+        if (this.direction % 2 !== 0) {
+            this.setVelocity((this.direction - 2) * -240, 0);
+        } else {
+            this.setVelocity(0, (this.direction - 1) * 240);
         }
+
+        if (!this.moving) {
+            this.anims.play('moving', true);
+            this.moving = true;
+        }
+
         this.angle = 90 * this.direction;
     }
 
-    set dir(value: number) {
-        this.direction = value % 4;
-        this.update();
-    }
-
-    set move(value: boolean) {
-        this.moving = value;
-        this.update();
+    stopMove() {
+        this.anims.stop();
+        this.setVelocity(0, 0);
+        this.moving = false;
     }
 }
 
