@@ -1,5 +1,5 @@
 {
-  "plugins": ["prettier", "@typescript-eslint"],
+  "plugins": ["prettier", "@typescript-eslint", "import"],
   "extends": [
     "airbnb/base",
     "airbnb-typescript/base",
