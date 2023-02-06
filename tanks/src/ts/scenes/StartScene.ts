@@ -3,8 +3,7 @@ import tanksPlayerImge from '../../assets/images/tanks-1.png';
 import tanksPlayerJSON from '../../assets/images/tanks-1.json';
 
 class StartScene extends Phaser.Scene {
-    keys: unknown;
-    private player!: any;
+    private cursor!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
     constructor() {
         super({
@@ -29,8 +28,8 @@ class StartScene extends Phaser.Scene {
     create() {
         this.add.image(500, 320, 'logo');
         this.input.keyboard.createCursorKeys();
-        this.player = this.physics.add.sprite(300, 510, 'tanksPlr');
-        this.player.angle = 90;
+        this.cursor = this.physics.add.sprite(300, 510, 'tanksPlr');
+        this.cursor.angle = 90;
         this.anims.create({
             //----------------- создание анимации движени гусениц курсора
             key: 'tank',
@@ -41,13 +40,13 @@ class StartScene extends Phaser.Scene {
         this.input.keyboard.on('keydown', (event: { key: string }) => {
             //------------------ перемещение курсора при нажатии вверх и вниз, при нажатии пробела выбор
             if (event.key === 'ArrowDown') {
-                this.player.y = 565;
+                this.cursor.y = 565;
             } else if (event.key === 'ArrowUp') {
-                this.player.y = 510;
-            } else if (event.key === ' ' && this.player.y === 510) {
+                this.cursor.y = 510;
+            } else if (event.key === ' ' && this.cursor.y === 510) {
                 console.log('Start Game');
                 this.scene.start('GameScene');
-            } else if (event.key === ' ' && this.player.y === 565) {
+            } else if (event.key === ' ' && this.cursor.y === 565) {
                 console.log('Construction');
             } else if (event.key === 'p') {
                 // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
@@ -57,7 +56,7 @@ class StartScene extends Phaser.Scene {
     }
 
     update() {
-        this.player.anims.play('tank', true); // запуск анимации
+        this.cursor.anims.play('tank', true); // запуск анимации
     }
 }
 export default StartScene;
