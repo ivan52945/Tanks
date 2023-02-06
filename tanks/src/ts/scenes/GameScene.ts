@@ -7,14 +7,16 @@ import tanksEnemyJSON from '../../assets/images/tanks-2.json';
 import wallsIMGE from '../../assets/images/block-1.png';
 import wallsJSON from '../../assets/images/block-1.json';
 
-import Tank from '../entities/tank';
+import Tank from '../entities/base/tank';
+import Player from '../entities/player';
+import Enemy from '../entities/enemy';
 
 type Keys = Phaser.Types.Input.Keyboard.CursorKeys;
 type Group = Phaser.Physics.Arcade.Group;
 class GameScene extends Phaser.Scene {
     private keyboard!: Keys;
 
-    private player!: Tank;
+    private player!: Player;
 
     private enemies!: Group;
 
@@ -35,10 +37,10 @@ class GameScene extends Phaser.Scene {
 
         this.keyboard = this.input.keyboard.createCursorKeys();
 
-        this.player = new Tank(this, 250, 250, false, 'main', true);
+        this.player = new Player(this, 250, 250);
 
-        const enemy = new Tank(this, 450, 450, true, 'main');
-        const enemy1 = new Tank(this, 650, 650, true, 'main');
+        const enemy = new Enemy(this, 450, 450);
+        const enemy1 = new Enemy(this, 650, 650);
 
         const bricks = this.physics.add.staticGroup();
 
@@ -66,18 +68,19 @@ class GameScene extends Phaser.Scene {
     }
 
     update() {
-        this.enemies.getChildren().forEach((e) => (e as Tank).controller.update());
-
-        if (this.keyboard.left.isDown) {
-            this.player.move(3);
-        } else if (this.keyboard.right.isDown) {
-            this.player.move(1);
-        } else if (this.keyboard.down.isDown) {
-            this.player.move(2);
-        } else if (this.keyboard.up.isDown) {
-            this.player.move(4);
-        } else {
-            this.player.stopMove();
+        // this.enemies.getChildren().forEach((e) => (e as Tank).controller.update());
+        if (this.player.manual) {
+            if (this.keyboard.left.isDown) {
+                this.player.move(3);
+            } else if (this.keyboard.right.isDown) {
+                this.player.move(1);
+            } else if (this.keyboard.down.isDown) {
+                this.player.move(2);
+            } else if (this.keyboard.up.isDown) {
+                this.player.move(4);
+            } else {
+                this.player.stopMove();
+            }
         }
     }
 }

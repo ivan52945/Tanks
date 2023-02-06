@@ -1,4 +1,3 @@
-import TankAI from '../modules/TanksAI';
 import Entity from './entity';
 /**
  * Class for all tanks. Can be used for making NPC tanks
@@ -15,32 +14,31 @@ import Entity from './entity';
 type Animation = Phaser.Animations.Animation;
 
 class Tank extends Entity {
-    public animation: Animation;
+    public HP = 3;
 
-    private sideBad = true;
+    private animation: Animation;
 
-    private moving = false;
+    readonly sideBad: boolean;
 
-    private manual = false;
+    public moving = false;
 
-    readonly controller: TankAI;
-
-    constructor(scene: Phaser.Scene, x: number, y: number, sideBad: boolean, type: string, manual = false) {
+    constructor(scene: Phaser.Scene, x: number, y: number, sideBad: boolean, type: string, player = false) {
         const key = sideBad ? 'tanksEnm' : 'tanksPlr';
 
-        const spriteKey = sideBad ? 'enemy' : 'player_1';
+        let spriteKey = ``; // sideBad ? 'enemy' : 'player_1';
+
+        if (!sideBad) {
+            if (!player) {
+                spriteKey = 'player_2';
+            } else {
+                spriteKey = 'player_1';
+            }
+        } else {
+            spriteKey = 'enemy';
+        }
 
         super(scene, x, y, 'tank', key, `${spriteKey}_${type}_1`);
-
-        this.controller = new TankAI(1, (direction) => {
-            this.move(direction);
-        });
-
-        this.manual = manual;
-        this.setData('sideBad', sideBad);
         this.sideBad = sideBad;
-
-        console.log(scene.anims.exists(`${spriteKey}_${type}`));
 
         this.animation = scene.anims.create({
             key: `${spriteKey}_${type}`,
