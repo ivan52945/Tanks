@@ -12,8 +12,10 @@ import Entity from './entity';
  * @return {Tank} tank width phisix
  */
 
+type Animation = Phaser.Animations.Animation;
+
 class Tank extends Entity {
-    // this.ani
+    private animation: Animation;
 
     private sideBad = true;
 
@@ -38,11 +40,15 @@ class Tank extends Entity {
         this.setData('sideBad', sideBad);
         this.sideBad = sideBad;
 
-        this.anims.create({
-            key: 'moving',
-            frames: this.anims.generateFrameNames(key, { prefix: `${spriteKey}_${type}_`, start: 1, end: 2 }),
-            repeat: -1,
-        });
+        if (!this.anims.exists(`${spriteKey}_${type}`)) {
+            this.animation = this.anims.create({
+                key: `${spriteKey}_${type}`,
+                frames: this.anims.generateFrameNames(key, { prefix: `${spriteKey}_${type}_`, start: 1, end: 2 }),
+                repeat: -1,
+            }) as Animation;
+        } else {
+            this.animation = this.anims.get(`${spriteKey}_${type}`);
+        }
     }
 
     move(direction: number) {
@@ -55,7 +61,7 @@ class Tank extends Entity {
         }
 
         if (!this.moving) {
-            this.anims.play('moving', true);
+            this.anims.play(this.animation, true);
             this.moving = true;
         }
 
