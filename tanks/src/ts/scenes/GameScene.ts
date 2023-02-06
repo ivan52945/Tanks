@@ -55,8 +55,9 @@ class GameScene extends Phaser.Scene {
             console.log('collide');
         });
         this.physics.add.collider(allies, this.enemies, (tank1, tank2) => {
-            (tank1 as Tank).stopMove();
-            (tank2 as Tank).stopMove();
+            (tank1 as Tank).setVelocity(0, 0);
+            // tank1.x = tank1.x;
+            (tank2 as Tank).setVelocity(0, 0);
         });
     }
 

@@ -40,15 +40,11 @@ class Tank extends Entity {
         this.setData('sideBad', sideBad);
         this.sideBad = sideBad;
 
-        if (!this.anims.exists(`${spriteKey}_${type}`)) {
-            this.animation = this.anims.create({
-                key: `${spriteKey}_${type}`,
-                frames: this.anims.generateFrameNames(key, { prefix: `${spriteKey}_${type}_`, start: 1, end: 2 }),
-                repeat: -1,
-            }) as Animation;
-        } else {
-            this.animation = this.anims.get(`${spriteKey}_${type}`);
-        }
+        this.animation = this.anims.create({
+            key: `${spriteKey}_${type}`,
+            frames: this.anims.generateFrameNames(key, { prefix: `${spriteKey}_${type}_`, start: 1, end: 2 }),
+            repeat: -1,
+        }) as Animation;
     }
 
     move(direction: number) {
