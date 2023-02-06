@@ -38,6 +38,7 @@ class GameScene extends Phaser.Scene {
         this.player = new Tank(this, 250, 250, false, 'main', true);
 
         const enemy = new Tank(this, 450, 450, true, 'main');
+        const enemy1 = new Tank(this, 650, 650, true, 'main');
 
         const bricks = this.physics.add.staticGroup();
 
@@ -48,9 +49,12 @@ class GameScene extends Phaser.Scene {
 
         allies.add(this.player);
         this.enemies.add(enemy);
+        this.enemies.add(enemy1);
 
-        this.player.setCollideWorldBounds(true);
-        enemy.setCollideWorldBounds(true);
+        // console.log(enemy1.animation.key === enemy.animation.key);
+
+        // this.player.setCollideWorldBounds(true); not working
+
         this.physics.add.collider(allies, bricks, () => {
             console.log('collide');
         });

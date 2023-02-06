@@ -15,7 +15,7 @@ import Entity from './entity';
 type Animation = Phaser.Animations.Animation;
 
 class Tank extends Entity {
-    private animation: Animation;
+    public animation: Animation;
 
     private sideBad = true;
 
@@ -40,7 +40,9 @@ class Tank extends Entity {
         this.setData('sideBad', sideBad);
         this.sideBad = sideBad;
 
-        this.animation = this.anims.create({
+        console.log(scene.anims.exists(`${spriteKey}_${type}`));
+
+        this.animation = scene.anims.create({
             key: `${spriteKey}_${type}`,
             frames: this.anims.generateFrameNames(key, { prefix: `${spriteKey}_${type}_`, start: 1, end: 2 }),
             repeat: -1,
