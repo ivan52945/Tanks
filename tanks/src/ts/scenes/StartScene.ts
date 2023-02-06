@@ -40,12 +40,13 @@ class StartScene extends Phaser.Scene {
                 this.scene.start('GameScene');
             } else if (event.key === ' ' && player.y === 565) {
                 console.log('Construction');
-            } else if (event.key === 'p') {   // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
-                this.scene.start('ScoreScene')
+            } else if (event.key === 'p') {
+                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
+                this.scene.start('ScoreScene');
             }
         });
     }
 
-    update() { }
+    update() {}
 }
 export default StartScene;
