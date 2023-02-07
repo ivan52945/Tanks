@@ -1,5 +1,6 @@
 import PlayerAI from '../AI/player-AI';
 import ITank from '../interfaces/tank';
+import randIntFrZ from '../modules/functions';
 import Tank from './base/tank';
 
 class Player extends Tank implements ITank {
@@ -32,7 +33,7 @@ class Player extends Tank implements ITank {
     update() {
         if (this.manual) return;
 
-        this.controller.update();
+        this.move(randIntFrZ(3));
     }
 }
 

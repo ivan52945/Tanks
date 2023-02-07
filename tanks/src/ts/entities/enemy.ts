@@ -1,3 +1,5 @@
+import randIntFrZ from '../modules/functions';
+
 import EnemyAI from '../AI/enemy-AI';
 import ITank from '../interfaces/tank';
 import Tank from './base/tank';
@@ -16,7 +18,7 @@ class Enemy extends Tank implements ITank {
     }
 
     update() {
-        this.controller.update();
+        this.move(randIntFrZ(3));
     }
 }
 
