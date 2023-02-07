@@ -116,21 +116,25 @@ class GameScene extends Phaser.Scene {
                     shot.body.velocity.x = 0; // изменение направления выстрела
                     shot.body.y = shot.body.y - 20; // изменение координат выстрела
                     shot.angle = 0; //------------разворот изображения снаряда
+                    shot.setVelocity(0, -700); // скорость пули
                 } else if (this.player.direction === 2) {
                     shot.body.velocity.y = 200;
                     shot.body.velocity.x = 0;
                     shot.body.y = shot.body.y + 20;
                     shot.angle = 180;
+                    shot.setVelocity(0, 700);
                 } else if (this.player.direction === 3) {
                     shot.body.velocity.y = 0;
                     shot.body.velocity.x = -200;
                     shot.body.x = shot.body.x - 20;
                     shot.angle = 270;
+                    shot.setVelocity(-700, 0);
                 } else if (this.player.direction === 1) {
                     shot.body.velocity.y = 0;
                     shot.body.velocity.x = 200;
                     shot.body.x = shot.body.x + 20;
                     shot.angle = 90;
+                    shot.setVelocity(700, 0);
                 }
                 this.isShooting = true;
                 setTimeout(() => {
