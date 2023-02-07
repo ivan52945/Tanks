@@ -21,8 +21,6 @@ class GameScene extends Phaser.Scene {
 
     private tanks!: Group;
 
-    private fulliedAI!: Group;
-
     // private bullets!:
 
     constructor() {
@@ -43,7 +41,6 @@ class GameScene extends Phaser.Scene {
     */
     addTank(tank: Tank) {
         this.tanks.add(tank);
-        this.fulliedAI.add(tank);
         setTimeout(() => {
             tank.setCollideWorldBounds(true);
         }, 0);
@@ -66,15 +63,14 @@ class GameScene extends Phaser.Scene {
         this.addTank(new Enemy(this, 450, 450));
         this.addTank(new Enemy(this, 650, 450));
 
-        this.physics.add.collider(this.tanks, bricks, () => {
-            console.log('collide');
+        this.physics.add.collider(this.tanks, bricks, (tank: ITank, brick) => {
+            console.log('collide'); // test
+            tank.update();
+            console.log(tank); // test
         });
 
         this.physics.add.collider(this.tanks, this.tanks, (tank1: ITank, tank2: ITank) => {
-            // tank1.setVelocity(0, 0);
             tank1.update();
-            // tank1.x = tank1.x;
-            // tank2.setVelocity(0, 0);
             tank2.update();
         });
     }
