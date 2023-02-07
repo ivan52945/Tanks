@@ -51,9 +51,9 @@ class Tank extends Entity {
         this.direction = direction % 4;
 
         if (this.direction % 2 !== 0) {
-            this.setVelocity((this.direction - 2) * -240, 0);
+            this.setVelocity((this.direction - 2) * -80, 0); // по моему мнению , скорость 80 более похожа на реальную
         } else {
-            this.setVelocity(0, (this.direction - 1) * 240);
+            this.setVelocity(0, (this.direction - 1) * 80);
         }
 
         if (!this.moving) {
