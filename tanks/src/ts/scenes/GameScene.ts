@@ -10,9 +10,12 @@ import wallsJSON from '../../assets/images/block-1.json';
 import block1 from '../../assets/images/block-1.png';
 import tilemap1 from '../../assets/maps/tilemap1.json';
 
+import shotImge from '../../assets/images/shot.png';
+
 import Tank from '../entities/base/tank';
 import Player from '../entities/player';
 import Enemy from '../entities/enemy';
+import Shot from '../entities/base/shot';
 
 type Keys = Phaser.Types.Input.Keyboard.CursorKeys;
 type Group = Phaser.Physics.Arcade.Group;
@@ -24,6 +27,7 @@ class GameScene extends Phaser.Scene {
     private tanks!: Group;
 
     // private bullets!:
+    private isShooting!: boolean;
 
     constructor() {
         super({ key: 'GameScene' });
@@ -38,6 +42,8 @@ class GameScene extends Phaser.Scene {
 
         this.load.image('tiles1', block1);
         this.load.tilemapTiledJSON('tilemap1', tilemap1);
+
+        this.load.image('shotImge', shotImge);
     }
 
     /*
@@ -102,6 +108,34 @@ class GameScene extends Phaser.Scene {
                 this.player.move(4);
             } else {
                 this.player.stopMove();
+            }
+            if (this.keyboard.space.isDown && !this.isShooting) {
+                let shot = new Shot(this, this.player.x, this.player.y, 'shot', this.player.direction, 'shotImge');
+                if (this.player.direction === 0) {
+                    shot.body.velocity.y = -200;
+                    shot.body.velocity.x = 0;
+                    shot.body.y = shot.body.y - 20;
+                    shot.angle = 0;
+                } else if (this.player.direction === 2) {
+                    shot.body.velocity.y = 200;
+                    shot.body.velocity.x = 0;
+                    shot.body.y = shot.body.y + 20;
+                    shot.angle = 180;
+                } else if (this.player.direction === 3) {
+                    shot.body.velocity.y = 0;
+                    shot.body.velocity.x = -200;
+                    shot.body.x = shot.body.x - 20;
+                    shot.angle = 270;
+                } else if (this.player.direction === 1) {
+                    shot.body.velocity.y = 0;
+                    shot.body.velocity.x = 200;
+                    shot.body.x = shot.body.x + 20;
+                    shot.angle = 90;
+                }
+                this.isShooting = true;
+                setTimeout(() => {
+                    this.isShooting = false;
+                }, 200);
             }
         }
     }
