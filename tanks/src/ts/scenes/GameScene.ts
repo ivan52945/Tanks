@@ -12,6 +12,9 @@ import tilemap1 from '../../assets/maps/tilemap1.json';
 
 import shotImge from '../../assets/images/shot.png';
 
+import shotSound from '../../assets/audio/sounds-fire.ogg';
+import moveSound from '../../assets/audio/sounds-background.ogg';
+
 import Tank from '../entities/base/tank';
 import Player from '../entities/player';
 import Enemy from '../entities/enemy';
@@ -28,6 +31,9 @@ class GameScene extends Phaser.Scene {
 
     // private bullets!:
     private isShooting!: boolean;
+    private sfx!: {
+        moveSound: Phaser.Sound.BaseSound;
+    };
 
     constructor() {
         super({ key: 'GameScene' });
@@ -44,6 +50,9 @@ class GameScene extends Phaser.Scene {
         this.load.tilemapTiledJSON('tilemap1', tilemap1);
 
         this.load.image('shotImge', shotImge);
+
+        this.load.audio('shotSound', shotSound);
+        this.load.audio('moveSound', moveSound);
     }
 
     /*
@@ -93,6 +102,9 @@ class GameScene extends Phaser.Scene {
             tank1.update();
             tank2.update();
         });
+        this.sfx = {
+            moveSound: this.sound.add('moveSound'),
+        };
     }
 
     update() {
@@ -100,17 +112,23 @@ class GameScene extends Phaser.Scene {
         if (this.player.manual) {
             if (this.keyboard.left.isDown) {
                 this.player.move(3);
+                this.sfx.moveSound.play(); // звук движения
             } else if (this.keyboard.right.isDown) {
                 this.player.move(1);
+                this.sfx.moveSound.play();
             } else if (this.keyboard.down.isDown) {
                 this.player.move(2);
+                this.sfx.moveSound.play();
             } else if (this.keyboard.up.isDown) {
                 this.player.move(4);
+                this.sfx.moveSound.play();
             } else {
                 this.player.stopMove();
             }
             if (this.keyboard.space.isDown && !this.isShooting) {
                 let shot = new Shot(this, this.player.x, this.player.y, 'shot', this.player.direction, 'shotImge');
+                this.sound.add('shotSound').play(); // звук выстрела
+
                 if (this.player.direction === 0) {
                     shot.body.velocity.y = -200;
                     shot.body.velocity.x = 0; // изменение направления выстрела
