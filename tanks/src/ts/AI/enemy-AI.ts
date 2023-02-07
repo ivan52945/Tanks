@@ -1,14 +1,23 @@
 import randIntFrZ from '../modules/functions';
+import IController from '../interfaces/controller';
 
-class EnemyAI {
+class EnemyAI implements IController {
+    readonly callback: (direction: number) => void;
+
     constructor(time: number, callback: (direction: number) => void) {
+        this.callback = callback;
+
         setTimeout(() => {
-            callback(randIntFrZ(3));
+            this.callback(randIntFrZ(3));
         }, 0);
 
         setInterval(() => {
-            callback(randIntFrZ(3));
+            this.callback(randIntFrZ(3));
         }, time * 1000);
+    }
+
+    update() {
+        this.callback(randIntFrZ(3));
     }
 }
 export default EnemyAI;

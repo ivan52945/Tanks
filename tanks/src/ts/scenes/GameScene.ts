@@ -7,8 +7,8 @@ import tanksEnemyJSON from '../../assets/images/tanks-2.json';
 import wallsIMGE from '../../assets/images/block-1.png';
 import wallsJSON from '../../assets/images/block-1.json';
 
-import block1 from '../../assets/images/block-1.png'
-import tilemap1 from '../../assets/maps/tilemap1.json'
+import block1 from '../../assets/images/block-1.png';
+import tilemap1 from '../../assets/maps/tilemap1.json';
 
 import Tank from '../entities/base/tank';
 import Player from '../entities/player';
@@ -21,7 +21,9 @@ class GameScene extends Phaser.Scene {
 
     private player!: Player;
 
-    private enemies!: Group;
+    private tanks!: Group;
+
+    // private bullets!:
 
     constructor() {
         super({ key: 'GameScene' });
@@ -34,54 +36,57 @@ class GameScene extends Phaser.Scene {
         this.load.atlas('walls', wallsIMGE, wallsJSON);
         this.load.image('walls1', wallsIMGE);
 
-        this.load.image('tiles1', block1)
-        this.load.tilemapTiledJSON('tilemap1', tilemap1)
+        this.load.image('tiles1', block1);
+        this.load.tilemapTiledJSON('tilemap1', tilemap1);
+    }
+
+    /*
+        костыль добавления группы + добавление столкновения
+        в будущем нужно будет сделать добавление
+    */
+    addTank(tank: Tank) {
+        this.tanks.add(tank);
+        setTimeout(() => {
+            tank.setCollideWorldBounds(true);
+        }, 0);
     }
 
     create() {
         /* когда будете смотреть демо, врубите консоль и попробуйте столкнуться с кирпичём */
 
-        const map = this.make.tilemap({ key: 'tilemap1' })
-        const tileset = map.addTilesetImage('tileSet1', 'tiles1')
+        const map = this.make.tilemap({ key: 'tilemap1' });
+        const tileset = map.addTilesetImage('tileSet1', 'tiles1');
 
-        const walls = map.createLayer('walls-layer', tileset)
+        const walls = map.createLayer('walls-layer', tileset);
 
-        walls.setCollisionByProperty({ collides: true })
+        walls.setCollisionByProperty({ collides: true });
 
         this.keyboard = this.input.keyboard.createCursorKeys();
 
         this.player = new Player(this, 250, 250);
 
-        const enemy = new Enemy(this, 450, 450);
-        const enemy1 = new Enemy(this, 650, 650);
-
         const bricks = this.physics.add.staticGroup();
 
         bricks.create(100, 100, 'walls', 'brick');
 
-        const allies = this.physics.add.group();
-        this.enemies = this.physics.add.group();
+        this.tanks = this.physics.add.group();
 
-        allies.add(this.player);
-        this.enemies.add(enemy);
-        this.enemies.add(enemy1);
+        this.addTank(this.player);
+        this.addTank(new Enemy(this, 450, 450));
+        this.addTank(new Enemy(this, 650, 450));
 
-        // console.log(enemy1.animation.key === enemy.animation.key);
-
-        // this.player.setCollideWorldBounds(true); not working
-
-        this.physics.add.collider(allies, bricks, () => {
-            console.log('collide');
+        this.physics.add.collider(this.tanks, walls, (tank) => {
+            // console.log('collide'); // test
+            tank.update();
+            // console.log(tank); // test
         });
-        this.physics.add.collider(allies, walls, () => { // ----- столкновения с элементами карты tilemap
-            console.log('collide');
+
+        this.physics.add.collider(this.tanks, this.tanks, (tank1, tank2) => {
+            console.log(tank1);
+
+            tank1.update();
+            tank2.update();
         });
-        this.physics.add.collider(allies, this.enemies, (tank1, tank2) => {
-            (tank1 as Tank).setVelocity(0, 0);
-            // tank1.x = tank1.x;
-            (tank2 as Tank).setVelocity(0, 0);
-        });
-        this.physics.add.collider(this.enemies, walls, () => { });
     }
 
     update() {

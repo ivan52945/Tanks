@@ -1,7 +1,9 @@
 import PlayerAI from '../AI/player-AI';
+import ITank from '../interfaces/tank';
+import randIntFrZ from '../modules/functions';
 import Tank from './base/tank';
 
-class Player extends Tank {
+class Player extends Tank implements ITank {
     private controller: PlayerAI;
 
     constructor(scene: Phaser.Scene, x: number, y: number, manual = true) {
@@ -26,6 +28,14 @@ class Player extends Tank {
 
     get manual() {
         return this.controller.manual;
+    }
+
+    update() {
+        if (!this.manual) {
+            this.move(randIntFrZ(3));
+        } else {
+            this.stopMove();
+        }
     }
 }
 
