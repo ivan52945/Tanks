@@ -113,9 +113,9 @@ class GameScene extends Phaser.Scene {
                 let shot = new Shot(this, this.player.x, this.player.y, 'shot', this.player.direction, 'shotImge');
                 if (this.player.direction === 0) {
                     shot.body.velocity.y = -200;
-                    shot.body.velocity.x = 0;
-                    shot.body.y = shot.body.y - 20;
-                    shot.angle = 0;
+                    shot.body.velocity.x = 0; // изменение направления выстрела
+                    shot.body.y = shot.body.y - 20; // изменение координат выстрела
+                    shot.angle = 0; //------------разворот изображения снаряда
                 } else if (this.player.direction === 2) {
                     shot.body.velocity.y = 200;
                     shot.body.velocity.x = 0;
@@ -134,6 +134,7 @@ class GameScene extends Phaser.Scene {
                 }
                 this.isShooting = true;
                 setTimeout(() => {
+                    //------------------------временная заглушка, для уменьшения частоты выстрела, потом следующий выстрел будет доступен только после коллизии
                     this.isShooting = false;
                 }, 200);
             }
