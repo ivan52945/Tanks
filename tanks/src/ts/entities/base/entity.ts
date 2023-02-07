@@ -11,7 +11,8 @@
  */
 
 class Entity extends Phaser.Physics.Arcade.Sprite {
-    protected direction = 0;
+    public direction = 0;
+    // protected direction = 0;
 
     constructor(
         scene: Phaser.Scene,
