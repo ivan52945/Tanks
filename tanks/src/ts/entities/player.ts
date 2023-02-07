@@ -31,9 +31,11 @@ class Player extends Tank implements ITank {
     }
 
     update() {
-        if (this.manual) return;
-
-        this.move(randIntFrZ(3));
+        if (!this.manual) {
+            this.move(randIntFrZ(3));
+        } else {
+            this.stopMove();
+        }
     }
 }
 

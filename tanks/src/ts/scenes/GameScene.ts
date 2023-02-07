@@ -13,7 +13,6 @@ import tilemap1 from '../../assets/maps/tilemap1.json';
 import Tank from '../entities/base/tank';
 import Player from '../entities/player';
 import Enemy from '../entities/enemy';
-import ITank from '../interfaces/tank';
 
 type Keys = Phaser.Types.Input.Keyboard.CursorKeys;
 type Group = Phaser.Physics.Arcade.Group;
@@ -52,17 +51,6 @@ class GameScene extends Phaser.Scene {
         }, 0);
     }
 
-    /*
-        костыль добавления группы + добавление столкновения
-        в будущем нужно будет сделать добавление
-    */
-    addTank(tank: Tank) {
-        this.tanks.add(tank);
-        setTimeout(() => {
-            tank.setCollideWorldBounds(true);
-        }, 0);
-    }
-
     create() {
         /* когда будете смотреть демо, врубите консоль и попробуйте столкнуться с кирпичём */
 
@@ -87,13 +75,15 @@ class GameScene extends Phaser.Scene {
         this.addTank(new Enemy(this, 450, 450));
         this.addTank(new Enemy(this, 650, 450));
 
-        this.physics.add.collider(this.tanks, walls, (tank: ITank, brick) => {
-            console.log('collide'); // test
+        this.physics.add.collider(this.tanks, walls, (tank) => {
+            // console.log('collide'); // test
             tank.update();
-            console.log(tank); // test
+            // console.log(tank); // test
         });
 
-        this.physics.add.collider(this.tanks, this.tanks, (tank1: ITank, tank2: ITank) => {
+        this.physics.add.collider(this.tanks, this.tanks, (tank1, tank2) => {
+            console.log(tank1);
+
             tank1.update();
             tank2.update();
         });

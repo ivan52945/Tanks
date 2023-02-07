@@ -12,11 +12,26 @@ const config = {
     width: 832,
     height: 832,
     physics: {
+        //*
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
             debug: false,
         },
+        // */
+        /*
+        default: 'matter',
+        matter: {
+            enableSleeping: true,
+            gravity: {
+                y: 0,
+            },
+            debug: {
+                showBody: true,
+                showStaticBody: true,
+            },
+        },
+        // */
     },
     scene: [StartScene, GameScene, ScoreScene, HiscoreScene, GameOverScene],
 };

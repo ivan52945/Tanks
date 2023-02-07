@@ -3,7 +3,7 @@ import tanksPlayerImge from '../../assets/images/tanks-1.png';
 import tanksPlayerJSON from '../../assets/images/tanks-1.json';
 
 class StartScene extends Phaser.Scene {
-    private cursor!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    private cursor!: Phaser.GameObjects.Sprite;
 
     constructor() {
         super({
@@ -29,7 +29,7 @@ class StartScene extends Phaser.Scene {
     create() {
         this.add.image(500, 320, 'logo');
         this.input.keyboard.createCursorKeys();
-        this.cursor = this.physics.add.sprite(300, 510, 'tanksPlr');
+        this.cursor = this.add.sprite(300, 510, 'tanksPlr');
         this.cursor.angle = 90;
         this.anims.create({
             // ----------------- создание анимации движени гусениц курсора
