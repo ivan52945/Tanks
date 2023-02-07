@@ -7,6 +7,9 @@ import tanksEnemyJSON from '../../assets/images/tanks-2.json';
 import wallsIMGE from '../../assets/images/block-1.png';
 import wallsJSON from '../../assets/images/block-1.json';
 
+import block1 from '../../assets/images/block-1.png';
+import tilemap1 from '../../assets/maps/tilemap1.json';
+
 import Tank from '../entities/base/tank';
 import Player from '../entities/player';
 import Enemy from '../entities/enemy';
@@ -33,6 +36,20 @@ class GameScene extends Phaser.Scene {
 
         this.load.atlas('walls', wallsIMGE, wallsJSON);
         this.load.image('walls1', wallsIMGE);
+
+        this.load.image('tiles1', block1);
+        this.load.tilemapTiledJSON('tilemap1', tilemap1);
+    }
+
+    /*
+        костыль добавления группы + добавление столкновения
+        в будущем нужно будет сделать добавление
+    */
+    addTank(tank: Tank) {
+        this.tanks.add(tank);
+        setTimeout(() => {
+            tank.setCollideWorldBounds(true);
+        }, 0);
     }
 
     /*
@@ -49,6 +66,13 @@ class GameScene extends Phaser.Scene {
     create() {
         /* когда будете смотреть демо, врубите консоль и попробуйте столкнуться с кирпичём */
 
+        const map = this.make.tilemap({ key: 'tilemap1' });
+        const tileset = map.addTilesetImage('tileSet1', 'tiles1');
+
+        const walls = map.createLayer('walls-layer', tileset);
+
+        walls.setCollisionByProperty({ collides: true });
+
         this.keyboard = this.input.keyboard.createCursorKeys();
 
         this.player = new Player(this, 250, 250);
@@ -63,7 +87,7 @@ class GameScene extends Phaser.Scene {
         this.addTank(new Enemy(this, 450, 450));
         this.addTank(new Enemy(this, 650, 450));
 
-        this.physics.add.collider(this.tanks, bricks, (tank: ITank, brick) => {
+        this.physics.add.collider(this.tanks, walls, (tank: ITank, brick) => {
             console.log('collide'); // test
             tank.update();
             console.log(tank); // test
