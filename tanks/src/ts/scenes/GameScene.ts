@@ -133,6 +133,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             } else {
                 this.player.stopMove();
             }
+            if (this.keyboard.space.isDown) {
+                // ------------------------------выстрел при нажатии пробела
+                this.player.shot();
+            }
         }
     }
 }
