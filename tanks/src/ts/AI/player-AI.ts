@@ -6,21 +6,34 @@ import ITank from '../interfaces/tank';
 class PlayerAI implements IController {
     readonly tank: ITank;
 
-    readonly move: () => void;
+    readonly moveTimer: NodeJS.Timer;
 
-    // readonly shot: () => void;
+    readonly shotTimer: NodeJS.Timer;
 
     constructor(time: number, tank: ITank) {
         this.tank = tank;
 
-        this.move = () => {
+        const move = () => {
             if (this.tank.manual) return;
 
             this.tank.move(randIntFrZ(3));
         };
-        setTimeout(this.move, 0);
 
-        setInterval(this.move, time * 1000);
+        const shot = () => {
+            if (this.tank.manual) return;
+
+            this.tank.shot();
+        };
+
+        setTimeout(move, 0);
+
+        this.moveTimer = setInterval(move, time * 1000);
+        this.shotTimer = setInterval(shot, time * 500);
+    }
+
+    destroy() {
+        clearInterval(this.moveTimer);
+        clearInterval(this.shotTimer);
     }
 }
 export default PlayerAI;

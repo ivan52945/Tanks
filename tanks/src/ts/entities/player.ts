@@ -9,6 +9,8 @@ class Player extends Tank implements ITank {
 
     public HP = 2;
 
+    private readyToUpdate = true;
+
     public manual;
 
     private controller = new PlayerAI(1, this);
@@ -21,10 +23,22 @@ class Player extends Tank implements ITank {
 
     update() {
         if (!this.manual) {
+            if (!this.readyToUpdate) return;
+            setTimeout(() => {
+                this.readyToUpdate = true;
+            }, 200);
+            this.readyToUpdate = false;
+
             this.move(randIntFrZ(3));
         } else {
             this.stopMove();
         }
+    }
+
+    destroy() {
+        this.controller.destroy();
+
+        super.destroy();
     }
 }
 

@@ -45,6 +45,7 @@ class Tank extends Entity {
         }
 
         super(scene, x, y, 'tank', key, `${spriteKey}_${type}_1`);
+
         this.sideBad = sideBad;
 
         this.animation = scene.anims.create({
@@ -76,8 +77,6 @@ class Tank extends Entity {
         this.setVelocity(0, 0);
         this.moving = false;
     }
-
-    shutdown() {}
 
     shot() {
         if (!this.readyShot) return;

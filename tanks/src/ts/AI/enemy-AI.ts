@@ -5,29 +5,36 @@ import ITank from '../interfaces/tank';
 class EnemyAI implements IController {
     readonly tank: ITank;
 
-    readonly move: () => void;
+    readonly moveTimer: NodeJS.Timer;
 
-    readonly shot: () => void;
+    readonly shotTimer: NodeJS.Timer;
 
     constructor(time: number, tank: ITank) {
         this.tank = tank;
 
-        this.move = () => {
+        setTimeout(this.tank.move, 0, randIntFrZ(3));
+
+        const move = () => {
             this.tank.move(randIntFrZ(3));
         };
 
-        this.shot = () => {
+        const shot = () => {
+            if (this.tank.manual) return;
+
             this.tank.shot();
         };
 
-        setTimeout(this.move, 0);
-
-        setInterval(this.move, time * 1000);
-        setInterval(this.shot, time * 500);
+        this.shotTimer = setInterval(shot, time * 500);
+        this.moveTimer = setInterval(move, time * 1000);
     }
 
     update() {
         this.tank.move(randIntFrZ(3));
+    }
+
+    destroy() {
+        clearInterval(this.moveTimer);
+        clearInterval(this.shotTimer);
     }
 }
 export default EnemyAI;

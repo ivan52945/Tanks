@@ -66,15 +66,12 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     addTank(tank: Tank) {
         this.tanks.add(tank);
         setTimeout(() => {
-            tank.setCollideWorldBounds(true);
+            tank.setPushable(false);
         }, 0);
     }
 
     addShot(shot: Shot) {
         this.shots.add(shot);
-        setTimeout(() => {
-            shot.setCollideWorldBounds(true);
-        }, 0);
     }
 
     create() {
@@ -87,8 +84,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         walls.setCollisionByProperty({ collides: true });
 
-        this.tanks = this.physics.add.group();
-        this.shots = this.physics.add.group();
+        this.tanks = this.physics.add.group({ collideWorldBounds: true });
+        this.shots = this.physics.add.group({ collideWorldBounds: true });
 
         this.keyboard = this.input.keyboard.createCursorKeys();
 

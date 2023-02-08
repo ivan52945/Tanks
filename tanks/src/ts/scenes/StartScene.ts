@@ -51,7 +51,7 @@ class StartScene extends Phaser.Scene {
             } else if (event.key === ' ' && this.cursor.y === 510) {
                 console.log('Start Game');
                 this.scene.start('GameScene');
-                this.sound.add('startSound').play(); // звук начала игры
+                // this.sound.add('startSound').play(); // звук начала игры
             } else if (event.key === ' ' && this.cursor.y === 565) {
                 console.log('Construction');
             } else if (event.key === 'p') {
