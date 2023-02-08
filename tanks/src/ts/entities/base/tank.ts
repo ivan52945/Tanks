@@ -1,4 +1,7 @@
+import IBattleScene from '../../interfaces/battle-scene';
 import Entity from './entity';
+import Shot from './shot';
+
 /**
  * Class for all tanks. Can be used for making NPC tanks
  *
@@ -14,6 +17,10 @@ import Entity from './entity';
 type Animation = Phaser.Animations.Animation;
 
 class Tank extends Entity {
+    protected readyShot = true;
+
+    protected coolDown = 0;
+
     public HP = 3;
 
     private animation: Animation;
@@ -22,7 +29,7 @@ class Tank extends Entity {
 
     public moving = false;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, sideBad: boolean, type: string, player = false) {
+    constructor(scene: IBattleScene, x: number, y: number, sideBad: boolean, type: string, player = false) {
         const key = sideBad ? 'tanksEnm' : 'tanksPlr';
 
         let spriteKey = ``; // sideBad ? 'enemy' : 'player_1';
@@ -38,6 +45,7 @@ class Tank extends Entity {
         }
 
         super(scene, x, y, 'tank', key, `${spriteKey}_${type}_1`);
+
         this.sideBad = sideBad;
 
         this.animation = scene.anims.create({
@@ -51,9 +59,9 @@ class Tank extends Entity {
         this.direction = direction % 4;
 
         if (this.direction % 2 !== 0) {
-            this.setVelocity((this.direction - 2) * -240, 0);
+            this.setVelocity((this.direction - 2) * -120, 0); // по моему мнению , скорость 80 более похожа на реальную
         } else {
-            this.setVelocity(0, (this.direction - 1) * 240);
+            this.setVelocity(0, (this.direction - 1) * 120);
         }
 
         if (!this.moving) {
@@ -68,6 +76,30 @@ class Tank extends Entity {
         this.anims.stop();
         this.setVelocity(0, 0);
         this.moving = false;
+    }
+
+    shot() {
+        if (!this.readyShot) return;
+
+        this.readyShot = false;
+
+        setTimeout(() => {
+            this.readyShot = true;
+        }, this.coolDown * 1000);
+
+        let xShot;
+        let yShot;
+
+        if (this.direction % 2 === 0) {
+            yShot = this.y + (this.direction - 1) * 30;
+            xShot = this.x;
+        } else {
+            xShot = this.x + (this.direction - 2) * -30;
+            yShot = this.y;
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const shot = new Shot(this.scene as IBattleScene, xShot, yShot, this.direction, this.sideBad);
     }
 }
 

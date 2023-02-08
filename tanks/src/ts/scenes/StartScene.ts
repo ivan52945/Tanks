@@ -2,6 +2,8 @@ import logoImg from '../../assets/images/battle-city.png';
 import tanksPlayerImge from '../../assets/images/tanks-1.png';
 import tanksPlayerJSON from '../../assets/images/tanks-1.json';
 
+import startSound from '../../assets/audio/sounds-gamestart.ogg';
+
 class StartScene extends Phaser.Scene {
     private cursor!: Phaser.GameObjects.Sprite;
 
@@ -24,6 +26,8 @@ class StartScene extends Phaser.Scene {
         this.add.text(400, 600, 'NAMCOT', { font: '40px Namco', color: '#680000' });
         this.add.text(150, 650, '© 1980 1985 NAMCO LTD.', { font: '32px Pixel' });
         this.add.text(180, 700, 'ALL RIGHTS RESERVED', { font: '32px Pixel' });
+
+        this.load.audio('startSound', startSound);
     }
 
     create() {
@@ -47,6 +51,7 @@ class StartScene extends Phaser.Scene {
             } else if (event.key === ' ' && this.cursor.y === 510) {
                 console.log('Start Game');
                 this.scene.start('GameScene');
+                // this.sound.add('startSound').play(); // звук начала игры
             } else if (event.key === ' ' && this.cursor.y === 565) {
                 console.log('Construction');
             } else if (event.key === 'p') {

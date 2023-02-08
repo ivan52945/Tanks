@@ -10,11 +10,13 @@
  *
  */
 
+import IBattleScene from '../../interfaces/battle-scene';
+
 class Entity extends Phaser.Physics.Arcade.Sprite {
     protected direction = 0;
 
     constructor(
-        scene: Phaser.Scene,
+        scene: IBattleScene,
         x: number,
         y: number,
         type: string,

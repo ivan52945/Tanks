@@ -1,23 +1,40 @@
 import randIntFrZ from '../modules/functions';
 import IController from '../interfaces/controller';
+import ITank from '../interfaces/tank';
 
 class EnemyAI implements IController {
-    readonly callback: (direction: number) => void;
+    readonly tank: ITank;
 
-    constructor(time: number, callback: (direction: number) => void) {
-        this.callback = callback;
+    readonly moveTimer: NodeJS.Timer;
 
-        setTimeout(() => {
-            this.callback(randIntFrZ(3));
-        }, 0);
+    readonly shotTimer: NodeJS.Timer;
 
-        setInterval(() => {
-            this.callback(randIntFrZ(3));
-        }, time * 1000);
+    constructor(time: number, tank: ITank) {
+        this.tank = tank;
+
+        setTimeout(this.tank.move, 0, randIntFrZ(3));
+
+        const move = () => {
+            this.tank.move(randIntFrZ(3));
+        };
+
+        const shot = () => {
+            if (this.tank.manual) return;
+
+            this.tank.shot();
+        };
+
+        this.shotTimer = setInterval(shot, time * 500);
+        this.moveTimer = setInterval(move, time * 1000);
     }
 
     update() {
-        this.callback(randIntFrZ(3));
+        this.tank.move(randIntFrZ(3));
+    }
+
+    destroy() {
+        clearInterval(this.moveTimer);
+        clearInterval(this.shotTimer);
     }
 }
 export default EnemyAI;
