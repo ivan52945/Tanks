@@ -12,8 +12,6 @@ class EnemyAI implements IController {
     constructor(time: number, tank: ITank) {
         this.tank = tank;
 
-        setTimeout(this.tank.move, 0, randIntFrZ(3));
-
         const move = () => {
             this.tank.move(randIntFrZ(3));
         };
@@ -23,6 +21,8 @@ class EnemyAI implements IController {
                 this.tank.shot();
             }
         };
+
+        setTimeout(move, 0);
 
         this.shotTimer = setInterval(shot, time * 200);
         this.moveTimer = setInterval(move, time * 1000);
