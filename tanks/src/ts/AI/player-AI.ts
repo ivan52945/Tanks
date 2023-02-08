@@ -1,31 +1,26 @@
 import randIntFrZ from '../modules/functions';
 import IController from '../interfaces/controller';
 
+import ITank from '../interfaces/tank';
+
 class PlayerAI implements IController {
-    public manual: boolean;
+    readonly tank: ITank;
 
-    readonly callback: (direction: number) => void;
+    readonly move: () => void;
 
-    constructor(time: number, callback: (direction: number) => void, manual = true) {
-        this.manual = manual;
+    // readonly shot: () => void;
 
-        this.callback = callback;
+    constructor(time: number, tank: ITank) {
+        this.tank = tank;
 
-        setTimeout(() => {
-            if (this.manual) return;
+        this.move = () => {
+            if (this.tank.manual) return;
 
-            this.callback(randIntFrZ(3));
-        }, 0);
+            this.tank.move(randIntFrZ(3));
+        };
+        setTimeout(this.move, 0);
 
-        setInterval(() => {
-            if (this.manual) return;
-
-            this.callback(randIntFrZ(3));
-        }, time * 1000);
-    }
-
-    update() {
-        this.callback(randIntFrZ(3));
+        setInterval(this.move, time * 1000);
     }
 }
 export default PlayerAI;

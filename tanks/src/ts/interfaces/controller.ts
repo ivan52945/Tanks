@@ -1,7 +1,7 @@
-interface IController {
-    readonly callback: (direction: number) => void;
+import ITank from './tank';
 
-    update: () => void;
+interface IController {
+    readonly tank: ITank;
 }
 
 export default IController;

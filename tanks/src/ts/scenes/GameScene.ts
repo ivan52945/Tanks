@@ -20,17 +20,21 @@ import Player from '../entities/player';
 import Enemy from '../entities/enemy';
 import Shot from '../entities/base/shot';
 
-type Keys = Phaser.Types.Input.Keyboard.CursorKeys;
-type Group = Phaser.Physics.Arcade.Group;
-class GameScene extends Phaser.Scene {
+import { Group, Keys } from '../interfaces/based';
+import IBattleScene from '../interfaces/battle-scene';
+
+class GameScene extends Phaser.Scene implements IBattleScene {
     private keyboard!: Keys;
 
     private player!: Player;
 
     private tanks!: Group;
 
+    private shots!: Group;
+
     // private bullets!:
     private isShooting!: boolean;
+
     private sfx!: {
         moveSound: Phaser.Sound.BaseSound;
     };
@@ -66,6 +70,13 @@ class GameScene extends Phaser.Scene {
         }, 0);
     }
 
+    addShot(shot: Shot) {
+        this.shots.add(shot);
+        setTimeout(() => {
+            shot.setCollideWorldBounds(true);
+        }, 0);
+    }
+
     create() {
         /* когда будете смотреть демо, врубите консоль и попробуйте столкнуться с кирпичём */
 
@@ -76,6 +87,9 @@ class GameScene extends Phaser.Scene {
 
         walls.setCollisionByProperty({ collides: true });
 
+        this.tanks = this.physics.add.group();
+        this.shots = this.physics.add.group();
+
         this.keyboard = this.input.keyboard.createCursorKeys();
 
         this.player = new Player(this, 250, 250);
@@ -84,21 +98,15 @@ class GameScene extends Phaser.Scene {
 
         bricks.create(100, 100, 'walls', 'brick');
 
-        this.tanks = this.physics.add.group();
-
         this.addTank(this.player);
         this.addTank(new Enemy(this, 450, 450));
         this.addTank(new Enemy(this, 650, 450));
 
         this.physics.add.collider(this.tanks, walls, (tank) => {
-            // console.log('collide'); // test
             tank.update();
-            // console.log(tank); // test
         });
 
         this.physics.add.collider(this.tanks, this.tanks, (tank1, tank2) => {
-            console.log(tank1);
-
             tank1.update();
             tank2.update();
         });
@@ -124,41 +132,6 @@ class GameScene extends Phaser.Scene {
                 this.sfx.moveSound.play();
             } else {
                 this.player.stopMove();
-            }
-            if (this.keyboard.space.isDown && !this.isShooting) {
-                let shot = new Shot(this, this.player.x, this.player.y, 'shot', this.player.direction, 'shotImge');
-                this.sound.add('shotSound').play(); // звук выстрела
-
-                if (this.player.direction === 0) {
-                    shot.body.velocity.y = -200;
-                    shot.body.velocity.x = 0; // изменение направления выстрела
-                    shot.body.y = shot.body.y - 20; // изменение координат выстрела
-                    shot.angle = 0; //------------разворот изображения снаряда
-                    shot.setVelocity(0, -700); // скорость пули
-                } else if (this.player.direction === 2) {
-                    shot.body.velocity.y = 200;
-                    shot.body.velocity.x = 0;
-                    shot.body.y = shot.body.y + 20;
-                    shot.angle = 180;
-                    shot.setVelocity(0, 700);
-                } else if (this.player.direction === 3) {
-                    shot.body.velocity.y = 0;
-                    shot.body.velocity.x = -200;
-                    shot.body.x = shot.body.x - 20;
-                    shot.angle = 270;
-                    shot.setVelocity(-700, 0);
-                } else if (this.player.direction === 1) {
-                    shot.body.velocity.y = 0;
-                    shot.body.velocity.x = 200;
-                    shot.body.x = shot.body.x + 20;
-                    shot.angle = 90;
-                    shot.setVelocity(700, 0);
-                }
-                this.isShooting = true;
-                setTimeout(() => {
-                    //------------------------временная заглушка, для уменьшения частоты выстрела, потом следующий выстрел будет доступен только после коллизии
-                    this.isShooting = false;
-                }, 200);
             }
         }
     }
