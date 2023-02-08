@@ -22,13 +22,15 @@ class PlayerAI implements IController {
         const shot = () => {
             if (this.tank.manual) return;
 
-            this.tank.shot();
+            if (Math.random() < 0.7) {
+                this.tank.shot();
+            }
         };
 
         setTimeout(move, 0);
 
         this.moveTimer = setInterval(move, time * 1000);
-        this.shotTimer = setInterval(shot, time * 500);
+        this.shotTimer = setInterval(shot, time * 200);
     }
 
     destroy() {
