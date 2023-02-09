@@ -101,9 +101,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         const borders = this.physics.add.staticGroup();
 
         borders.create(960, 480, 'rightBorder', 'border');
-        borders.create(32, 480, 'borderBlock', 'border').scaleY = 15;
-        borders.create(480, 32, 'borderBlock', 'border').scaleX = 13;
-        borders.create(480, 928, 'borderBlock', 'border').scaleX = 13;
+        borders.create(32, 480, 'borderBlock', 'border').setScale(1, 15).refreshBody();
+        borders.create(480, 32, 'borderBlock', 'border').setScale(13, 1).refreshBody();
+        borders.create(480, 928, 'borderBlock', 'border').setScale(13, 1).refreshBody();
 
         this.physics.add.collider(this.tanks, walls, (tank) => {
             tank.update();
