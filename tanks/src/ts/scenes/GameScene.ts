@@ -13,8 +13,7 @@ import tilemap1 from '../../assets/maps/tilemap1.json';
 import shotImge from '../../assets/images/shot.png';
 
 import rightBorder from '../../assets/images/right-border.png';
-import leftBorder from '../../assets/images/left-border.png';
-import horizontalBorder from '../../assets/images/horizontal-border.png';
+import borderBlock from '../../assets/images/border-block.png';
 
 import shotSound from '../../assets/audio/sounds-fire.ogg';
 import moveSound from '../../assets/audio/sounds-background.ogg';
@@ -56,9 +55,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.load.image('shotImge', shotImge);
 
+        this.load.image('borderBlock', borderBlock);
         this.load.image('rightBorder', rightBorder);
-        this.load.image('leftBorder', leftBorder);
-        this.load.image('horizontalBorder', horizontalBorder);
 
         this.load.audio('shotSound', shotSound);
         this.load.audio('moveSound', moveSound);
@@ -103,9 +101,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         const borders = this.physics.add.staticGroup();
 
         borders.create(960, 480, 'rightBorder', 'border');
-        borders.create(32, 480, 'leftBorder', 'border');
-        borders.create(480, 32, 'horizontalBorder', 'border');
-        borders.create(480, 928, 'horizontalBorder', 'border');
+        borders.create(32, 480, 'borderBlock', 'border').scaleY = 15;
+        borders.create(480, 32, 'borderBlock', 'border').scaleX = 13;
+        borders.create(480, 928, 'borderBlock', 'border').scaleX = 13;
 
         this.physics.add.collider(this.tanks, walls, (tank) => {
             tank.update();
