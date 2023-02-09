@@ -31,7 +31,7 @@ class Player extends Tank implements ITank {
 
             this.move(randIntFrZ(3));
         } else {
-            this.stopMove();
+            this?.stopMove();
         }
     }
 

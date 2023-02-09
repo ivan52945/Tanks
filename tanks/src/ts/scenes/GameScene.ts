@@ -32,9 +32,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private shots!: Group;
 
-    // private bullets!:
-    private isShooting!: boolean;
-
     private sfx!: {
         moveSound: Phaser.Sound.BaseSound;
     };
@@ -91,10 +88,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.player = new Player(this, 250, 250);
 
-        const bricks = this.physics.add.staticGroup();
-
-        bricks.create(100, 100, 'walls', 'brick');
-
         this.addTank(this.player);
         this.addTank(new Enemy(this, 450, 450));
         this.addTank(new Enemy(this, 650, 450));
@@ -107,32 +100,60 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             tank1.update();
             tank2.update();
         });
+
+        this.physics.add.collider(this.shots, this.shots, (shot1, shot2) => {
+            shot1.destroy();
+            shot2.destroy();
+        });
+        this.physics.add.collider(this.shots, walls, (shot, wall) => {
+            shot.destroy();
+            wall.destroy();
+        });
+
+        this.physics.add.collider(this.shots, this.tanks, (shot, tank) => {
+            const war = +(shot as Shot).sideBad + +(tank as Tank).sideBad;
+
+            if (war % 2 !== 0) {
+                if (tank instanceof Enemy) {
+                    console.log('killed');
+                } else {
+                    console.log('Game Over');
+                    this.player.HP = 0;
+                }
+
+                tank.destroy();
+            }
+
+            shot.destroy();
+        });
+
         this.sfx = {
             moveSound: this.sound.add('moveSound'),
         };
     }
 
     update() {
-        // this.enemies.getChildren().forEach((e) => (e as Tank).controller.update());
-        if (this.player.manual) {
-            if (this.keyboard.left.isDown) {
-                this.player.move(3);
-                this.sfx.moveSound.play(); // звук движения
-            } else if (this.keyboard.right.isDown) {
-                this.player.move(1);
-                this.sfx.moveSound.play();
-            } else if (this.keyboard.down.isDown) {
-                this.player.move(2);
-                this.sfx.moveSound.play();
-            } else if (this.keyboard.up.isDown) {
-                this.player.move(4);
-                this.sfx.moveSound.play();
-            } else {
-                this.player.stopMove();
-            }
-            if (this.keyboard.space.isDown) {
-                // ------------------------------выстрел при нажатии пробела
-                this.player.shot();
+        if (this.player.HP > 0) {
+            if (this.player.manual) {
+                if (this.keyboard.left.isDown) {
+                    this.player.move(3);
+                    this.sfx.moveSound.play(); // звук движения
+                } else if (this.keyboard.right.isDown) {
+                    this.player.move(1);
+                    this.sfx.moveSound.play();
+                } else if (this.keyboard.down.isDown) {
+                    this.player.move(2);
+                    this.sfx.moveSound.play();
+                } else if (this.keyboard.up.isDown) {
+                    this.player.move(4);
+                    this.sfx.moveSound.play();
+                } else {
+                    this.player.stopMove();
+                }
+                if (this.keyboard.space.isDown) {
+                    // ------------------------------выстрел при нажатии пробела
+                    this.player.shot();
+                }
             }
         }
     }
