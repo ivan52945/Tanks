@@ -16,7 +16,7 @@ class Player extends Tank implements ITank {
     private controller = new PlayerAI(1, this);
 
     constructor(scene: IBattleScene, x: number, y: number, manual = true) {
-        super(scene, x, y, false, 'main', true);
+        super(scene, x, y, false, 'base', true);
 
         this.manual = manual;
     }

@@ -1,6 +1,6 @@
 import logoImg from '../../assets/images/battle-city.png';
-import tanksPlayerImge from '../../assets/images/tanks-1.png';
-import tanksPlayerJSON from '../../assets/images/tanks-1.json';
+import tanksPlayerImge from '../../assets/images/tanks.png';
+import tanksPlayerJSON from '../../assets/images/tanks.json';
 
 import startSound from '../../assets/audio/sounds-gamestart.ogg';
 
@@ -38,7 +38,7 @@ class StartScene extends Phaser.Scene {
         this.anims.create({
             // ----------------- создание анимации движени гусениц курсора
             key: 'tank',
-            frames: this.anims.generateFrameNames('tanksPlr', { prefix: 'player_2_main_', start: 1, end: 2 }),
+            frames: this.anims.generateFrameNames('tanksPlr', { prefix: 'player_1_base_', start: 1, end: 2 }),
             repeat: -1,
         });
 
@@ -49,7 +49,6 @@ class StartScene extends Phaser.Scene {
             } else if (event.key === 'ArrowUp') {
                 this.cursor.y = 510;
             } else if (event.key === ' ' && this.cursor.y === 510) {
-                console.log('Start Game');
                 this.scene.start('GameScene');
                 // this.sound.add('startSound').play(); // звук начала игры
             } else if (event.key === ' ' && this.cursor.y === 565) {
