@@ -98,8 +98,8 @@ class Tank extends Entity {
             yShot = this.y;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const shot = new Shot(this.scene as IBattleScene, xShot, yShot, this.direction, this.sideBad);
+        // eslint-disable-next-line no-new
+        new Shot(this.scene as IBattleScene, xShot, yShot, this.direction, this.sideBad);
     }
 }
 

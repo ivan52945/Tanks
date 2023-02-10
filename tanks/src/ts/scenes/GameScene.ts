@@ -72,8 +72,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     create() {
-        /* когда будете смотреть демо, врубите консоль и попробуйте столкнуться с кирпичём */
-
         const map = this.make.tilemap({ key: 'tilemap1' });
         const tileset = map.addTilesetImage('tileSet1', 'tiles1');
 
@@ -111,20 +109,21 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
 
         this.physics.add.collider(this.shots, this.tanks, (shot, tank) => {
-            const war = +(shot as Shot).sideBad + +(tank as Tank).sideBad;
+            shot.destroy();
 
-            if (war % 2 !== 0) {
-                if (tank instanceof Enemy) {
-                    console.log('killed');
-                } else {
-                    console.log('Game Over');
-                    this.player.HP = 0;
-                }
-
+            if ((shot as Shot).sideBad !== (tank as Tank).sideBad) {
                 tank.destroy();
             }
+        });
 
-            shot.destroy();
+        // события убийства игрока и врагов
+
+        this.events.on('killed', () => {
+            console.log('killed');
+        });
+
+        this.events.on('GameOver', () => {
+            console.log('GameOver');
         });
 
         this.sfx = {
@@ -133,7 +132,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     update() {
-        if (this.player.HP > 0) {
+        if (this.player.body) {
             if (this.player.manual) {
                 if (this.keyboard.left.isDown) {
                     this.player.move(3);
