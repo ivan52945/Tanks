@@ -12,6 +12,9 @@ import tilemap1 from '../../assets/maps/tilemap1.json';
 
 import shotImge from '../../assets/images/shot.png';
 
+import rightBorder from '../../assets/images/right-border.png';
+import borderBlock from '../../assets/images/border-block.png';
+
 import shotSound from '../../assets/audio/sounds-fire.ogg';
 import moveSound from '../../assets/audio/sounds-background.ogg';
 
@@ -51,6 +54,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.load.tilemapTiledJSON('tilemap1', tilemap1);
 
         this.load.image('shotImge', shotImge);
+
+        this.load.image('borderBlock', borderBlock);
+        this.load.image('rightBorder', rightBorder);
 
         this.load.audio('shotSound', shotSound);
         this.load.audio('moveSound', moveSound);
@@ -99,6 +105,13 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         const fabric = new Fabric(this, fabricConfig);
 
+        const borders = this.physics.add.staticGroup();
+
+        borders.create(960, 480, 'rightBorder', 'border');
+        borders.create(32, 480, 'borderBlock', 'border').setScale(1, 15).refreshBody();
+        borders.create(480, 32, 'borderBlock', 'border').setScale(13, 1).refreshBody();
+        borders.create(480, 928, 'borderBlock', 'border').setScale(13, 1).refreshBody();
+
         this.physics.add.collider(this.tanks, walls, (tank) => {
             tank.update();
         });
@@ -137,6 +150,14 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.events.on('GameOver', () => {
             console.log('GameOver');
+        });
+
+        this.physics.add.collider(this.shots, borders, (shot) => {
+            shot.destroy();
+        });
+
+        this.physics.add.collider(this.tanks, borders, (tank) => {
+            tank.update();
         });
 
         this.sfx = {
