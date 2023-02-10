@@ -107,10 +107,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         const borders = this.physics.add.staticGroup();
 
-        borders.create(960, 480, 'rightBorder', 'border');
-        borders.create(32, 480, 'borderBlock', 'border').setScale(1, 15).refreshBody();
-        borders.create(480, 32, 'borderBlock', 'border').setScale(13, 1).refreshBody();
-        borders.create(480, 928, 'borderBlock', 'border').setScale(13, 1).refreshBody();
+        borders.create(960, 480, 'rightBorder');
+        borders.create(32, 480, 'borderBlock').setScale(1, 15).refreshBody();
+        borders.create(480, 32, 'borderBlock').setScale(13, 1).refreshBody();
+        borders.create(480, 928, 'borderBlock').setScale(13, 1).refreshBody();
 
         this.physics.add.collider(this.tanks, walls, (tank) => {
             tank.update();
@@ -130,7 +130,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             wall.destroy();
         });
 
-        this.physics.add.collider(this.shots, this.tanks, (shot, tank) => {
+        this.physics.add.overlap(this.shots, this.tanks, (shot, tank) => {
             shot.destroy();
 
             if ((shot as Shot).sideBad !== (tank as Tank).sideBad) {
