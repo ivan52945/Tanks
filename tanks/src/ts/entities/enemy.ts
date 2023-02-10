@@ -35,9 +35,12 @@ class Enemy extends Tank implements ITank {
     }
 
     destroy() {
+        setTimeout(() => {
+            super.destroy();
+        }, 0.0000000000001);
+        this.scene.events.emit('killed');
         this.controller.destroy();
-
-        super.destroy();
+        // не спрашивайте зачем :)
     }
 }
 

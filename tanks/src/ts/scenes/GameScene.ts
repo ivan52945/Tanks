@@ -20,11 +20,11 @@ import moveSound from '../../assets/audio/sounds-background.ogg';
 
 import Tank from '../entities/base/tank';
 import Player from '../entities/player';
-import Enemy from '../entities/enemy';
 import Shot from '../entities/base/shot';
 
 import { Group, Keys } from '../interfaces/based';
 import IBattleScene from '../interfaces/battle-scene';
+import Fabric from '../modules/fabric';
 
 class GameScene extends Phaser.Scene implements IBattleScene {
     private keyboard!: Keys;
@@ -63,8 +63,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     /*
-        костыль добавления группы + добавление столкновения
-        в будущем нужно будет сделать добавление
+        функция полезная
+
+        можно и оставить
     */
     addTank(tank: Tank) {
         this.tanks.add(tank);
@@ -78,8 +79,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     create() {
-        /* когда будете смотреть демо, врубите консоль и попробуйте столкнуться с кирпичём */
-
         const map = this.make.tilemap({ key: 'tilemap1' });
         const tileset = map.addTilesetImage('tileSet1', 'tiles1');
 
@@ -95,15 +94,23 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.player = new Player(this, 250, 250);
 
         this.addTank(this.player);
-        this.addTank(new Enemy(this, 450, 450));
-        this.addTank(new Enemy(this, 650, 450));
+
+        const fabricConfig = {
+            coords: [
+                { x: 450, y: 450 },
+                { x: 650, y: 650 },
+            ],
+            plan: ['main', 'main'],
+        };
+
+        const fabric = new Fabric(this, fabricConfig);
 
         const borders = this.physics.add.staticGroup();
 
-        borders.create(960, 480, 'rightBorder', 'border');
-        borders.create(32, 480, 'borderBlock', 'border').setScale(1, 15).refreshBody();
-        borders.create(480, 32, 'borderBlock', 'border').setScale(13, 1).refreshBody();
-        borders.create(480, 928, 'borderBlock', 'border').setScale(13, 1).refreshBody();
+        borders.create(960, 480, 'rightBorder');
+        borders.create(32, 480, 'borderBlock').setScale(1, 15).refreshBody();
+        borders.create(480, 32, 'borderBlock').setScale(13, 1).refreshBody();
+        borders.create(480, 928, 'borderBlock').setScale(13, 1).refreshBody();
 
         this.physics.add.collider(this.tanks, walls, (tank) => {
             tank.update();
@@ -123,21 +130,26 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             wall.destroy();
         });
 
-        this.physics.add.collider(this.shots, this.tanks, (shot, tank) => {
-            const war = +(shot as Shot).sideBad + +(tank as Tank).sideBad;
+        this.physics.add.overlap(this.shots, this.tanks, (shot, tank) => {
+            shot.destroy();
 
-            if (war % 2 !== 0) {
-                if (tank instanceof Enemy) {
-                    console.log('killed');
-                } else {
-                    console.log('Game Over');
-                    this.player.HP = 0;
-                }
-
+            if ((shot as Shot).sideBad !== (tank as Tank).sideBad) {
                 tank.destroy();
             }
+        });
 
-            shot.destroy();
+        // события убийства игрока и врагов
+
+        this.events.on('killed', () => {
+            fabric.produce();
+
+            if (this.tanks.countActive(true) <= 0) {
+                console.log('win');
+            }
+        });
+
+        this.events.on('GameOver', () => {
+            console.log('GameOver');
         });
 
         this.physics.add.collider(this.shots, borders, (shot) => {
@@ -154,7 +166,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     update() {
-        if (this.player.HP > 0) {
+        if (this.player.body) {
             if (this.player.manual) {
                 if (this.keyboard.left.isDown) {
                     this.player.move(3);

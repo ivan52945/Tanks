@@ -91,15 +91,15 @@ class Tank extends Entity {
         let yShot;
 
         if (this.direction % 2 === 0) {
-            yShot = this.y + (this.direction - 1) * 36;
+            yShot = this.y + (this.direction - 1) * 30;
             xShot = this.x;
         } else {
-            xShot = this.x + (this.direction - 2) * -36;
+            xShot = this.x + (this.direction - 2) * -30;
             yShot = this.y;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const shot = new Shot(this.scene as IBattleScene, xShot, yShot, this.direction, this.sideBad);
+        // eslint-disable-next-line no-new
+        new Shot(this.scene as IBattleScene, xShot, yShot, this.direction, this.sideBad);
     }
 }
 
