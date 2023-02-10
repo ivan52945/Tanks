@@ -15,7 +15,7 @@ class Enemy extends Tank implements ITank {
     public HP = 2;
 
     constructor(scene: IBattleScene, x: number, y: number) {
-        super(scene, x, y, true, 'main');
+        super(scene, x, y, true, 'light');
 
         this.HP = 2;
 

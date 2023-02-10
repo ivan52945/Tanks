@@ -1,8 +1,8 @@
-import tanksPlayerImge from '../../assets/images/tanks-1.png';
-import tanksPlayerJSON from '../../assets/images/tanks-1.json';
+import tanksPlayerImge from '../../assets/images/tanks.png';
+import tanksPlayerJSON from '../../assets/images/tanks.json';
 
-import tanksEnemyImge from '../../assets/images/tanks-2.png';
-import tanksEnemyJSON from '../../assets/images/tanks-2.json';
+import tanksEnemyImge from '../../assets/images/tanks.png';
+import tanksEnemyJSON from '../../assets/images/tanks.json';
 
 import wallsIMGE from '../../assets/images/block-1.png';
 import wallsJSON from '../../assets/images/block-1.json';
@@ -163,6 +163,12 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.sfx = {
             moveSound: this.sound.add('moveSound'),
         };
+        this.input.keyboard.on('keydown', (event: { key: string }) => {
+            if (event.key === 'p') {
+                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
+                this.scene.start('HiscoreScene');
+            }
+        });
     }
 
     update() {
