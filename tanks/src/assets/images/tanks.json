@@ -161,7 +161,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_armored_vehicle_yellow_1",
+      "filename": "enemy_wheeled_yellow_1",
       "frame": { "x": 9, "y": 328, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -169,7 +169,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_armored_vehicle_yellow_2",
+      "filename": "enemy_wheeled_yellow_2",
       "frame": { "x": 73, "y": 328, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -177,7 +177,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_armored_vehicle_1",
+      "filename": "enemy_wheeled_1",
       "frame": { "x": 139, "y": 328, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -185,7 +185,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_armored_vehicle_2",
+      "filename": "enemy_wheeled_2",
       "frame": { "x": 203, "y": 328, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -193,7 +193,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_quick_fire_yellow_1",
+      "filename": "enemy_medium_yellow_1",
       "frame": { "x": 9, "y": 396, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -201,7 +201,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_quick_fire_yellow_2",
+      "filename": "enemy_medium_yellow_2",
       "frame": { "x": 73, "y": 396, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -209,7 +209,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_quick_fire_1",
+      "filename": "enemy_medium_1",
       "frame": { "x": 139, "y": 396, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -217,7 +217,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_quick_fire_2",
+      "filename": "enemy_medium_2",
       "frame": { "x": 203, "y": 396, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -225,7 +225,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_heavy_armored_yellow_1",
+      "filename": "enemy_heavy_yellow_1",
       "frame": { "x": 9, "y": 460, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -233,7 +233,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_heavy_armored_yellow_2",
+      "filename": "enemy_heavy_yellow_2",
       "frame": { "x": 73, "y": 460, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -241,7 +241,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_heavy_armored_1",
+      "filename": "enemy_heavy_1",
       "frame": { "x": 139, "y": 460, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -249,7 +249,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_heavy_armored_2",
+      "filename": "enemy_heavy_2",
       "frame": { "x": 203, "y": 460, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -417,7 +417,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_armored_vehicle_green_1",
+      "filename": "enemy_wheeled_green_1",
       "frame": { "x": 9, "y": 852, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -425,7 +425,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_armored_vehicle_green_2",
+      "filename": "enemy_wheeled_green_2",
       "frame": { "x": 73, "y": 852, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -433,7 +433,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_armored_vehicle_bonus_1",
+      "filename": "enemy_wheeled_bonus_1",
       "frame": { "x": 139, "y": 852, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -441,7 +441,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_armored_vehicle_bonus_2",
+      "filename": "enemy_wheeled_bonus_2",
       "frame": { "x": 203, "y": 852, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -449,7 +449,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_quick_fire_green_1",
+      "filename": "enemy_medium_green_1",
       "frame": { "x": 9, "y": 920, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -457,7 +457,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_quick_fire_green_2",
+      "filename": "enemy_medium_green_2",
       "frame": { "x": 73, "y": 920, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -465,7 +465,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_quick_fire_bonus_1",
+      "filename": "enemy_medium_bonus_1",
       "frame": { "x": 139, "y": 920, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -473,7 +473,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_quick_fire_bonus_2",
+      "filename": "enemy_medium_bonus_2",
       "frame": { "x": 203, "y": 920, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -481,7 +481,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_heavy_armored_green_1",
+      "filename": "enemy_heavy_green_1",
       "frame": { "x": 9, "y": 984, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -489,7 +489,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_heavy_armored_green_2",
+      "filename": "enemy_heavy_green_2",
       "frame": { "x": 73, "y": 984, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -497,7 +497,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_heavy_armored_bonus_1",
+      "filename": "enemy_heavy_bonus_1",
       "frame": { "x": 139, "y": 984, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
@@ -505,7 +505,7 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_heavy_armored_bonus_2",
+      "filename": "enemy_heavy_bonus_2",
       "frame": { "x": 203, "y": 984, "w": 52, "h": 60 },
       "rotated": false,
       "trimmed": false,
