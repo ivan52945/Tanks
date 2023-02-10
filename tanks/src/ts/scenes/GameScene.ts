@@ -17,11 +17,11 @@ import moveSound from '../../assets/audio/sounds-background.ogg';
 
 import Tank from '../entities/base/tank';
 import Player from '../entities/player';
-import Enemy from '../entities/enemy';
 import Shot from '../entities/base/shot';
 
 import { Group, Keys } from '../interfaces/based';
 import IBattleScene from '../interfaces/battle-scene';
+import Fabric from '../modules/fabric';
 
 class GameScene extends Phaser.Scene implements IBattleScene {
     private keyboard!: Keys;
@@ -57,8 +57,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     /*
-        костыль добавления группы + добавление столкновения
-        в будущем нужно будет сделать добавление
+        функция полезная
+
+        можно и оставить
     */
     addTank(tank: Tank) {
         this.tanks.add(tank);
@@ -87,8 +88,16 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.player = new Player(this, 250, 250);
 
         this.addTank(this.player);
-        this.addTank(new Enemy(this, 450, 450));
-        this.addTank(new Enemy(this, 650, 450));
+
+        const fabricConfig = {
+            coords: [
+                { x: 450, y: 450 },
+                { x: 650, y: 650 },
+            ],
+            plan: ['main', 'main'],
+        };
+
+        const fabric = new Fabric(this, fabricConfig);
 
         this.physics.add.collider(this.tanks, walls, (tank) => {
             tank.update();
@@ -119,7 +128,11 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         // события убийства игрока и врагов
 
         this.events.on('killed', () => {
-            console.log('killed');
+            fabric.produce();
+
+            if (this.tanks.countActive(true) <= 0) {
+                console.log('win');
+            }
         });
 
         this.events.on('GameOver', () => {
