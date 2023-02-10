@@ -9,8 +9,8 @@ import GameOverScene from './ts/scenes/GameOverScene';
 const config = {
     type: Phaser.AUTO,
     parent: 'app',
-    width: 832,
-    height: 832,
+    width: 1024,
+    height: 960,
     physics: {
         //*
         default: 'arcade',
