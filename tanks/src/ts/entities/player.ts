@@ -16,7 +16,7 @@ class Player extends Tank implements ITank {
     private controller = new PlayerAI(1, this);
 
     constructor(scene: IBattleScene, x: number, y: number, manual = true) {
-        super(scene, x, y, false, 'main', true);
+        super(scene, x, y, false, 'base', true);
 
         this.manual = manual;
     }
@@ -31,14 +31,17 @@ class Player extends Tank implements ITank {
 
             this.move(randIntFrZ(3));
         } else {
-            this?.stopMove();
+            this.stopMove();
         }
     }
 
     destroy() {
+        setTimeout(() => {
+            super.destroy();
+        }, 0.0000000000001);
+        this.scene.events.emit('GameOver');
         this.controller.destroy();
-
-        super.destroy();
+        // не спрашивайте зачем :)
     }
 }
 

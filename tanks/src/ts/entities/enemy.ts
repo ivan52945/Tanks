@@ -15,7 +15,7 @@ class Enemy extends Tank implements ITank {
     public HP = 2;
 
     constructor(scene: IBattleScene, x: number, y: number) {
-        super(scene, x, y, true, 'main');
+        super(scene, x, y, true, 'light');
 
         this.HP = 2;
 
@@ -35,9 +35,12 @@ class Enemy extends Tank implements ITank {
     }
 
     destroy() {
+        setTimeout(() => {
+            super.destroy();
+        }, 0.0000000000001);
+        this.scene.events.emit('killed');
         this.controller.destroy();
-
-        super.destroy();
+        // не спрашивайте зачем :)
     }
 }
 

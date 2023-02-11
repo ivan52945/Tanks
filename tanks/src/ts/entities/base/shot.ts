@@ -9,6 +9,7 @@ class Shot extends Entity {
         super(scene, x, y, 'shot', 'shotImge');
 
         scene.addShot(this);
+        // this.setScale(0.5, 0.75);
         this.direction = direction;
         this.sideBad = sideBad;
 
