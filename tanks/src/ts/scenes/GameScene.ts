@@ -1,8 +1,5 @@
-import tanksPlayerImge from '../../assets/images/tanks.png';
-import tanksPlayerJSON from '../../assets/images/tanks.json';
-
-import tanksEnemyImge from '../../assets/images/tanks.png';
-import tanksEnemyJSON from '../../assets/images/tanks.json';
+import tanksImge from '../../assets/images/tanks.png';
+import tanksJSON from '../../assets/images/tanks.json';
 
 import wallsIMGE from '../../assets/images/block-1.png';
 import wallsJSON from '../../assets/images/block-1.json';
@@ -35,7 +32,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     private tanks!: Group;
 
     private shots!: Group;
+
     private x!: number;
+
     private y!: number;
 
     private sfx!: {
@@ -47,8 +46,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     preload() {
-        this.load.atlas('tanksPlr', tanksPlayerImge, tanksPlayerJSON);
-        this.load.atlas('tanksEnm', tanksEnemyImge, tanksEnemyJSON);
+        this.load.atlas('tanks', tanksImge, tanksJSON);
 
         this.load.atlas('walls', wallsIMGE, wallsJSON);
         this.load.image('walls1', wallsIMGE);
@@ -90,8 +88,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         walls.setCollisionByProperty({ collides: true });
 
-        this.tanks = this.physics.add.group({ collideWorldBounds: true });
-        this.shots = this.physics.add.group({ collideWorldBounds: true });
+        this.tanks = this.physics.add.group();
+        this.shots = this.physics.add.group();
 
         this.keyboard = this.input.keyboard.createCursorKeys();
 
@@ -104,7 +102,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 { x: 450, y: 450 },
                 // { x: 650, y: 650 },
             ],
-            plan: ['light'],
+            plan: ['whelled', 'light', 'shooter', 'heavy'],
         };
 
         const fabric = new Fabric(this, fabricConfig);
@@ -130,6 +128,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             shot2.destroy();
         });
         this.physics.add.collider(this.shots, walls, (shot, wall) => {
+            if (!(shot as Shot).sideBad) console.log(wall);
             shot.destroy();
             wall.destroy();
         });

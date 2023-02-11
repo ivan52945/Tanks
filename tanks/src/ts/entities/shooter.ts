@@ -3,15 +3,13 @@ import ITank from '../interfaces/tank';
 import Tank from './base/tank';
 import IBattleScene from '../interfaces/battle-scene';
 
-class Light extends Tank implements ITank {
-    coolDown = 2;
-
+class Shooter extends Tank implements ITank {
     protected readyToUpdate = true;
 
-    public HP = 1;
+    protected coolDown = 0.7;
 
     constructor(scene: IBattleScene, x: number, y: number) {
-        super(scene, x, y, true, 'light');
+        super(scene, x, y, true, 'shooter');
 
         this.controller = new EnemyAI(1, this as ITank);
     }
@@ -30,4 +28,4 @@ class Light extends Tank implements ITank {
     }
 }
 
-export default Light;
+export default Shooter;

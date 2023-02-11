@@ -17,7 +17,7 @@ class EnemyAI implements IController {
         };
 
         const shot = () => {
-            if (Math.random() < 0.5) {
+            if (Math.random() < 1.0) {
                 this.tank.shot();
             }
         };

@@ -6,8 +6,6 @@ import Shot from './base/shot';
 import Tank from './base/tank';
 
 class Player extends Tank implements ITank {
-    coolDown = 2;
-
     public HP = 2;
 
     protected readyToUpdate = true;

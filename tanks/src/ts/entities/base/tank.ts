@@ -20,9 +20,13 @@ type Animation = Phaser.Animations.Animation;
 class Tank extends Entity {
     protected readyShot = true;
 
-    protected coolDown = 0;
+    protected coolDown = 2;
 
     public HP = 3;
+
+    protected speed = 120;
+
+    protected shotSpeedMod = 1;
 
     private animation: Animation;
 
@@ -35,9 +39,7 @@ class Tank extends Entity {
     public moving = false;
 
     constructor(scene: IBattleScene, x: number, y: number, sideBad: boolean, type: string, player = false) {
-        const key = sideBad ? 'tanksEnm' : 'tanksPlr';
-
-        let spriteKey = ``; // sideBad ? 'enemy' : 'player_1';
+        let spriteKey = ``;
 
         if (!sideBad) {
             if (!player) {
@@ -49,12 +51,12 @@ class Tank extends Entity {
             spriteKey = 'enemy';
         }
 
-        super(scene, x, y, 'tank', key, `${spriteKey}_${type}_1`);
+        super(scene, x, y, 'tank', 'tanks', `${spriteKey}_${type}_1`);
         this.sideBad = sideBad;
 
         this.animation = scene.anims.create({
             key: `${spriteKey}_${type}`,
-            frames: this.anims.generateFrameNames(key, { prefix: `${spriteKey}_${type}_`, start: 1, end: 2 }),
+            frames: this.anims.generateFrameNames('tanks', { prefix: `${spriteKey}_${type}_`, start: 1, end: 2 }),
             repeat: -1,
         }) as Animation;
     }
@@ -62,8 +64,8 @@ class Tank extends Entity {
     move(dir: number) {
         this.dir = dir % 4;
 
-        this.setVelocityX(fCos(this.dir) * 120);
-        this.setVelocityY(fSin(this.dir) * 120);
+        this.setVelocityX(fCos(this.dir) * this.speed);
+        this.setVelocityY(fSin(this.dir) * this.speed);
 
         if (!this.moving) {
             this.anims.play(this.animation, true);
@@ -92,7 +94,7 @@ class Tank extends Entity {
         const yShot = this.y + fSin(this.dir) * 30;
 
         // eslint-disable-next-line no-new
-        new Shot(this.scene as IBattleScene, xShot, yShot, this.dir, this.sideBad);
+        new Shot(this.scene as IBattleScene, xShot, yShot, this.dir, this.sideBad, this.shotSpeedMod);
     }
 
     update() {

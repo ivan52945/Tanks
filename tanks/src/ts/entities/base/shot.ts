@@ -8,15 +8,16 @@ class Shot extends Entity {
 
     readonly dir: number;
 
-    constructor(scene: IBattleScene, x: number, y: number, dir: number, sideBad: boolean) {
+    constructor(scene: IBattleScene, x: number, y: number, dir: number, sideBad: boolean, speed = 1) {
         super(scene, x, y, 'shot', 'shotImge');
 
-        scene.addShot(this);
-        // this.setScale(0.5, 0.75);
         this.dir = dir;
         this.sideBad = sideBad;
+        scene.addShot(this);
 
-        this.setVelocity(fCos(this.dir) * 400, fSin(this.dir) * 400);
+        speed *= 600;
+
+        this.setVelocity(fCos(this.dir) * speed, fSin(this.dir) * speed);
 
         this.angle = 90 * this.dir;
     }
