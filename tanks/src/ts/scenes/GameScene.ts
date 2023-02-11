@@ -7,7 +7,7 @@ import tanksEnemyJSON from '../../assets/images/tanks-2.json';
 import wallsIMGE from '../../assets/images/block-1.png';
 import wallsJSON from '../../assets/images/block-1.json';
 
-import block1 from '../../assets/images/block-1.png';
+import block32 from '../../assets/images/blocks-32.png';
 import tilemap1 from '../../assets/maps/tilemap1.json';
 
 import shotImge from '../../assets/images/shot.png';
@@ -47,7 +47,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.load.atlas('walls', wallsIMGE, wallsJSON);
         this.load.image('walls1', wallsIMGE);
 
-        this.load.image('tiles1', block1);
+        this.load.image('tiles1', block32);
         this.load.tilemapTiledJSON('tilemap1', tilemap1);
 
         this.load.image('shotImge', shotImge);
@@ -105,9 +105,29 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             shot1.destroy();
             shot2.destroy();
         });
-        this.physics.add.collider(this.shots, walls, (shot, wall) => {
+        this.physics.add.collider(this.shots, walls, (shot) => {
+            switch ((shot as Shot).direction) {
+                case 0:
+                    walls.removeTileAtWorldXY((shot as Shot).x + 17, (shot as Shot).y - 25)
+                    walls.removeTileAtWorldXY((shot as Shot).x - 17, (shot as Shot).y - 25)
+                    break;
+                case 1:
+                    walls.removeTileAtWorldXY((shot as Shot).x + 25, (shot as Shot).y + 17)
+                    walls.removeTileAtWorldXY((shot as Shot).x + 25, (shot as Shot).y - 17)
+                    break;
+                case 2:
+                    walls.removeTileAtWorldXY((shot as Shot).x + 17, (shot as Shot).y + 25)
+                    walls.removeTileAtWorldXY((shot as Shot).x - 17, (shot as Shot).y + 25)
+                    break;
+                case 3:
+                    walls.removeTileAtWorldXY((shot as Shot).x - 25, (shot as Shot).y + 17)
+                    walls.removeTileAtWorldXY((shot as Shot).x - 25, (shot as Shot).y - 17)
+                    break;
+                default:
+                    console.log('oops')
+                    break;
+            }
             shot.destroy();
-            wall.destroy();
         });
 
         this.physics.add.collider(this.shots, this.tanks, (shot, tank) => {

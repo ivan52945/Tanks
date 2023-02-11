@@ -3,6 +3,7 @@ import Entity from './entity';
 
 class Shot extends Entity {
     readonly sideBad: boolean;
+    readonly direction: number;
 
     constructor(scene: IBattleScene, x: number, y: number, direction: number, sideBad: boolean) {
         super(scene, x, y, 'shot', 'shotImge');
