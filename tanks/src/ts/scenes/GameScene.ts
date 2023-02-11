@@ -88,8 +88,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         walls.setCollisionByProperty({ collides: true });
 
-        this.tanks = this.physics.add.group({ collideWorldBounds: true });
-        this.shots = this.physics.add.group({ collideWorldBounds: true });
+        this.tanks = this.physics.add.group();
+        this.shots = this.physics.add.group();
 
         this.keyboard = this.input.keyboard.createCursorKeys();
 
