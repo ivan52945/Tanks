@@ -33,10 +33,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private shots!: Group;
 
-    private x!: number;
-
-    private y!: number;
-
     private sfx!: {
         moveSound: Phaser.Sound.BaseSound;
     };
