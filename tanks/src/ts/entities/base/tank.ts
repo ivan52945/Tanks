@@ -1,7 +1,8 @@
 import IBattleScene from '../../interfaces/battle-scene';
 import Entity from './entity';
 import Shot from './shot';
-
+import { fSin, fCos, randIntFrZ } from '../../modules/functions';
+import IController from '../../interfaces/controller';
 /**
  * Class for all tanks. Can be used for making NPC tanks
  *
@@ -25,6 +26,10 @@ class Tank extends Entity {
 
     private animation: Animation;
 
+    protected controller!: IController;
+
+    protected readyToUpdate = true;
+
     readonly sideBad: boolean;
 
     public moving = false;
@@ -45,7 +50,6 @@ class Tank extends Entity {
         }
 
         super(scene, x, y, 'tank', key, `${spriteKey}_${type}_1`);
-
         this.sideBad = sideBad;
 
         this.animation = scene.anims.create({
@@ -55,21 +59,18 @@ class Tank extends Entity {
         }) as Animation;
     }
 
-    move(direction: number) {
-        this.direction = direction % 4;
+    move(dir: number) {
+        this.dir = dir % 4;
 
-        if (this.direction % 2 !== 0) {
-            this.setVelocity((this.direction - 2) * -120, 0); // по моему мнению , скорость 80 более похожа на реальную
-        } else {
-            this.setVelocity(0, (this.direction - 1) * 120);
-        }
+        this.setVelocityX(fCos(this.dir) * 120);
+        this.setVelocityY(fSin(this.dir) * 120);
 
         if (!this.moving) {
             this.anims.play(this.animation, true);
             this.moving = true;
         }
 
-        this.angle = 90 * this.direction;
+        this.angle = 90 * this.dir;
     }
 
     stopMove() {
@@ -87,19 +88,21 @@ class Tank extends Entity {
             this.readyShot = true;
         }, this.coolDown * 1000);
 
-        let xShot;
-        let yShot;
-
-        if (this.direction % 2 === 0) {
-            yShot = this.y + (this.direction - 1) * 30;
-            xShot = this.x;
-        } else {
-            xShot = this.x + (this.direction - 2) * -30;
-            yShot = this.y;
-        }
+        const xShot = this.x + fCos(this.dir) * 30;
+        const yShot = this.y + fSin(this.dir) * 30;
 
         // eslint-disable-next-line no-new
-        new Shot(this.scene as IBattleScene, xShot, yShot, this.direction, this.sideBad);
+        new Shot(this.scene as IBattleScene, xShot, yShot, this.dir, this.sideBad);
+    }
+
+    update() {
+        if (!this.readyToUpdate) return;
+
+        setTimeout(() => {
+            this.readyToUpdate = true;
+        }, 200);
+        this.readyToUpdate = false;
+        this.move(randIntFrZ(3));
     }
 }
 

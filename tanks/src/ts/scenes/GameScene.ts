@@ -25,6 +25,7 @@ import Shot from '../entities/base/shot';
 import { Group, Keys } from '../interfaces/based';
 import IBattleScene from '../interfaces/battle-scene';
 import Fabric from '../modules/fabric';
+import ITank from '../interfaces/tank';
 
 class GameScene extends Phaser.Scene implements IBattleScene {
     private keyboard!: Keys;
@@ -67,6 +68,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         можно и оставить
     */
+
     addTank(tank: Tank) {
         this.tanks.add(tank);
         setTimeout(() => {
@@ -98,9 +100,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         const fabricConfig = {
             coords: [
                 { x: 450, y: 450 },
-                { x: 650, y: 650 },
+                // { x: 650, y: 650 },
             ],
-            plan: ['main', 'main'],
+            plan: ['light'],
         };
 
         const fabric = new Fabric(this, fabricConfig);
@@ -130,12 +132,11 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             wall.destroy();
         });
 
-        this.physics.add.overlap(this.shots, this.tanks, (shot, tank) => {
-            shot.destroy();
-
-            if ((shot as Shot).sideBad !== (tank as Tank).sideBad) {
-                tank.destroy();
+        this.physics.add.collider(this.shots, this.tanks, (shot, tank: unknown) => {
+            if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
+                (tank as ITank).getShot(shot as Shot);
             }
+            shot.destroy();
         });
 
         // события убийства игрока и врагов

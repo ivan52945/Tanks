@@ -13,7 +13,7 @@
 import IBattleScene from '../../interfaces/battle-scene';
 
 class Entity extends Phaser.Physics.Arcade.Sprite {
-    protected direction = 0;
+    protected dir = 0;
 
     constructor(
         scene: IBattleScene,

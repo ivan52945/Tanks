@@ -1,4 +1,4 @@
-import randIntFrZ from '../modules/functions';
+import { randIntFrZ } from '../modules/functions';
 import IController from '../interfaces/controller';
 import ITank from '../interfaces/tank';
 
