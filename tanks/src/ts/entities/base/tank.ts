@@ -1,7 +1,8 @@
 import IBattleScene from '../../interfaces/battle-scene';
 import Entity from './entity';
 import Shot from './shot';
-
+import { fSin, fCos, randIntFrZ } from '../../modules/functions';
+import IController from '../../interfaces/controller';
 /**
  * Class for all tanks. Can be used for making NPC tanks
  *
@@ -19,20 +20,26 @@ type Animation = Phaser.Animations.Animation;
 class Tank extends Entity {
     protected readyShot = true;
 
-    protected coolDown = 0;
+    protected coolDown = 2;
 
     public HP = 3;
 
+    protected speed = 120;
+
+    protected shotSpeedMod = 1;
+
     private animation: Animation;
+
+    protected controller!: IController;
+
+    protected readyToUpdate = true;
 
     readonly sideBad: boolean;
 
     public moving = false;
 
     constructor(scene: IBattleScene, x: number, y: number, sideBad: boolean, type: string, player = false) {
-        const key = sideBad ? 'tanksEnm' : 'tanksPlr';
-
-        let spriteKey = ``; // sideBad ? 'enemy' : 'player_1';
+        let spriteKey = ``;
 
         if (!sideBad) {
             if (!player) {
@@ -44,32 +51,28 @@ class Tank extends Entity {
             spriteKey = 'enemy';
         }
 
-        super(scene, x, y, 'tank', key, `${spriteKey}_${type}_1`);
-
+        super(scene, x, y, 'tank', 'tanks', `${spriteKey}_${type}_1`);
         this.sideBad = sideBad;
-
+        console.log(`${spriteKey}_${type}_`);
         this.animation = scene.anims.create({
             key: `${spriteKey}_${type}`,
-            frames: this.anims.generateFrameNames(key, { prefix: `${spriteKey}_${type}_`, start: 1, end: 2 }),
+            frames: this.anims.generateFrameNames('tanks', { prefix: `${spriteKey}_${type}_`, start: 1, end: 2 }),
             repeat: -1,
         }) as Animation;
     }
 
-    move(direction: number) {
-        this.direction = direction % 4;
+    move(dir: number) {
+        this.dir = dir % 4;
 
-        if (this.direction % 2 !== 0) {
-            this.setVelocity((this.direction - 2) * -120, 0); // по моему мнению , скорость 80 более похожа на реальную
-        } else {
-            this.setVelocity(0, (this.direction - 1) * 120);
-        }
+        this.setVelocityX(fCos(this.dir) * this.speed);
+        this.setVelocityY(fSin(this.dir) * this.speed);
 
         if (!this.moving) {
             this.anims.play(this.animation, true);
             this.moving = true;
         }
 
-        this.angle = 90 * this.direction;
+        this.angle = 90 * this.dir;
     }
 
     stopMove() {
@@ -87,19 +90,21 @@ class Tank extends Entity {
             this.readyShot = true;
         }, this.coolDown * 1000);
 
-        let xShot;
-        let yShot;
-
-        if (this.direction % 2 === 0) {
-            yShot = this.y + (this.direction - 1) * 30;
-            xShot = this.x;
-        } else {
-            xShot = this.x + (this.direction - 2) * -30;
-            yShot = this.y;
-        }
+        const xShot = this.x + fCos(this.dir) * 30;
+        const yShot = this.y + fSin(this.dir) * 30;
 
         // eslint-disable-next-line no-new
-        new Shot(this.scene as IBattleScene, xShot, yShot, this.direction, this.sideBad);
+        new Shot(this.scene as IBattleScene, xShot, yShot, this.dir, this.sideBad, this.shotSpeedMod);
+    }
+
+    update() {
+        if (!this.readyToUpdate) return;
+
+        setTimeout(() => {
+            this.readyToUpdate = true;
+        }, 200);
+        this.readyToUpdate = false;
+        this.move(randIntFrZ(3));
     }
 }
 

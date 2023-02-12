@@ -1,8 +1,5 @@
-import tanksPlayerImge from '../../assets/images/tanks.png';
-import tanksPlayerJSON from '../../assets/images/tanks.json';
-
-import tanksEnemyImge from '../../assets/images/tanks.png';
-import tanksEnemyJSON from '../../assets/images/tanks.json';
+import tanksImge from '../../assets/images/tanks.png';
+import tanksJSON from '../../assets/images/tanks.json';
 
 import wallsIMGE from '../../assets/images/block-1.png';
 import wallsJSON from '../../assets/images/block-1.json';
@@ -25,6 +22,7 @@ import Shot from '../entities/base/shot';
 import { Group, Keys } from '../interfaces/based';
 import IBattleScene from '../interfaces/battle-scene';
 import Fabric from '../modules/fabric';
+import ITank from '../interfaces/tank';
 
 class GameScene extends Phaser.Scene implements IBattleScene {
     private keyboard!: Keys;
@@ -34,8 +32,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     private tanks!: Group;
 
     private shots!: Group;
-    private x!: number;
-    private y!: number;
 
     private sfx!: {
         moveSound: Phaser.Sound.BaseSound;
@@ -46,8 +42,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     preload() {
-        this.load.atlas('tanksPlr', tanksPlayerImge, tanksPlayerJSON);
-        this.load.atlas('tanksEnm', tanksEnemyImge, tanksEnemyJSON);
+        this.load.atlas('tanks', tanksImge, tanksJSON);
 
         this.load.atlas('walls', wallsIMGE, wallsJSON);
         this.load.image('walls1', wallsIMGE);
@@ -69,6 +64,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         можно и оставить
     */
+
     addTank(tank: Tank) {
         this.tanks.add(tank);
         setTimeout(() => {
@@ -88,8 +84,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         walls.setCollisionByProperty({ collides: true });
 
-        this.tanks = this.physics.add.group({ collideWorldBounds: true });
-        this.shots = this.physics.add.group({ collideWorldBounds: true });
+        this.tanks = this.physics.add.group();
+        this.shots = this.physics.add.group();
 
         this.keyboard = this.input.keyboard.createCursorKeys();
 
@@ -100,9 +96,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         const fabricConfig = {
             coords: [
                 { x: 450, y: 450 },
-                { x: 650, y: 650 },
+                // { x: 650, y: 650 },
             ],
-            plan: ['main', 'main'],
+            plan: ['whelled', 'light', 'shooter', 'heavy'],
         };
 
         const fabric = new Fabric(this, fabricConfig);
@@ -128,16 +124,16 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             shot2.destroy();
         });
         this.physics.add.collider(this.shots, walls, (shot, wall) => {
+            if (!(shot as Shot).sideBad) console.log(wall);
             shot.destroy();
             wall.destroy();
         });
 
-        this.physics.add.overlap(this.shots, this.tanks, (shot, tank) => {
-            shot.destroy();
-
-            if ((shot as Shot).sideBad !== (tank as Tank).sideBad) {
-                tank.destroy();
+        this.physics.add.collider(this.shots, this.tanks, (shot, tank: unknown) => {
+            if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
+                (tank as ITank).getShot(shot as Shot);
             }
+            shot.destroy();
         });
 
         // события убийства игрока и врагов
