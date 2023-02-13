@@ -175,6 +175,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 default:
                     console.log('oops');
             }
+            shot.destroy();
             */
             shot.destroy();
         });
