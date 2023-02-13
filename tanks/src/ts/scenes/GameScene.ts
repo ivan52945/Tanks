@@ -145,7 +145,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.physics.add.collider(this.shots, walls, (shot, wall) => {
             if (!(shot as Shot).sideBad) console.log(wall);
             this.add.sprite(shot.body.x, shot.body.y, 'explosion').play('explodeAnimation');
-            switch ((shot as Shot).direction) {
+            switch ((shot as Shot).dir) {
                 case 0:
                     walls.removeTileAtWorldXY((shot as Shot).x + 17, (shot as Shot).y - 25)
                     walls.removeTileAtWorldXY((shot as Shot).x - 17, (shot as Shot).y - 25)
@@ -165,8 +165,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 default:
                     console.log('oops')
                     break;
-                    shot.destroy();
             }
+            shot.destroy();
         });
 
         this.physics.add.collider(this.shots, this.tanks, (shot, tank: unknown) => {
