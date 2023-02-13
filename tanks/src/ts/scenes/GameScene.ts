@@ -1,8 +1,5 @@
-import tanksPlayerImge from '../../assets/images/tanks.png';
-import tanksPlayerJSON from '../../assets/images/tanks.json';
-
-import tanksEnemyImge from '../../assets/images/tanks.png';
-import tanksEnemyJSON from '../../assets/images/tanks.json';
+import tanksImge from '../../assets/images/tanks.png';
+import tanksJSON from '../../assets/images/tanks.json';
 
 import wallsIMGE from '../../assets/images/block-1.png';
 import wallsJSON from '../../assets/images/block-1.json';
@@ -15,6 +12,9 @@ import shotImge from '../../assets/images/shot-small.png';
 import rightBorder from '../../assets/images/right-border.png';
 import borderBlock from '../../assets/images/border-block-32.png';
 
+import explosion from '../../assets/images/small-explosion.png';
+import bigExplosion from '../../assets/images/big-explosion.png';
+
 import shotSound from '../../assets/audio/sounds-fire.ogg';
 import moveSound from '../../assets/audio/sounds-background.ogg';
 
@@ -25,6 +25,7 @@ import Shot from '../entities/base/shot';
 import { Group, Keys } from '../interfaces/based';
 import IBattleScene from '../interfaces/battle-scene';
 import Fabric from '../modules/fabric';
+import ITank from '../interfaces/tank';
 
 class GameScene extends Phaser.Scene implements IBattleScene {
     private keyboard!: Keys;
@@ -34,8 +35,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     private tanks!: Group;
 
     private shots!: Group;
-    private x!: number;
-    private y!: number;
 
     private sfx!: {
         moveSound: Phaser.Sound.BaseSound;
@@ -46,8 +45,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     preload() {
-        this.load.atlas('tanksPlr', tanksPlayerImge, tanksPlayerJSON);
-        this.load.atlas('tanksEnm', tanksEnemyImge, tanksEnemyJSON);
+        this.load.atlas('tanks', tanksImge, tanksJSON);
 
         this.load.atlas('walls', wallsIMGE, wallsJSON);
         this.load.image('walls1', wallsIMGE);
@@ -60,6 +58,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.load.image('borderBlock', borderBlock);
         this.load.image('rightBorder', rightBorder);
 
+        this.load.spritesheet('explosion', explosion, { frameWidth: 62, frameHeight: 64, endFrame: 3 });
+        this.load.spritesheet('bigExplosion', bigExplosion, { frameWidth: 127, frameHeight: 130, endFrame: 2 });
+
         this.load.audio('shotSound', shotSound);
         this.load.audio('moveSound', moveSound);
     }
@@ -69,6 +70,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         можно и оставить
     */
+
     addTank(tank: Tank) {
         this.tanks.add(tank);
         setTimeout(() => {
@@ -81,6 +83,19 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     create() {
+        this.anims.create({
+            key: 'explodeAnimation',
+            frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 3, first: 0 }),
+            frameRate: 10,
+            repeat: 0,
+        });
+        this.anims.create({
+            key: 'bigExplodeAnimation',
+            frames: this.anims.generateFrameNumbers('bigExplosion', { start: 0, end: 2, first: 0 }),
+            frameRate: 10,
+            repeat: 0,
+        });
+
         const map = this.make.tilemap({ key: 'tilemap1' });
         const tileset = map.addTilesetImage('tileSet1', 'tiles1');
 
@@ -88,8 +103,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         walls.setCollisionByProperty({ collides: true });
 
-        this.tanks = this.physics.add.group({ collideWorldBounds: true });
-        this.shots = this.physics.add.group({ collideWorldBounds: true });
+        this.tanks = this.physics.add.group();
+        this.shots = this.physics.add.group();
 
         this.keyboard = this.input.keyboard.createCursorKeys();
 
@@ -100,9 +115,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         const fabricConfig = {
             coords: [
                 { x: 450, y: 450 },
-                { x: 650, y: 650 },
+                // { x: 650, y: 650 },
             ],
-            plan: ['main', 'main'],
+            plan: ['whelled', 'light', 'shooter', 'heavy'],
         };
 
         const fabric = new Fabric(this, fabricConfig);
@@ -127,7 +142,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             shot1.destroy();
             shot2.destroy();
         });
-        this.physics.add.collider(this.shots, walls, (shot) => {
+        this.physics.add.collider(this.shots, walls, (shot, wall) => {
+            if (!(shot as Shot).sideBad) console.log(wall);
+            this.add.sprite(shot.body.x, shot.body.y, 'explosion').play('explodeAnimation');
             switch ((shot as Shot).direction) {
                 case 0:
                     walls.removeTileAtWorldXY((shot as Shot).x + 17, (shot as Shot).y - 25)
@@ -148,16 +165,16 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 default:
                     console.log('oops')
                     break;
+                    shot.destroy();
             }
-            shot.destroy();
         });
 
-        this.physics.add.overlap(this.shots, this.tanks, (shot, tank) => {
-            shot.destroy();
-
-            if ((shot as Shot).sideBad !== (tank as Tank).sideBad) {
-                tank.destroy();
+        this.physics.add.collider(this.shots, this.tanks, (shot, tank: unknown) => {
+            if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
+                (tank as ITank).getShot(shot as Shot);
             }
+            this.add.sprite(shot.body.x, shot.body.y, 'bigExplosion').play('bigExplodeAnimation');
+            shot.destroy();
         });
 
         // события убийства игрока и врагов

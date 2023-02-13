@@ -13,7 +13,7 @@
 import IBattleScene from '../../interfaces/battle-scene';
 
 class Entity extends Phaser.Physics.Arcade.Sprite {
-    protected direction = 0;
+    protected dir = 0;
 
     constructor(
         scene: IBattleScene,
@@ -24,13 +24,10 @@ class Entity extends Phaser.Physics.Arcade.Sprite {
         atlasSprite?: string | number
     ) {
         super(scene, x, y, key, atlasSprite);
+
         this.scene = scene;
-
-        this.scene.add.existing(this);
         this.scene.physics.world.enableBody(this, 0);
-
-        this.setData('type', type);
-        this.setData('isDead', false);
+        this.scene.add.existing(this);
     }
 }
 
