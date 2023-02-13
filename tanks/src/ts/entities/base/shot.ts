@@ -5,7 +5,6 @@ import Entity from './entity';
 
 class Shot extends Entity {
     readonly sideBad: boolean;
-    readonly direction: number;
 
     readonly dir: number;
 

@@ -26,6 +26,7 @@ import { Group, Keys } from '../interfaces/based';
 import IBattleScene from '../interfaces/battle-scene';
 import Fabric from '../modules/fabric';
 import ITank from '../interfaces/tank';
+import { fCos, fSin } from '../modules/functions';
 
 class GameScene extends Phaser.Scene implements IBattleScene {
     private keyboard!: Keys;
@@ -143,30 +144,39 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             shot2.destroy();
         });
         this.physics.add.collider(this.shots, walls, (shot, wall) => {
-            if (!(shot as Shot).sideBad) console.log(wall);
             this.add.sprite(shot.body.x, shot.body.y, 'explosion').play('explodeAnimation');
-            switch ((shot as Shot).direction) {
+
+            const { x, y, dir } = shot as Shot;
+
+            const xT = x + fCos(dir) * 17;
+            const yT = y + fSin(dir) * 17;
+
+            walls.removeTileAtWorldXY(xT + fCos(dir + 1) * 8, yT + fSin(dir + 1) * 8);
+            walls.removeTileAtWorldXY(xT + fCos(dir + 3) * 8, yT + fSin(dir + 3) * 8);
+
+            /*
+            switch ((shot as Shot).dir) {
                 case 0:
-                    walls.removeTileAtWorldXY((shot as Shot).x + 17, (shot as Shot).y - 25)
-                    walls.removeTileAtWorldXY((shot as Shot).x - 17, (shot as Shot).y - 25)
+                    walls.removeTileAtWorldXY((shot as Shot).x + 17, (shot as Shot).y - 25);
+                    walls.removeTileAtWorldXY((shot as Shot).x - 17, (shot as Shot).y - 25);
                     break;
                 case 1:
-                    walls.removeTileAtWorldXY((shot as Shot).x + 25, (shot as Shot).y + 17)
-                    walls.removeTileAtWorldXY((shot as Shot).x + 25, (shot as Shot).y - 17)
+                    walls.removeTileAtWorldXY((shot as Shot).x + 25, (shot as Shot).y + 17);
+                    walls.removeTileAtWorldXY((shot as Shot).x + 25, (shot as Shot).y - 17);
                     break;
                 case 2:
-                    walls.removeTileAtWorldXY((shot as Shot).x + 17, (shot as Shot).y + 25)
-                    walls.removeTileAtWorldXY((shot as Shot).x - 17, (shot as Shot).y + 25)
+                    walls.removeTileAtWorldXY((shot as Shot).x + 17, (shot as Shot).y + 25);
+                    walls.removeTileAtWorldXY((shot as Shot).x - 17, (shot as Shot).y + 25);
                     break;
                 case 3:
-                    walls.removeTileAtWorldXY((shot as Shot).x - 25, (shot as Shot).y + 17)
-                    walls.removeTileAtWorldXY((shot as Shot).x - 25, (shot as Shot).y - 17)
+                    walls.removeTileAtWorldXY((shot as Shot).x - 25, (shot as Shot).y + 17);
+                    walls.removeTileAtWorldXY((shot as Shot).x - 25, (shot as Shot).y - 17);
                     break;
                 default:
-                    console.log('oops')
-                    break;
-                    shot.destroy();
+                    console.log('oops');
             }
+            */
+            shot.destroy();
         });
 
         this.physics.add.collider(this.shots, this.tanks, (shot, tank: unknown) => {
