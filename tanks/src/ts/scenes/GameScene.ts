@@ -12,6 +12,9 @@ import shotImge from '../../assets/images/shot-small.png';
 import rightBorder from '../../assets/images/right-border.png';
 import borderBlock from '../../assets/images/border-block-32.png';
 
+import explosion from '../../assets/images/small-explosion.png';
+import bigExplosion from '../../assets/images/big-explosion.png';
+
 import shotSound from '../../assets/audio/sounds-fire.ogg';
 import moveSound from '../../assets/audio/sounds-background.ogg';
 
@@ -55,6 +58,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.load.image('borderBlock', borderBlock);
         this.load.image('rightBorder', rightBorder);
 
+        this.load.spritesheet('explosion', explosion, { frameWidth: 62, frameHeight: 64, endFrame: 3 });
+        this.load.spritesheet('bigExplosion', bigExplosion, { frameWidth: 127, frameHeight: 130, endFrame: 2 });
+
         this.load.audio('shotSound', shotSound);
         this.load.audio('moveSound', moveSound);
     }
@@ -77,6 +83,19 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     create() {
+        this.anims.create({
+            key: 'explodeAnimation',
+            frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 3, first: 0 }),
+            frameRate: 10,
+            repeat: 0,
+        });
+        this.anims.create({
+            key: 'bigExplodeAnimation',
+            frames: this.anims.generateFrameNumbers('bigExplosion', { start: 0, end: 2, first: 0 }),
+            frameRate: 10,
+            repeat: 0,
+        });
+
         const map = this.make.tilemap({ key: 'tilemap1' });
         const tileset = map.addTilesetImage('tileSet1', 'tiles1');
 
@@ -125,6 +144,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
         this.physics.add.collider(this.shots, walls, (shot, wall) => {
             if (!(shot as Shot).sideBad) console.log(wall);
+            this.add.sprite(shot.body.x, shot.body.y, 'explosion').play('explodeAnimation');
+
             shot.destroy();
             wall.destroy();
         });
@@ -133,6 +154,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
                 (tank as ITank).getShot(shot as Shot);
             }
+            this.add.sprite(shot.body.x, shot.body.y, 'bigExplosion').play('bigExplodeAnimation');
             shot.destroy();
         });
 
