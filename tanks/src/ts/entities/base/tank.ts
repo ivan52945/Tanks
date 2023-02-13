@@ -22,13 +22,17 @@ class Tank extends Entity {
 
     protected coolDown = 2;
 
-    public HP = 3;
+    public HP = 2;
 
     protected speed = 120;
 
     protected shotSpeedMod = 1;
 
-    private animation: Animation;
+    protected animField: Animation;
+
+    protected blinkTimer!: NodeJS.Timer | null;
+
+    readonly key: string;
 
     protected controller!: IController;
 
@@ -52,11 +56,20 @@ class Tank extends Entity {
         }
 
         super(scene, x, y, 'tank', 'tanks', `${spriteKey}_${type}_1`);
+
         this.sideBad = sideBad;
-        console.log(`${spriteKey}_${type}_`);
-        this.animation = scene.anims.create({
-            key: `${spriteKey}_${type}`,
-            frames: this.anims.generateFrameNames('tanks', { prefix: `${spriteKey}_${type}_`, start: 1, end: 2 }),
+        this.key = `${spriteKey}_${type}`;
+        this.animField = scene.anims.create({
+            key: this.key,
+            frames: this.anims.generateFrameNames('tanks', { prefix: `${this.key}_`, start: 1, end: 2 }),
+            repeat: -1,
+        }) as Animation;
+
+        if (!sideBad) return;
+
+        scene.anims.create({
+            key: `${this.key}_bonus`,
+            frames: this.anims.generateFrameNames('tanks', { prefix: `${this.key}_bonus_`, start: 1, end: 2 }),
             repeat: -1,
         }) as Animation;
     }
@@ -68,7 +81,7 @@ class Tank extends Entity {
         this.setVelocityY(fSin(this.dir) * this.speed);
 
         if (!this.moving) {
-            this.anims.play(this.animation, true);
+            this.anims.play(this.animField, true);
             this.moving = true;
         }
 
@@ -105,6 +118,61 @@ class Tank extends Entity {
         }, 200);
         this.readyToUpdate = false;
         this.move(randIntFrZ(3));
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    getShot(shot: Shot) {
+        this.HP -= 1;
+
+        if (this.getData('bonus')) {
+            this.scene.events.emit('getBonus');
+        }
+
+        setTimeout(() => {
+            this.stopBlinking();
+        }, 0);
+
+        if (this.HP > 0) return;
+
+        this.destroy();
+    }
+
+    startBlink(adding: string) {
+        let keyCurrent = `${this.key}_${adding}`;
+
+        console.log(keyCurrent);
+
+        if (!this.scene.anims.exists(keyCurrent)) return;
+
+        let frame = true;
+
+        this.blinkTimer = setInterval(() => {
+            frame = !frame;
+
+            keyCurrent = frame ? this.key : `${this.key}_${adding}`;
+
+            this.anims.play(keyCurrent);
+        }, 200);
+
+        setTimeout(() => {
+            this.stopBlinking();
+        }, 8000);
+    }
+
+    stopBlinking() {
+        if (!this.blinkTimer) return;
+
+        clearInterval(this.blinkTimer);
+
+        this.blinkTimer = null;
+
+        this.anims?.play(this.animField);
+    }
+
+    destroy() {
+        super.destroy();
+        this.controller.destroy();
+        this.stopBlinking();
     }
 }
 

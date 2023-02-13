@@ -34,20 +34,21 @@ class Player extends Tank implements ITank {
         }
     }
 
-    destroy() {
-        setTimeout(() => {
-            super.destroy();
-        }, 0.000000000001);
-        this.scene.events.emit('player');
-        this.controller.destroy();
-        // не спрашивайте зачем :)
+    getShot(shot: Shot) {
+        if ((this.dir + shot.dir) % 4 === 2) {
+            this.HP -= 1;
+        } else {
+            this.HP -= 2;
+        }
+        if (this.HP > 0) return;
+
+        this.destroy();
     }
 
-    getShot(shot: Shot) {
-        if ((shot.dir + this.dir) % 2 === 0) {
-            this.HP -= 1;
-        } else this.HP -= 2;
-        if (this.HP <= 0) this.destroy();
+    destroy() {
+        // destroy
+        this.scene.events.emit('GameOver');
+        super.destroy();
     }
 }
 

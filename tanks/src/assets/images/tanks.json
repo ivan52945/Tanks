@@ -337,25 +337,25 @@
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_medium_green_1",
+      "filename": "enemy_shooter_green_1",
       "frame": { "x": 9, "y": 920, "w": 52, "h": 60 },
       "spriteSourceSize": { "x": 0, "y": 0, "w": 52, "h": 60 },
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_medium_green_2",
+      "filename": "enemy_shooter_green_2",
       "frame": { "x": 73, "y": 920, "w": 52, "h": 60 },
       "spriteSourceSize": { "x": 0, "y": 0, "w": 52, "h": 60 },
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_medium_bonus_1",
+      "filename": "enemy_shooter_bonus_1",
       "frame": { "x": 139, "y": 920, "w": 52, "h": 60 },
       "spriteSourceSize": { "x": 0, "y": 0, "w": 52, "h": 60 },
       "sourceSize": { "w": 52, "h": 60 }
     },
     {
-      "filename": "enemy_medium_bonus_2",
+      "filename": "enemy_shooter_bonus_2",
       "frame": { "x": 203, "y": 920, "w": 52, "h": 60 },
       "spriteSourceSize": { "x": 0, "y": 0, "w": 52, "h": 60 },
       "sourceSize": { "w": 52, "h": 60 }

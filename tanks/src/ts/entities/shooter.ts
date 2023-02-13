@@ -8,6 +8,8 @@ class Shooter extends Tank implements ITank {
 
     protected coolDown = 0.7;
 
+    public HP = 1;
+
     constructor(scene: IBattleScene, x: number, y: number) {
         super(scene, x, y, true, 'shooter');
 
@@ -15,16 +17,9 @@ class Shooter extends Tank implements ITank {
     }
 
     destroy() {
-        setTimeout(() => {
-            super.destroy();
-        }, 0.000000000001);
+        // destroy
         this.scene.events.emit('killed');
-        this.controller.destroy();
-        // не спрашивайте зачем :)
-    }
-
-    getShot() {
-        this.destroy();
+        super.destroy();
     }
 }
 
