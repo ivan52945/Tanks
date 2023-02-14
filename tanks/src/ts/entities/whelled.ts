@@ -16,10 +16,8 @@ class Whelled extends Tank implements ITank {
         this.controller = new EnemyAI(1, this as ITank);
     }
 
-    destroy() {
-        // destroy
-        this.scene.events.emit('killed');
-        super.destroy();
+    lastChanse() {
+        this.scene.events.emit('killed', 600);
     }
 }
 

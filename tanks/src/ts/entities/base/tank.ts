@@ -135,6 +135,8 @@ class Tank extends Entity {
         this.move(randIntFrZ(3));
     }
 
+    lastChanse() {}
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getShot(shot: Shot) {
         this.HP -= 1;
@@ -149,6 +151,7 @@ class Tank extends Entity {
 
         if (this.HP > 0) return;
 
+        this.lastChanse();
         this.destroy();
     }
 

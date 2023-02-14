@@ -84,10 +84,8 @@ class Player extends Tank implements ITank {
         this.body.setSize(56, 56);
     }
 
-    destroy() {
-        // destroy
+    lastChanse(): void {
         this.scene.events.emit('GameOver');
-        super.destroy();
     }
 }
 

@@ -2,6 +2,7 @@ import EnemyAI from '../AI/enemy-AI';
 import ITank from '../interfaces/tank';
 import Tank from './base/tank';
 import IBattleScene from '../interfaces/battle-scene';
+import Shot from './base/shot';
 
 class Light extends Tank implements ITank {
     coolDown = 2;
@@ -16,14 +17,12 @@ class Light extends Tank implements ITank {
         this.controller = new EnemyAI(1, this as ITank);
     }
 
-    destroy() {
-        // destroy
-        this.scene.events.emit('killed', 200);
-        super.destroy();
+    lastChanse() {
+        this.scene.events.emit('killed', 400);
     }
 
-    kill() {
-        super.destroy();
+    getShot(shot: Shot) {
+        super.getShot(shot);
     }
 }
 

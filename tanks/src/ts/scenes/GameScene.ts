@@ -208,6 +208,13 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 this.player.levelUp();
             }
         });
+
+        this.input.keyboard.on('keydown', (event: { key: string }) => {
+            if (event.key === 'k') {
+                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
+                this.tanks.destroy(true, true);
+            }
+        });
     }
 
     update() {
