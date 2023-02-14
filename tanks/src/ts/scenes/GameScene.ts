@@ -22,6 +22,8 @@ import gameOver from '../../assets/images/game-over.png';
 
 import shotSound from '../../assets/audio/sounds-fire.ogg';
 import moveSound from '../../assets/audio/sounds-background.ogg';
+import explosionSound from '../../assets/audio/sounds-explosion.ogg';
+import gameOverSound from '../../assets/audio/game-over.ogg';
 
 import Tank from '../entities/base/tank';
 import Player from '../entities/player';
@@ -45,10 +47,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     private life: number = 2;
 
     private score: number = 0;
-
-    private sfx!: {
-        moveSound: Phaser.Sound.BaseSound;
-    };
 
     constructor() {
         super({ key: 'GameScene' });
@@ -77,6 +75,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.load.audio('shotSound', shotSound);
         this.load.audio('moveSound', moveSound);
+        this.load.audio('explosionSound', explosionSound);
+        this.load.audio('gameOverSound', gameOverSound);
     }
 
     /*
@@ -172,6 +172,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.physics.add.collider(this.shots, walls, (shot) => {
             this.add.sprite(shot.body.x, shot.body.y, 'explosion').play('explodeAnimation');
+            this.sound.add('explosionSound').play();
 
             const { x, y, dir } = shot as Shot;
 
@@ -201,13 +202,19 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                         duration: 3000,
                         ease: 'Power3',
                     });
-                    this.scene.start('ScoreScene');
+                    setTimeout(() => {
+                        this.sound.add('gameOverSound').play();
+                        this.scene.start('GameOverScene');
+                    }, 3000);
                 }
             }
 
             this.add.image(976, 592, 'numbers', this.life); // --------------------меняет количество жизней на панели
 
             this.add.sprite(shot.body.x, shot.body.y, 'bigExplosion').play('bigExplodeAnimation');
+            this.sound.add('explosionSound').play();
+            this.sound.add('explosionSound').play();
+
             shot.destroy();
         });
 
@@ -216,14 +223,15 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.events.on('killed', (points: number) => {
             this.score += points;
             console.log('Score: ', this.score);
+            console.log('this.tanks.getChildren().length: ', this.tanks.children.entries.length);
 
             factory.produce();
 
             setTimeout(() => {
-                if (this.tanks.getChildren().length <= 1) {
-                    console.log('win');
+                if (this.tanks.children.entries.length <= 1) {
+                    this.scene.start('ScoreScene');
                 }
-            }, 0);
+            }, 1000);
         });
 
         this.events.on('GameOver', () => {
@@ -238,9 +246,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             tank.update();
         });
 
-        this.sfx = {
-            moveSound: this.sound.add('moveSound'),
-        };
         this.input.keyboard.on('keydown', (event: { key: string }) => {
             if (event.key === 'p') {
                 // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
@@ -268,22 +273,24 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             if (this.player.manual) {
                 if (this.keyboard.left.isDown) {
                     this.player.move(3);
-                    this.sfx.moveSound.play(); // звук движения
+                    this.sound.add('moveSound').play(); // звук движения
                 } else if (this.keyboard.right.isDown) {
                     this.player.move(1);
-                    this.sfx.moveSound.play();
+                    this.sound.add('moveSound').play();
                 } else if (this.keyboard.down.isDown) {
                     this.player.move(2);
-                    this.sfx.moveSound.play();
+                    this.sound.add('moveSound').play();
                 } else if (this.keyboard.up.isDown) {
                     this.player.move(4);
-                    this.sfx.moveSound.play();
+                    this.sound.add('moveSound').play();
                 } else {
                     this.player.stopMove();
                 }
                 if (this.keyboard.space.isDown) {
                     // ------------------------------выстрел при нажатии пробела
                     this.player.shot();
+                    this.sound.add('shotSound').play();
+                    this.sound.add('shotSound').stop();
                 }
             }
         }
