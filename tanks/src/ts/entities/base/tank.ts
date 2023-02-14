@@ -188,6 +188,10 @@ class Tank extends Entity {
         this.stopBlinking();
     }
 
+    kill() {
+        this.destroy();
+    }
+
     set animSet(newKey: string) {
         this.key = newKey;
 

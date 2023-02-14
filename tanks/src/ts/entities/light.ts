@@ -21,6 +21,10 @@ class Light extends Tank implements ITank {
         this.scene.events.emit('killed', 200);
         super.destroy();
     }
+
+    kill() {
+        super.destroy();
+    }
 }
 
 export default Light;
