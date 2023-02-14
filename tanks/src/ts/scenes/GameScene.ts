@@ -21,7 +21,7 @@ import numbersJSON from '../../assets/images/numbers.json';
 import gameOver from '../../assets/images/game-over.png';
 
 import shotSound from '../../assets/audio/sounds-fire.ogg';
-import moveSound from '../../assets/audio/sounds-brick.ogg';
+import moveSound from '../../assets/audio/sounds-background.ogg';
 import explosionSound from '../../assets/audio/sounds-explosion.ogg';
 import gameOverSound from '../../assets/audio/game-over.ogg';
 
