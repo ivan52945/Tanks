@@ -28,17 +28,21 @@ class Tank extends Entity {
 
     protected shotSpeedMod = 1;
 
+    protected shotQuantity = 1;
+
     protected animField: Animation;
 
     protected blinkTimer!: NodeJS.Timer | null;
 
-    readonly key: string;
+    protected key: string;
 
     protected controller!: IController;
 
     protected readyToUpdate = true;
 
     readonly sideBad: boolean;
+
+    protected shotDurab = 1;
 
     public moving = false;
 
@@ -103,11 +107,22 @@ class Tank extends Entity {
             this.readyShot = true;
         }, this.coolDown * 1000);
 
-        const xShot = this.x + fCos(this.dir) * 30;
-        const yShot = this.y + fSin(this.dir) * 30;
-
-        // eslint-disable-next-line no-new
-        new Shot(this.scene as IBattleScene, xShot, yShot, this.dir, this.sideBad, this.shotSpeedMod);
+        for (let i = 0; i < this.shotQuantity; i += 1) {
+            setTimeout(() => {
+                const xShot = this.x + fCos(this.dir) * 30;
+                const yShot = this.y + fSin(this.dir) * 30;
+                // eslint-disable-next-line no-new
+                new Shot(
+                    this.scene as IBattleScene,
+                    xShot,
+                    yShot,
+                    this.dir,
+                    this.sideBad,
+                    this.shotSpeedMod,
+                    this.shotDurab
+                );
+            }, i * 100);
+        }
     }
 
     update() {
@@ -171,6 +186,14 @@ class Tank extends Entity {
         super.destroy();
         this.controller.destroy();
         this.stopBlinking();
+    }
+
+    set animSet(newKey: string) {
+        this.key = newKey;
+
+        this.animField = this.scene.anims.get(this.key);
+
+        this.anims.play(this.animField);
     }
 }
 
