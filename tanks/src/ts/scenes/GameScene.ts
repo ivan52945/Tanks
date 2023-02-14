@@ -18,6 +18,8 @@ import bigExplosion from '../../assets/images/big-explosion.png';
 import numbersIMGE from '../../assets/images/numbers.png';
 import numbersJSON from '../../assets/images/numbers.json';
 
+import gameOver from '../../assets/images/game-over.png';
+
 import shotSound from '../../assets/audio/sounds-fire.ogg';
 import moveSound from '../../assets/audio/sounds-background.ogg';
 
@@ -39,6 +41,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     private tanks!: Group;
 
     private shots!: Group;
+
+    private life: number = 2;
+
+    private score: number = 0;
 
     private sfx!: {
         moveSound: Phaser.Sound.BaseSound;
@@ -66,6 +72,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.load.spritesheet('bigExplosion', bigExplosion, { frameWidth: 127, frameHeight: 130, endFrame: 2 });
 
         this.load.atlas('numbers', numbersIMGE, numbersJSON);
+
+        this.load.image('gameOver', gameOver);
 
         this.load.audio('shotSound', shotSound);
         this.load.audio('moveSound', moveSound);
@@ -142,8 +150,11 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.add.image(944, 816, 'borderBlock');
         this.add.image(976, 816, 'numbers', stageOne); // вторая цифра уровня
 
-        // this.add.image(976, 592, 'numbers', hpOnePlayer);
+        this.add.image(976, 592, 'numbers', this.life);
+
         borders.create(964, 672, 'borderBlock').setScale(2, 2).refreshBody(); // закрывает второго игрока на панели
+
+        const element = this.add.image(484, 1000, 'gameOver');
 
         this.physics.add.collider(this.tanks, walls, (tank) => {
             tank.update();
@@ -177,6 +188,25 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
                 (tank as ITank).getShot(shot as Shot);
             }
+            if (!(tank as ITank).sideBad) {
+                this.life--;
+                console.log('this.life: ', this.life);
+                if (this.life >= 0) {
+                    this.player = new Player(this, 250, 250);
+                    this.addTank(this.player);
+                } else {
+                    this.tweens.add({
+                        targets: element,
+                        y: 450,
+                        duration: 3000,
+                        ease: 'Power3',
+                    });
+                    this.scene.start('ScoreScene');
+                }
+            }
+
+            this.add.image(976, 592, 'numbers', this.life); // --------------------меняет количество жизней на панели
+
             this.add.sprite(shot.body.x, shot.body.y, 'bigExplosion').play('bigExplodeAnimation');
             shot.destroy();
         });
@@ -184,7 +214,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         // события убийства игрока и врагов
 
         this.events.on('killed', (points: number) => {
-            console.log(points);
+            this.score += points;
+            console.log('Score: ', this.score);
 
             factory.produce();
 
