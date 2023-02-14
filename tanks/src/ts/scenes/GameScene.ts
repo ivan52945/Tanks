@@ -4,7 +4,7 @@ import tanksJSON from '../../assets/images/tanks.json';
 import wallsIMGE from '../../assets/images/block-1.png';
 import wallsJSON from '../../assets/images/block-1.json';
 
-import block1 from '../../assets/images/block-1.png';
+import block32 from '../../assets/images/blocks-32.png';
 import tilemap1 from '../../assets/maps/tilemap1.json';
 
 import shotImge from '../../assets/images/shot-small.png';
@@ -26,6 +26,7 @@ import { Group, Keys } from '../interfaces/based';
 import IBattleScene from '../interfaces/battle-scene';
 import Fabric from '../modules/fabric';
 import ITank from '../interfaces/tank';
+import { fCos, fSin } from '../modules/functions';
 
 class GameScene extends Phaser.Scene implements IBattleScene {
     private keyboard!: Keys;
@@ -50,7 +51,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.load.atlas('walls', wallsIMGE, wallsJSON);
         this.load.image('walls1', wallsIMGE);
 
-        this.load.image('tiles1', block1);
+        this.load.image('tiles1', block32);
         this.load.tilemapTiledJSON('tilemap1', tilemap1);
 
         this.load.image('shotImge', shotImge);
@@ -142,12 +143,19 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             shot1.destroy();
             shot2.destroy();
         });
-        this.physics.add.collider(this.shots, walls, (shot, wall) => {
-            if (!(shot as Shot).sideBad) console.log(wall);
+
+        this.physics.add.collider(this.shots, walls, (shot) => {
             this.add.sprite(shot.body.x, shot.body.y, 'explosion').play('explodeAnimation');
 
+            const { x, y, dir } = shot as Shot;
+
+            const xT = x + fCos(dir) * 17;
+            const yT = y + fSin(dir) * 17;
+
+            walls.removeTileAtWorldXY(xT + fCos(dir + 1) * 8, yT + fSin(dir + 1) * 8);
+            walls.removeTileAtWorldXY(xT + fCos(dir + 3) * 8, yT + fSin(dir + 3) * 8);
+
             shot.destroy();
-            wall.destroy();
         });
 
         this.physics.add.collider(this.shots, this.tanks, (shot, tank: unknown) => {
