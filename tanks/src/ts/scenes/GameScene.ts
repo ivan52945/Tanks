@@ -15,6 +15,9 @@ import borderBlock from '../../assets/images/border-block-32.png';
 import explosion from '../../assets/images/small-explosion.png';
 import bigExplosion from '../../assets/images/big-explosion.png';
 
+import numbersIMGE from '../../assets/images/numbers.png';
+import numbersJSON from '../../assets/images/numbers.json';
+
 import shotSound from '../../assets/audio/sounds-fire.ogg';
 import moveSound from '../../assets/audio/sounds-background.ogg';
 
@@ -61,6 +64,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.load.spritesheet('explosion', explosion, { frameWidth: 62, frameHeight: 64, endFrame: 3 });
         this.load.spritesheet('bigExplosion', bigExplosion, { frameWidth: 127, frameHeight: 130, endFrame: 2 });
+
+        this.load.atlas('numbers', numbersIMGE, numbersJSON);
 
         this.load.audio('shotSound', shotSound);
         this.load.audio('moveSound', moveSound);
@@ -129,6 +134,16 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         borders.create(32, 480, 'borderBlock').setScale(2, 30).refreshBody();
         borders.create(480, 32, 'borderBlock').setScale(26, 2).refreshBody();
         borders.create(480, 928, 'borderBlock').setScale(26, 2).refreshBody();
+
+        // let stageTen = '0';
+        let stageOne = '1';
+
+        // this.add.image(944, 816, 'numbers', stageTen); // первая цифра уровня
+        this.add.image(944, 816, 'borderBlock');
+        this.add.image(976, 816, 'numbers', stageOne); // вторая цифра уровня
+
+        // this.add.image(976, 592, 'numbers', hpOnePlayer);
+        borders.create(964, 672, 'borderBlock').setScale(2, 2).refreshBody(); // закрывает второго игрока на панели
 
         this.physics.add.collider(this.tanks, walls, (tank) => {
             tank.update();
