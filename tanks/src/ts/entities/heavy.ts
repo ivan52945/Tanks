@@ -30,6 +30,10 @@ class Heavy extends Tank implements ITank {
         }, 0);
     }
 
+    lastChanse() {
+        this.scene.events.emit('killed', 400);
+    }
+
     getShot(shot: Shot): void {
         const damegeList = [``, `_green`, `_yellow`];
 
@@ -39,12 +43,6 @@ class Heavy extends Tank implements ITank {
             this.animField = this.scene.anims.get(`${this.key}${damegeList[3 - this.HP]}`);
             this.anims.play(this.animField);
         }
-    }
-
-    destroy() {
-        // destroy
-        this.scene.events.emit('killed');
-        super.destroy();
     }
 }
 

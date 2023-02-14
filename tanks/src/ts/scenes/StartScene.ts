@@ -19,7 +19,7 @@ class StartScene extends Phaser.Scene {
         this.add.text(400, 100, 'HI- ', { font: '40px Pixel' });
         this.add.text(550, 100, '00', { font: '40px Pixel' }); // рекорд очков
         this.load.image('logo', logoImg);
-        this.load.atlas('tanksPlr', tanksPlayerImge, tanksPlayerJSON);
+        this.load.atlas('tanks', tanksPlayerImge, tanksPlayerJSON);
 
         this.add.text(350, 500, 'START GAME', { font: '32px Pixel' });
         this.add.text(350, 550, 'CONSTRUCTION', { font: '32px Pixel' });
@@ -33,12 +33,12 @@ class StartScene extends Phaser.Scene {
     create() {
         this.add.image(500, 320, 'logo');
         this.input.keyboard.createCursorKeys();
-        this.cursor = this.add.sprite(300, 510, 'tanksPlr');
+        this.cursor = this.add.sprite(300, 510, 'tanks');
         this.cursor.angle = 90;
         this.anims.create({
             // ----------------- создание анимации движени гусениц курсора
             key: 'tank',
-            frames: this.anims.generateFrameNames('tanksPlr', { prefix: 'player_1_base_', start: 1, end: 2 }),
+            frames: this.anims.generateFrameNames('tanks', { prefix: 'player_1_base_up0_', start: 1, end: 2 }),
             repeat: -1,
         });
 

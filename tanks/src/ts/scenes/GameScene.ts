@@ -168,7 +168,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         // события убийства игрока и врагов
 
-        this.events.on('killed', () => {
+        this.events.on('killed', (points: number) => {
+            console.log(points);
+
             factory.produce();
 
             setTimeout(() => {
@@ -197,6 +199,20 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             if (event.key === 'p') {
                 // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
                 this.scene.start('HiscoreScene');
+            }
+        });
+
+        this.input.keyboard.on('keydown', (event: { key: string }) => {
+            if (event.key === 'b') {
+                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
+                this.player.levelUp();
+            }
+        });
+
+        this.input.keyboard.on('keydown', (event: { key: string }) => {
+            if (event.key === 'k') {
+                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
+                this.tanks.destroy(true, true);
             }
         });
     }
