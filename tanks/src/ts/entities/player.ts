@@ -61,13 +61,11 @@ class Player extends Tank implements ITank {
     }
 
     levelUp() {
-        if (this.level >= 3) return;
-
         this.setLevel(this.level + 1);
     }
 
     setLevel(level: number) {
-        if (level === 0) return;
+        if (level === 0 || level > 3) return;
 
         this.level = level;
 
