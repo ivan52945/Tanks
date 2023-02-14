@@ -83,6 +83,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.shots.add(shot);
     }
 
+    killAll() {
+        this.tanks.destroy(true, true);
+    }
+
     create() {
         this.anims.create({
             key: 'explodeAnimation',
@@ -212,7 +216,13 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.input.keyboard.on('keydown', (event: { key: string }) => {
             if (event.key === 'k') {
                 // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
-                this.tanks.destroy(true, true);
+                this.tanks.clear(true, true);
+            }
+        });
+        this.input.keyboard.on('keydown', (event: { key: string }) => {
+            if (event.key === 'v') {
+                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
+                console.log(this.tanks.getChildren());
             }
         });
     }

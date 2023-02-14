@@ -182,17 +182,13 @@ class Tank extends Entity {
 
         this.blinkTimer = null;
 
-        this.anims?.play(this.animField);
+        this?.anims?.play(this.animField);
     }
 
     destroy() {
         super.destroy();
         this.controller.destroy();
         this.stopBlinking();
-    }
-
-    kill() {
-        this.destroy();
     }
 
     set animSet(newKey: string) {
