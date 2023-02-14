@@ -55,8 +55,10 @@ class Player extends Tank implements ITank {
         } else {
             this.HP -= 2;
         }
+
         if (this.HP > 0) return;
 
+        this.lastChanse();
         this.destroy();
     }
 

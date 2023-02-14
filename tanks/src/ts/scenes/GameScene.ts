@@ -189,26 +189,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
                 (tank as ITank).getShot(shot as Shot);
             }
-            if (!(tank as ITank).sideBad) {
-                this.life--;
-                console.log('this.life: ', this.life);
-                if (this.life >= 0) {
-                    this.player = new Player(this, 250, 250);
-                    this.addTank(this.player);
-                } else {
-                    this.tweens.add({
-                        targets: element,
-                        y: 450,
-                        duration: 3000,
-                        ease: 'Power3',
-                    });
-                    setTimeout(() => {
-                        this.sound.add('gameOverSound').play();
-                        this.scene.start('GameOverScene');
-                    }, 3000);
-                }
-            }
-
             this.add.image(976, 592, 'numbers', this.life); // --------------------меняет количество жизней на панели
 
             this.add.sprite(shot.body.x, shot.body.y, 'bigExplosion').play('bigExplodeAnimation');
@@ -223,7 +203,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.events.on('killed', (points: number) => {
             this.score += points;
             console.log('Score: ', this.score);
-            console.log('this.tanks.getChildren().length: ', this.tanks.children.entries.length);
 
             factory.produce();
 
@@ -235,7 +214,22 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
 
         this.events.on('GameOver', () => {
-            console.log('GameOver');
+            this.life--;
+            if (this.life >= 0 && this.player.HP <= 0) {
+                this.player = new Player(this, 250, 250);
+                this.addTank(this.player);
+            } else {
+                this.tweens.add({
+                    targets: element,
+                    y: 450,
+                    duration: 3000,
+                    ease: 'Power3',
+                });
+                setTimeout(() => {
+                    this.sound.add('gameOverSound').play();
+                    this.scene.start('GameOverScene');
+                }, 3000);
+            }
         });
 
         this.physics.add.collider(this.shots, borders, (shot) => {
