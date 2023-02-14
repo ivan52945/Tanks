@@ -5,6 +5,8 @@ import Light from '../entities/light';
 import Whelled from '../entities/whelled';
 import Shooter from '../entities/shooter';
 import Heavy from '../entities/heavy';
+import BonusFabric from './bonus-fabric';
+import Tank from '../entities/base/tank';
 
 class Fabric {
     private scene: IBattleScene;
@@ -12,6 +14,8 @@ class Fabric {
     private coords: FabticConfig['coords'];
 
     private plan: FabticConfig['plan'];
+
+    private bonusing: BonusFabric;
 
     constructor(scene: IBattleScene, config: FabticConfig) {
         this.scene = scene;
@@ -21,32 +25,45 @@ class Fabric {
         this.coords.forEach((coord) => {
             this.scene.addTank(new Light(this.scene, coord.x, coord.y));
         });
+
+        this.bonusing = new BonusFabric(this.scene);
     }
 
     produce() {
         const coord = this.coords[randIntFrZ(this.coords.length - 1)];
 
+        let tank: Tank | undefined;
+
         switch (this.plan.pop()) {
             case 'light': {
-                this.scene.addTank(new Light(this.scene, coord.x, coord.y));
+                tank = new Light(this.scene, coord.x, coord.y);
                 break;
             }
             case 'whelled': {
-                this.scene.addTank(new Whelled(this.scene, coord.x, coord.y));
+                tank = new Whelled(this.scene, coord.x, coord.y);
                 break;
             }
             case 'shooter': {
-                this.scene.addTank(new Shooter(this.scene, coord.x, coord.y));
+                tank = new Shooter(this.scene, coord.x, coord.y);
                 break;
             }
             case 'heavy': {
-                this.scene.addTank(new Heavy(this.scene, coord.x, coord.y));
+                tank = new Heavy(this.scene, coord.x, coord.y);
                 break;
             }
             default: {
                 console.log('no tanks');
             }
         }
+
+        if (!tank) return;
+
+        this.bonusing.select(tank as Tank);
+        this.scene.addTank(tank as Tank);
+    }
+
+    get planSize() {
+        return this.plan.length;
     }
 }
 export default Fabric;

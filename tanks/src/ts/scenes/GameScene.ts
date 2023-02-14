@@ -118,10 +118,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 { x: 450, y: 450 },
                 // { x: 650, y: 650 },
             ],
-            plan: ['whelled', 'light', 'shooter', 'heavy'],
+            plan: ['shooter', 'light', 'shooter', 'heavy'],
         };
 
-        const fabric = new Fabric(this, fabricConfig);
+        const factory = new Fabric(this, fabricConfig);
 
         const borders = this.physics.add.staticGroup();
 
@@ -169,11 +169,13 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         // события убийства игрока и врагов
 
         this.events.on('killed', () => {
-            fabric.produce();
+            factory.produce();
 
-            if (this.tanks.countActive(true) <= 0) {
-                console.log('win');
-            }
+            setTimeout(() => {
+                if (this.tanks.getChildren().length <= 1) {
+                    console.log('win');
+                }
+            }, 0);
         });
 
         this.events.on('GameOver', () => {
@@ -223,6 +225,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 }
             }
         }
+    }
+
+    getTanks() {
+        return this.tanks;
     }
 }
 export default GameScene;
