@@ -143,7 +143,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             shot1.destroy();
             shot2.destroy();
         });
-        this.physics.add.collider(this.shots, walls, (shot, wall) => {
+
+        this.physics.add.collider(this.shots, walls, (shot) => {
             this.add.sprite(shot.body.x, shot.body.y, 'explosion').play('explodeAnimation');
 
             const { x, y, dir } = shot as Shot;
@@ -154,29 +155,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             walls.removeTileAtWorldXY(xT + fCos(dir + 1) * 8, yT + fSin(dir + 1) * 8);
             walls.removeTileAtWorldXY(xT + fCos(dir + 3) * 8, yT + fSin(dir + 3) * 8);
 
-            /*
-            switch ((shot as Shot).dir) {
-                case 0:
-                    walls.removeTileAtWorldXY((shot as Shot).x + 17, (shot as Shot).y - 25);
-                    walls.removeTileAtWorldXY((shot as Shot).x - 17, (shot as Shot).y - 25);
-                    break;
-                case 1:
-                    walls.removeTileAtWorldXY((shot as Shot).x + 25, (shot as Shot).y + 17);
-                    walls.removeTileAtWorldXY((shot as Shot).x + 25, (shot as Shot).y - 17);
-                    break;
-                case 2:
-                    walls.removeTileAtWorldXY((shot as Shot).x + 17, (shot as Shot).y + 25);
-                    walls.removeTileAtWorldXY((shot as Shot).x - 17, (shot as Shot).y + 25);
-                    break;
-                case 3:
-                    walls.removeTileAtWorldXY((shot as Shot).x - 25, (shot as Shot).y + 17);
-                    walls.removeTileAtWorldXY((shot as Shot).x - 25, (shot as Shot).y - 17);
-                    break;
-                default:
-                    console.log('oops');
-            }
-            shot.destroy();
-            */
             shot.destroy();
         });
 
