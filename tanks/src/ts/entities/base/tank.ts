@@ -94,7 +94,6 @@ class Tank extends Entity {
     }
 
     stopMove() {
-        this.anims.stop();
         this.setVelocity(0, 0);
         this.moving = false;
     }
