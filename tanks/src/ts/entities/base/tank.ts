@@ -140,8 +140,6 @@ class Tank extends Entity {
     startBlink(adding: string) {
         let keyCurrent = `${this.key}_${adding}`;
 
-        console.log(keyCurrent);
-
         if (!this.scene.anims.exists(keyCurrent)) return;
 
         let frame = true;

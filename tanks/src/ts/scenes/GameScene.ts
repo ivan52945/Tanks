@@ -118,7 +118,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 { x: 450, y: 450 },
                 // { x: 650, y: 650 },
             ],
-            plan: [], // 'shooter', 'light', 'shooter', 'heavy'
+            plan: ['shooter', 'light', 'shooter', 'heavy'],
         };
 
         const factory = new Fabric(this, fabricConfig);
@@ -165,8 +165,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             this.add.sprite(shot.body.x, shot.body.y, 'bigExplosion').play('bigExplodeAnimation');
             shot.destroy();
         });
-
-        // bonuses.select();
 
         // события убийства игрока и врагов
 
