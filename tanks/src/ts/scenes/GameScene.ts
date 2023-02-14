@@ -267,24 +267,18 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             if (this.player.manual) {
                 if (this.keyboard.left.isDown) {
                     this.player.move(3);
-                    this.sound.add('moveSound').play(); // звук движения
                 } else if (this.keyboard.right.isDown) {
                     this.player.move(1);
-                    this.sound.add('moveSound').play();
                 } else if (this.keyboard.down.isDown) {
                     this.player.move(2);
-                    this.sound.add('moveSound').play();
                 } else if (this.keyboard.up.isDown) {
                     this.player.move(4);
-                    this.sound.add('moveSound').play();
                 } else {
                     this.player.stopMove();
                 }
                 if (this.keyboard.space.isDown) {
                     // ------------------------------выстрел при нажатии пробела
                     this.player.shot();
-                    this.sound.add('shotSound').play();
-                    this.sound.add('shotSound').stop();
                 }
             }
         }

@@ -83,6 +83,7 @@ class Tank extends Entity {
 
         this.setVelocityX(fCos(this.dir) * this.speed);
         this.setVelocityY(fSin(this.dir) * this.speed);
+        this.scene.sound.add('moveSound').play();
 
         if (!this.moving) {
             this.anims.play(this.animField, true);
@@ -121,6 +122,7 @@ class Tank extends Entity {
                     this.shotSpeedMod,
                     this.shotDurab
                 );
+                this.scene.sound.add('shotSound').play();
             }, i * 100);
         }
     }
