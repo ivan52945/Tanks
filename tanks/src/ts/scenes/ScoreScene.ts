@@ -6,20 +6,27 @@ class ScoreScene extends Phaser.Scene {
     private score!: string;
     private hiScore: string = '20000';
     private stage!: string;
-    private type!: {};
+    private type!: any;
+    private countLight: number = 0;
+    private countWheeled: number = 0;
+    private countShooter: number = 0;
+    private countHeavy: number = 0;
+    private scoreTanks: string | undefined = '0';
 
-    private total: number = 0;
     constructor() {
         super({
             key: 'ScoreScene',
         });
     }
     init(data: any) {
-        //-------------------------передает скор и номер уровня  из гейм сцены
         console.log('init', data);
         this.score = data.score;
         this.stage = data.stage;
         this.type = data.type;
+        this.countLight = data.countLight;
+        this.countWheeled = data.countWheeled;
+        this.countShooter = data.countShooter;
+        this.countHeavy = data.countHeavy;
     }
 
     preload() {
@@ -29,16 +36,14 @@ class ScoreScene extends Phaser.Scene {
         this.add.text(520, 130, this.stage, { font: '35px Pixel' }); // номер пройденного уровня
         this.add.text(10, 200, 'PLAYER', { font: '35px Pixel', color: '#FF4500' });
         this.add.text(10, 270, this.score, { font: '35px Pixel', color: '#FFD700' }); // кол-во очков игрока за всю кампанию
-        this.add.text(10, 400, '0000 PTS', { font: '35px Pixel' }); // очки за лёгкий танк
         this.load.atlas('tanksPlr', tanksPlayerImge, tanksPlayerJSON);
-        this.add.text(400, 400, '00-', { font: '35px Pixel' }); // сколько ЛТ уничтожено
-        this.add.text(10, 470, '0000 PTS', { font: '35px Pixel' }); // очки за колёсный танк
-        this.add.text(400, 470, '00-', { font: '35px Pixel' }); // сколько КТ уничтожено
-        this.add.text(10, 540, '0000 PTS', { font: '35px Pixel' }); // очки за средний танк
-        this.add.text(400, 540, '00-', { font: '35px Pixel' }); // сколько СТ уничтожено
-        this.add.text(10, 610, '0000 PTS', { font: '35px Pixel' }); // очки за тяжёлый танк
-        this.add.text(400, 610, '00-', { font: '35px Pixel' }); // сколько ТТ уничтожено
-        this.add.text(190, 680, `TOTAL ${this.total}`, { font: '35px Pixel' }); // всего уничтожено
+        this.add.text(400, 400, `${this.countLight}`, { font: '35px Pixel' }); // сколько ЛТ уничтожено
+        this.add.text(400, 470, `${this.countWheeled}`, { font: '35px Pixel' }); // сколько КТ уничтожено
+        this.add.text(400, 540, `${this.countShooter}`, { font: '35px Pixel' }); // сколько СТ уничтожено
+        this.add.text(400, 610, `${this.countHeavy}`, { font: '35px Pixel' }); // сколько ТТ уничтожено
+        this.add.text(190, 680, `TOTAL ${this.countLight + this.countWheeled + this.countShooter + this.countHeavy}`, {
+            font: '35px Pixel',
+        }); // всего уничтожено
     }
 
     create() {
@@ -46,6 +51,35 @@ class ScoreScene extends Phaser.Scene {
         this.add.image(540, 480, 'tanksPlr', 'enemy_wheeled_1');
         this.add.image(540, 550, 'tanksPlr', 'enemy_shooter_1');
         this.add.image(540, 625, 'tanksPlr', 'enemy_heavy_1');
+
+        if (Object.keys(this.type).find((key) => this.type[key] === 'light')) {
+            this.scoreTanks = Object.keys(this.type).find((key) => this.type[key] === 'light');
+            this.add.text(10, 400, `${this.scoreTanks} PTS`, { font: '35px Pixel' });
+        } else {
+            this.scoreTanks = '0';
+            this.add.text(10, 400, `${this.scoreTanks} PTS`, { font: '35px Pixel' });
+        }
+        if (Object.keys(this.type).find((key) => this.type[key] === 'wheeled')) {
+            this.scoreTanks = Object.keys(this.type).find((key) => this.type[key] === 'wheeled');
+            this.add.text(10, 470, `${this.scoreTanks} PTS`, { font: '35px Pixel' });
+        } else {
+            this.scoreTanks = '0';
+            this.add.text(10, 470, `${this.scoreTanks} PTS`, { font: '35px Pixel' });
+        }
+        if (Object.keys(this.type).find((key) => this.type[key] === 'shooter')) {
+            this.scoreTanks = Object.keys(this.type).find((key) => this.type[key] === 'shooter');
+            this.add.text(10, 540, `${this.scoreTanks} PTS`, { font: '35px Pixel' });
+        } else {
+            this.scoreTanks = '0';
+            this.add.text(10, 540, `${this.scoreTanks} PTS`, { font: '35px Pixel' });
+        }
+        if (Object.keys(this.type).find((key) => this.type[key] === 'heavy')) {
+            this.scoreTanks = Object.keys(this.type).find((key) => this.type[key] === 'heavy');
+            this.add.text(10, 610, `${this.scoreTanks} PTS`, { font: '35px Pixel' });
+        } else {
+            this.scoreTanks = '0';
+            this.add.text(10, 610, `${this.scoreTanks} PTS`, { font: '35px Pixel' });
+        }
 
         this.input.keyboard.on('keydown', (event: { key: string }) => {
             if (event.key === 'p') {
@@ -55,8 +89,7 @@ class ScoreScene extends Phaser.Scene {
         });
     }
 
-    update() {
-        // console.log('ScoreScene');
-    }
+    update() {}
 }
+
 export default ScoreScene;

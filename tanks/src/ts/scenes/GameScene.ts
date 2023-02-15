@@ -49,7 +49,13 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     private score: number = 0;
 
     private stage!: string;
+
     private typeTanksDestroy: {} = { 0: 0 };
+
+    private countLight: number = 0;
+    private countWheeled: number = 0;
+    private countShooter: number = 0;
+    private countHeavy: number = 0;
 
     constructor() {
         super({ key: 'GameScene' });
@@ -143,7 +149,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 { x: 450, y: 450 },
                 { x: 650, y: 650 },
             ],
-            plan: ['shooter', 'light', 'wheeled', 'hard', 'shooter', 'light'],
+            plan: ['shooter', 'light', 'heavy'],
+            // plan: ['light'],
         };
 
         const factory = new Fabric(this, fabricConfig);
@@ -212,11 +219,34 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         // события убийства игрока и врагов
 
-        this.events.on('killed', (points: number, type: any) => {
-            this.score += points;
+        this.events.on('killed', (type: any) => {
+            this.score += Number(Object.keys(type).join(''));
+
             this.typeTanksDestroy = Object.assign(this.typeTanksDestroy, type);
 
-            console.log('type: ', type);
+            switch (Object.values(type).join('')) {
+                case 'light': {
+                    this.countLight++;
+                    break;
+                }
+                case 'wheeled': {
+                    this.countWheeled++;
+                    break;
+                }
+                case 'shooter': {
+                    this.countShooter++;
+                    break;
+                }
+                case 'heavy': {
+                    this.countHeavy++;
+                    break;
+                }
+                default: {
+                    console.log('no tanks');
+                }
+            }
+
+            console.log();
 
             factory.produce();
 
@@ -226,6 +256,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                         score: this.score,
                         stage: this.stage,
                         type: this.typeTanksDestroy,
+                        countLight: this.countLight,
+                        countWheeled: this.countWheeled,
+                        countShooter: this.countShooter,
+                        countHeavy: this.countHeavy,
                     });
                 }
             }, 1000);

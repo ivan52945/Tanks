@@ -31,7 +31,7 @@ class Heavy extends Tank implements ITank {
     }
 
     lastChanse() {
-        this.scene.events.emit('killed', 400, { 400: 'heavy' });
+        this.scene.events.emit('killed', { 400: 'heavy' });
     }
 
     getShot(shot: Shot): void {
