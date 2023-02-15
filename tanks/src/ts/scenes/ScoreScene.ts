@@ -67,7 +67,7 @@ class ScoreScene extends Phaser.Scene {
         } else {
             this.add.text(10, 540, `0`, { font: '35px Pixel' });
         }
-        if (this.score[Enemies.wheeled]) {
+        if (this.score[Enemies.heavy]) {
             this.add.text(10, 610, `400`, { font: '35px Pixel' });
         } else {
             this.add.text(10, 610, `0`, { font: '35px Pixel' });

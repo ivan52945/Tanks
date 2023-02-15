@@ -246,7 +246,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
 
         this.events.on('GameOver', () => {
-            if (this.life >= 0) {
+            if (this.life >= 0 && this.player.HP < 1) {
                 this.life -= 1;
                 this.player = new Player(this, 250, 250);
                 this.addTank(this.player);
