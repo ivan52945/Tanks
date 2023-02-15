@@ -1,6 +1,7 @@
 class StageNumberScene extends Phaser.Scene {
     keys: unknown;
-    private stageNumber: number = 1;
+
+    private stageNumber = 1;
 
     constructor() {
         super({
@@ -8,10 +9,8 @@ class StageNumberScene extends Phaser.Scene {
         });
     }
 
-    init(data: any) {
-        if (data.stage) {
-            this.stageNumber = data.stage + 1;
-        }
+    init(stage: { number: number }) {
+        this.stageNumber = stage.number || this.stageNumber;
     }
 
     preload() {

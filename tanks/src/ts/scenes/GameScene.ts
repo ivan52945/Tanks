@@ -32,6 +32,8 @@ import Shot from '../entities/base/shot';
 import { Group, Keys } from '../interfaces/based';
 import IBattleScene from '../interfaces/battle-scene';
 import Fabric from '../modules/fabric';
+
+import { Enemies } from '../modules/score-config';
 import ITank from '../interfaces/tank';
 import { fCos, fSin } from '../modules/functions';
 
@@ -44,36 +46,16 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private shots!: Group;
 
-    private life: number = 2;
+    private life = 2;
 
-    private score: number = 0;
+    private stage!: number;
 
-    private stage: string = '1';
-
-    // private stageOne: string = '1';
-
-    private typeTanksDestroy: {} = { 0: 0 };
-
-    private countLight: number = 0;
-
-    private countWheeled: number = 0;
-
-    private countShooter: number = 0;
-
-    private countHeavy: number = 0;
+    private score = [0, 0, 0, 0];
 
     constructor() {
         super({ key: 'GameScene' });
     }
 
-    init(data: any) {
-        //-------------------------передает номер уровня из сцены с номером уровня
-        if (data.stage) {
-            this.stage = data.stage;
-        }
-
-        this.stage = data.stage;
-    }
     preload() {
         this.load.atlas('tanks', tanksImge, tanksJSON);
 
@@ -226,55 +208,21 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         // события убийства игрока и врагов
 
-        this.events.on('killed', (type: any) => {
-            this.score += Number(Object.keys(type).join(''));
-
-            this.typeTanksDestroy = Object.assign(this.typeTanksDestroy, type);
-
-            switch (Object.values(type).join('')) {
-                case 'light': {
-                    this.countLight++;
-                    break;
-                }
-                case 'wheeled': {
-                    this.countWheeled++;
-                    break;
-                }
-                case 'shooter': {
-                    this.countShooter++;
-                    break;
-                }
-                case 'heavy': {
-                    this.countHeavy++;
-                    break;
-                }
-                default: {
-                    console.log('no tanks');
-                }
-            }
-
-            console.log();
+        this.events.on('killed', (type: Enemies) => {
+            this.score[type] += 1;
 
             factory.produce();
 
             setTimeout(() => {
                 if (this.tanks.children.entries.length <= 1) {
-                    this.scene.start('ScoreScene', {
-                        score: this.score,
-                        stage: this.stage,
-                        type: this.typeTanksDestroy,
-                        countLight: this.countLight,
-                        countWheeled: this.countWheeled,
-                        countShooter: this.countShooter,
-                        countHeavy: this.countHeavy,
-                    });
+                    this.scene.start('ScoreScene', { stage: this.stage, score: this.score });
                 }
             }, 1000);
         });
 
         this.events.on('GameOver', () => {
-            this.life--;
-            if (this.life >= 0 && this.player.HP <= 0) {
+            if (this.life >= 0) {
+                this.life -= 1;
                 this.player = new Player(this, 250, 250);
                 this.addTank(this.player);
             } else {
