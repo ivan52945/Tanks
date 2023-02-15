@@ -17,7 +17,7 @@ class Whelled extends Tank implements ITank {
     }
 
     lastChanse() {
-        this.scene.events.emit('killed', 600);
+        this.scene.events.emit('killed', 200, { 200: 'wheeled' });
     }
 }
 
