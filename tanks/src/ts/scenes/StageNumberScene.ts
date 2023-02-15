@@ -8,6 +8,12 @@ class StageNumberScene extends Phaser.Scene {
         });
     }
 
+    init(data: any) {
+        if (data.stage) {
+            this.stageNumber = data.stage + 1;
+        }
+    }
+
     preload() {
         this.add.text(300, 500, `stage ${this.stageNumber}`, { font: '50px Pixel' });
     }

@@ -48,13 +48,18 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private score: number = 0;
 
-    private stage!: string;
+    private stage: string = '1';
+
+    // private stageOne: string = '1';
 
     private typeTanksDestroy: {} = { 0: 0 };
 
     private countLight: number = 0;
+
     private countWheeled: number = 0;
+
     private countShooter: number = 0;
+
     private countHeavy: number = 0;
 
     constructor() {
@@ -63,7 +68,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     init(data: any) {
         //-------------------------передает номер уровня из сцены с номером уровня
-        console.log('init', data);
+        if (data.stage) {
+            this.stage = data.stage;
+        }
+
         this.stage = data.stage;
     }
     preload() {
@@ -163,11 +171,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         borders.create(480, 928, 'borderBlock').setScale(26, 2).refreshBody();
 
         // let stageTen = '0';
-        let stageOne = '1';
 
         // this.add.image(944, 816, 'numbers', stageTen); // первая цифра уровня
         this.add.image(944, 816, 'borderBlock');
-        this.add.image(976, 816, 'numbers', stageOne); // вторая цифра уровня
+        this.add.image(976, 816, 'numbers', this.stage); // вторая цифра уровня
 
         this.add.image(976, 592, 'numbers', this.life);
 

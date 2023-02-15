@@ -81,6 +81,10 @@ class ScoreScene extends Phaser.Scene {
             this.add.text(10, 610, `${this.scoreTanks} PTS`, { font: '35px Pixel' });
         }
 
+        setTimeout(() => {
+            this.scene.start('StageNumberScene', { stage: this.stage });
+        }, 2000);
+
         this.input.keyboard.on('keydown', (event: { key: string }) => {
             if (event.key === 'p') {
                 // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
