@@ -54,25 +54,17 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private tanksInGame = new Array(20).fill(1);
 
-    private typeTanksDestroy: {} = { 0: 0 };
-
-    private countLight: number = 0;
-
-    private countWheeled: number = 0;
-
-    private countShooter: number = 0;
-
-    private countHeavy: number = 0;
-    private miniTankX: number = 944;
-    private miniTankY: number = 80;
     private score = [0, 0, 0, 0];
 
     constructor() {
         super({ key: 'GameScene' });
     }
 
+    init(result: { stage: number }) {
+        this.stage = result.stage || this.stage;
+    }
+
     preload() {
-        console.log(this.tanksInGame);
         this.load.image('tankInGameImg', tankInGameImg);
 
         this.load.atlas('tanks', tanksImge, tanksJSON);
@@ -170,15 +162,18 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         borders.create(480, 32, 'borderBlock').setScale(26, 2).refreshBody();
         borders.create(480, 928, 'borderBlock').setScale(26, 2).refreshBody();
 
+        let miniTankX: number = 944;
+        let miniTankY: number = 80;
+
         this.tanksInGame.forEach((el, i) => {
             //-----------------------------------------отрисовка танков в игре
-            this.miniTankY += 32;
+            miniTankY += 32;
             if (i === 10) {
-                this.miniTankX += 32;
-                this.miniTankY = 112;
+                miniTankX += 32;
+                miniTankY = 112;
             }
             if (el === 1) {
-                this.add.image(this.miniTankX, this.miniTankY, 'tankInGameImg');
+                this.add.image(miniTankX, miniTankY, 'tankInGameImg');
             }
         });
 

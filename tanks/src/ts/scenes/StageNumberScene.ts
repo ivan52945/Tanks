@@ -9,8 +9,8 @@ class StageNumberScene extends Phaser.Scene {
         });
     }
 
-    init(stage: { number: number }) {
-        this.stageNumber = stage.number || this.stageNumber;
+    init(result: { stage: number }) {
+        this.stageNumber = result.stage + 1 || this.stageNumber;
     }
 
     preload() {
