@@ -74,7 +74,7 @@ class ScoreScene extends Phaser.Scene {
         }
 
         setTimeout(() => {
-            this.scene.start('StageNumberScene', { stage: this.stage });
+            this.scene.start('StageNumberScene', { stage: this.stage + 1 });
         }, 3000);
 
         this.input.keyboard.on('keydown', (event: { key: string }) => {

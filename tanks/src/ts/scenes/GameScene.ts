@@ -50,7 +50,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private life = 2;
 
-    private stage!: number;
+    private stage = 1;
 
     private tanksInGame = new Array(20).fill(1);
 
@@ -65,6 +65,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     preload() {
+        console.log(this.stage);
+
         this.load.image('tankInGameImg', tankInGameImg);
 
         this.load.atlas('tanks', tanksImge, tanksJSON);
@@ -261,7 +263,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 });
                 setTimeout(() => {
                     this.life = 2;
+                    this.stage = 1;
                     this.sound.add('gameOverSound').play();
+                    this.score = [0, 0, 0, 0];
                     this.scene.start('GameOverScene');
                 }, 3000);
             }
