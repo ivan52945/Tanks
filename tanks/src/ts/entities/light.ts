@@ -3,6 +3,7 @@ import ITank from '../interfaces/tank';
 import Tank from './base/tank';
 import IBattleScene from '../interfaces/battle-scene';
 import Shot from './base/shot';
+import { Enemies } from '../modules/score-config';
 
 class Light extends Tank implements ITank {
     coolDown = 2;
@@ -18,7 +19,7 @@ class Light extends Tank implements ITank {
     }
 
     lastChanse() {
-        this.scene.events.emit('killed', { 100: 'light' });
+        this.scene.events.emit('killed', Enemies.light);
     }
 
     getShot(shot: Shot) {
