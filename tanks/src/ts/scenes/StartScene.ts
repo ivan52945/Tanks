@@ -17,7 +17,7 @@ class StartScene extends Phaser.Scene {
         this.add.text(100, 100, 'I- ', { font: '40px Pixel' });
         this.add.text(250, 100, '00', { font: '40px Pixel' }); // кол-во очков игрока за всю кампанию
         this.add.text(400, 100, 'HI- ', { font: '40px Pixel' });
-        this.add.text(550, 100, '00', { font: '40px Pixel' }); // рекорд очков
+        this.add.text(550, 100, '20000', { font: '40px Pixel' }); // рекорд очков
         this.load.image('logo', logoImg);
         this.load.atlas('tanks', tanksPlayerImge, tanksPlayerJSON);
 
@@ -55,7 +55,7 @@ class StartScene extends Phaser.Scene {
                 console.log('Construction');
             } else if (event.key === 'p') {
                 // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
-                this.scene.start('ScoreScene');
+                this.scene.start('GameOverScene');
             }
         });
     }
