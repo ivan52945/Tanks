@@ -14,7 +14,7 @@ class StageNumberScene extends Phaser.Scene {
 
     create() {
         setTimeout(() => {
-            this.scene.start('GameScene');
+            this.scene.start('GameScene', { stage: this.stageNumber });
         }, 2000);
     }
 

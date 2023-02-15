@@ -48,10 +48,18 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private score: number = 0;
 
+    private stage!: string;
+    private typeTanksDestroy: {} = { 0: 0 };
+
     constructor() {
         super({ key: 'GameScene' });
     }
 
+    init(data: any) {
+        //-------------------------передает номер уровня из сцены с номером уровня
+        console.log('init', data);
+        this.stage = data.stage;
+    }
     preload() {
         this.load.atlas('tanks', tanksImge, tanksJSON);
 
@@ -133,9 +141,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         const fabricConfig = {
             coords: [
                 { x: 450, y: 450 },
-                // { x: 650, y: 650 },
+                { x: 650, y: 650 },
             ],
-            plan: ['shooter', 'light', 'shooter', 'heavy'],
+            plan: ['shooter', 'light', 'wheeled', 'hard', 'shooter', 'light'],
         };
 
         const factory = new Fabric(this, fabricConfig);
@@ -204,15 +212,21 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         // события убийства игрока и врагов
 
-        this.events.on('killed', (points: number) => {
+        this.events.on('killed', (points: number, type: any) => {
             this.score += points;
-            console.log('Score: ', this.score);
+            this.typeTanksDestroy = Object.assign(this.typeTanksDestroy, type);
+
+            console.log('type: ', type);
 
             factory.produce();
 
             setTimeout(() => {
                 if (this.tanks.children.entries.length <= 1) {
-                    this.scene.start('ScoreScene');
+                    this.scene.start('ScoreScene', {
+                        score: this.score,
+                        stage: this.stage,
+                        type: this.typeTanksDestroy,
+                    });
                 }
             }, 1000);
         });
