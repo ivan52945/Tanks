@@ -110,11 +110,14 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.shots.add(shot);
     }
 
-    killAll() {
+    killScene() {
         this.tanks.destroy(true, true);
     }
 
     create() {
+        this.events.removeListener('GameOver');
+        this.events.removeListener('killed');
+
         this.anims.create({
             key: 'explodeAnimation',
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 3, first: 0 }),
@@ -162,11 +165,11 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         borders.create(480, 32, 'borderBlock').setScale(26, 2).refreshBody();
         borders.create(480, 928, 'borderBlock').setScale(26, 2).refreshBody();
 
-        let miniTankX: number = 944;
-        let miniTankY: number = 80;
+        let miniTankX = 944;
+        let miniTankY = 80;
 
         this.tanksInGame.forEach((el, i) => {
-            //-----------------------------------------отрисовка танков в игре
+            // -----------------------------------------отрисовка танков в игре
             miniTankY += 32;
             if (i === 10) {
                 miniTankX += 32;
@@ -226,7 +229,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
             this.add.sprite(shot.body.x, shot.body.y, 'bigExplosion').play('bigExplodeAnimation');
             this.sound.add('explosionSound').play();
-            this.sound.add('explosionSound').play();
 
             shot.destroy();
         });
@@ -239,15 +241,15 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             factory.produce();
 
             setTimeout(() => {
-                if (this.tanks.children.entries.length <= 1) {
+                if (this.tanks.getChildren().length <= 1) {
                     this.scene.start('ScoreScene', { stage: this.stage, score: this.score });
                 }
             }, 1000);
         });
 
         this.events.on('GameOver', () => {
-            if (this.life >= 0 && this.player.HP < 1) {
-                this.life -= 1;
+            this.life -= 1;
+            if (this.life >= 0) {
                 this.player = new Player(this, 250, 250);
                 this.addTank(this.player);
             } else {
@@ -258,6 +260,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                     ease: 'Power3',
                 });
                 setTimeout(() => {
+                    this.life = 2;
                     this.sound.add('gameOverSound').play();
                     this.scene.start('GameOverScene');
                 }, 3000);
@@ -270,33 +273,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.physics.add.collider(this.tanks, borders, (tank) => {
             tank.update();
-        });
-
-        this.input.keyboard.on('keydown', (event: { key: string }) => {
-            if (event.key === 'p') {
-                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
-                this.scene.start('HiscoreScene');
-            }
-        });
-
-        this.input.keyboard.on('keydown', (event: { key: string }) => {
-            if (event.key === 'b') {
-                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
-                this.player.levelUp();
-            }
-        });
-
-        this.input.keyboard.on('keydown', (event: { key: string }) => {
-            if (event.key === 'k') {
-                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
-                this.tanks.clear(true, true);
-            }
-        });
-        this.input.keyboard.on('keydown', (event: { key: string }) => {
-            if (event.key === 'v') {
-                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
-                console.log(this.tanks.getChildren());
-            }
         });
     }
 
