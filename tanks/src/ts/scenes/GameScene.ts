@@ -9,6 +9,8 @@ import tilemap1 from '../../assets/maps/tilemap1.json';
 
 import shotImge from '../../assets/images/shot-small.png';
 
+import tankInGameImg from '../../assets/images/mini-tank.png';
+
 import rightBorder from '../../assets/images/right-border.png';
 import borderBlock from '../../assets/images/border-block-32.png';
 
@@ -50,7 +52,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private stage: string = '1';
 
-    // private stageOne: string = '1';
+    private tanksInGame = new Array(20).fill(1);
 
     private typeTanksDestroy: {} = { 0: 0 };
 
@@ -61,6 +63,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     private countShooter: number = 0;
 
     private countHeavy: number = 0;
+    private miniTankX: number = 944;
+    private miniTankY: number = 80;
 
     constructor() {
         super({ key: 'GameScene' });
@@ -75,6 +79,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.stage = data.stage;
     }
     preload() {
+        console.log(this.tanksInGame);
+        this.load.image('tankInGameImg', tankInGameImg);
+
         this.load.atlas('tanks', tanksImge, tanksJSON);
 
         this.load.atlas('walls', wallsIMGE, wallsJSON);
@@ -169,6 +176,18 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         borders.create(32, 480, 'borderBlock').setScale(2, 30).refreshBody();
         borders.create(480, 32, 'borderBlock').setScale(26, 2).refreshBody();
         borders.create(480, 928, 'borderBlock').setScale(26, 2).refreshBody();
+
+        this.tanksInGame.forEach((el, i) => {
+            //-----------------------------------------отрисовка танков в игре
+            this.miniTankY += 32;
+            if (i === 10) {
+                this.miniTankX += 32;
+                this.miniTankY = 112;
+            }
+            if (el === 1) {
+                this.add.image(this.miniTankX, this.miniTankY, 'tankInGameImg');
+            }
+        });
 
         // let stageTen = '0';
 
