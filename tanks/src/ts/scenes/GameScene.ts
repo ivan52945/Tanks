@@ -15,8 +15,15 @@ import borderBlock from '../../assets/images/border-block-32.png';
 import explosion from '../../assets/images/small-explosion.png';
 import bigExplosion from '../../assets/images/big-explosion.png';
 
+import numbersIMGE from '../../assets/images/numbers.png';
+import numbersJSON from '../../assets/images/numbers.json';
+
+import gameOver from '../../assets/images/game-over.png';
+
 import shotSound from '../../assets/audio/sounds-fire.ogg';
 import moveSound from '../../assets/audio/sounds-background.ogg';
+import explosionSound from '../../assets/audio/sounds-explosion.ogg';
+import gameOverSound from '../../assets/audio/game-over.ogg';
 
 import Tank from '../entities/base/tank';
 import Player from '../entities/player';
@@ -37,9 +44,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private shots!: Group;
 
-    private sfx!: {
-        moveSound: Phaser.Sound.BaseSound;
-    };
+    private life: number = 2;
+
+    private score: number = 0;
 
     constructor() {
         super({ key: 'GameScene' });
@@ -62,8 +69,14 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.load.spritesheet('explosion', explosion, { frameWidth: 62, frameHeight: 64, endFrame: 3 });
         this.load.spritesheet('bigExplosion', bigExplosion, { frameWidth: 127, frameHeight: 130, endFrame: 2 });
 
+        this.load.atlas('numbers', numbersIMGE, numbersJSON);
+
+        this.load.image('gameOver', gameOver);
+
         this.load.audio('shotSound', shotSound);
         this.load.audio('moveSound', moveSound);
+        this.load.audio('explosionSound', explosionSound);
+        this.load.audio('gameOverSound', gameOverSound);
     }
 
     /*
@@ -134,6 +147,19 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         borders.create(480, 32, 'borderBlock').setScale(26, 2).refreshBody();
         borders.create(480, 928, 'borderBlock').setScale(26, 2).refreshBody();
 
+        // let stageTen = '0';
+        let stageOne = '1';
+
+        // this.add.image(944, 816, 'numbers', stageTen); // первая цифра уровня
+        this.add.image(944, 816, 'borderBlock');
+        this.add.image(976, 816, 'numbers', stageOne); // вторая цифра уровня
+
+        this.add.image(976, 592, 'numbers', this.life);
+
+        borders.create(964, 672, 'borderBlock').setScale(2, 2).refreshBody(); // закрывает второго игрока на панели
+
+        const element = this.add.image(484, 1000, 'gameOver');
+
         this.physics.add.collider(this.tanks, walls, (tank) => {
             tank.update();
         });
@@ -150,6 +176,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.physics.add.collider(this.shots, walls, (shot) => {
             this.add.sprite(shot.body.x, shot.body.y, 'explosion').play('explodeAnimation');
+            this.sound.add('explosionSound').play();
 
             const { x, y, dir } = shot as Shot;
 
@@ -166,26 +193,47 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
                 (tank as ITank).getShot(shot as Shot);
             }
+            this.add.image(976, 592, 'numbers', this.life); // --------------------меняет количество жизней на панели
+
             this.add.sprite(shot.body.x, shot.body.y, 'bigExplosion').play('bigExplodeAnimation');
+            this.sound.add('explosionSound').play();
+            this.sound.add('explosionSound').play();
+
             shot.destroy();
         });
 
         // события убийства игрока и врагов
 
         this.events.on('killed', (points: number) => {
-            console.log(points);
+            this.score += points;
+            console.log('Score: ', this.score);
 
             factory.produce();
 
             setTimeout(() => {
-                if (this.tanks.getChildren().length <= 1) {
-                    console.log('win');
+                if (this.tanks.children.entries.length <= 1) {
+                    this.scene.start('ScoreScene');
                 }
-            }, 0);
+            }, 1000);
         });
 
         this.events.on('GameOver', () => {
-            console.log('GameOver');
+            this.life--;
+            if (this.life >= 0 && this.player.HP <= 0) {
+                this.player = new Player(this, 250, 250);
+                this.addTank(this.player);
+            } else {
+                this.tweens.add({
+                    targets: element,
+                    y: 450,
+                    duration: 3000,
+                    ease: 'Power3',
+                });
+                setTimeout(() => {
+                    this.sound.add('gameOverSound').play();
+                    this.scene.start('GameOverScene');
+                }, 3000);
+            }
         });
 
         this.physics.add.collider(this.shots, borders, (shot) => {
@@ -196,9 +244,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             tank.update();
         });
 
-        this.sfx = {
-            moveSound: this.sound.add('moveSound'),
-        };
         this.input.keyboard.on('keydown', (event: { key: string }) => {
             if (event.key === 'p') {
                 // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
@@ -232,16 +277,12 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             if (this.player.manual) {
                 if (this.keyboard.left.isDown) {
                     this.player.move(3);
-                    this.sfx.moveSound.play(); // звук движения
                 } else if (this.keyboard.right.isDown) {
                     this.player.move(1);
-                    this.sfx.moveSound.play();
                 } else if (this.keyboard.down.isDown) {
                     this.player.move(2);
-                    this.sfx.moveSound.play();
                 } else if (this.keyboard.up.isDown) {
                     this.player.move(4);
-                    this.sfx.moveSound.play();
                 } else {
                     this.player.stopMove();
                 }
