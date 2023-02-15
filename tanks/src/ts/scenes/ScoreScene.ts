@@ -34,10 +34,10 @@ class ScoreScene extends Phaser.Scene {
         this.add.text(520, 130, `${this.stage}`, standardFont); // номер пройденного уровня
         this.add.text(10, 200, 'PLAYER', { font: '35px Pixel', color: '#FF4500' });
         this.add.text(10, 270, `${total}`, { font: '35px Pixel', color: '#FFD700' }); // кол-во очков игрока за всю кампанию
-        this.add.text(10, 400, `PTS`, { font: '35px Pixel' });
-        this.add.text(10, 470, `PTS`, { font: '35px Pixel' });
-        this.add.text(10, 540, `PTS`, { font: '35px Pixel' });
-        this.add.text(10, 610, `PTS`, { font: '35px Pixel' });
+        this.add.text(250, 400, `PTS`, { font: '35px Pixel' });
+        this.add.text(250, 470, `PTS`, { font: '35px Pixel' });
+        this.add.text(250, 540, `PTS`, { font: '35px Pixel' });
+        this.add.text(250, 610, `PTS`, { font: '35px Pixel' });
         this.load.atlas('tanks', tanksPlayerImge, tanksPlayerJSON);
         this.add.text(400, 400, `${this.score[Enemies.light]}`, standardFont); // сколько ЛТ уничтожено
         this.add.text(400, 470, `${this.score[Enemies.wheeled]}`, standardFont); // сколько КТ уничтожено
@@ -52,6 +52,26 @@ class ScoreScene extends Phaser.Scene {
         this.add.image(540, 480, 'tanks', 'enemy_wheeled_1');
         this.add.image(540, 550, 'tanks', 'enemy_shooter_1');
         this.add.image(540, 625, 'tanks', 'enemy_heavy_1');
+        if (this.score[Enemies.light]) {
+            this.add.text(10, 400, `100`, { font: '35px Pixel' });
+        } else {
+            this.add.text(10, 400, `0`, { font: '35px Pixel' });
+        }
+        if (this.score[Enemies.wheeled]) {
+            this.add.text(10, 470, `200`, { font: '35px Pixel' });
+        } else {
+            this.add.text(10, 470, `0`, { font: '35px Pixel' });
+        }
+        if (this.score[Enemies.shooter]) {
+            this.add.text(10, 540, `300`, { font: '35px Pixel' });
+        } else {
+            this.add.text(10, 540, `0`, { font: '35px Pixel' });
+        }
+        if (this.score[Enemies.wheeled]) {
+            this.add.text(10, 610, `400`, { font: '35px Pixel' });
+        } else {
+            this.add.text(10, 610, `0`, { font: '35px Pixel' });
+        }
 
         setTimeout(() => {
             this.scene.start('StageNumberScene', { stage: this.stage });
