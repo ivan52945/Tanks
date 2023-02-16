@@ -122,13 +122,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         walls.setCollisionByProperty({ collides: true });
 
-        const { width, height, tileWidth } = map;
+        console.log(map);
 
-        const find = setFinderEmpty(width, height, tileWidth, map.layers[0].data);
-
-        setTimeout(() => {
-            console.log(find());
-        }, 0);
+        const find = setFinderEmpty(map);
 
         this.tanks = this.physics.add.group();
         this.shots = this.physics.add.group();
@@ -219,10 +215,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             this.score += points;
             console.log('Score: ', this.score);
 
-            factory.produce();
+            // factory.produce();
 
             setTimeout(() => {
-                if (this.tanks.children.entries.length <= 1) {
+                if (this.tanks.children.entries.length <= -100) {
                     this.scene.start('ScoreScene');
                 }
             }, 1000);
