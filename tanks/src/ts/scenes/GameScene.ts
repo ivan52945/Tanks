@@ -126,13 +126,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         const find = setFinderEmpty(width, height, tileWidth, map.layers[0].data);
 
-        const finded = find().map((t) => {
-            return {
-                x: t[0],
-                y: t[1],
-            };
-        });
-
         setTimeout(() => {
             console.log(find());
         }, 0);
@@ -203,6 +196,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             walls.removeTileAtWorldXY(xT + fCos(dir + 3) * 8, yT + fSin(dir + 3) * 8);
 
             shot.destroy();
+
+            console.log(find());
         });
 
         this.physics.add.collider(this.shots, this.tanks, (shot, tank: unknown) => {
