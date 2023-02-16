@@ -117,9 +117,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     create() {
-        this.events.removeListener('GameOver');
-        this.events.removeListener('killed');
-
         this.anims.create({
             key: 'explodeAnimation',
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 3, first: 0 }),
@@ -277,6 +274,12 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.physics.add.collider(this.tanks, borders, (tank) => {
             tank.update();
+        });
+
+        this.events.once('shutdown', () => {
+            this.events.removeAllListeners('killed');
+            this.events.removeAllListeners('getBonus');
+            this.events.removeAllListeners('GameOver');
         });
     }
 
