@@ -126,6 +126,13 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         const find = setFinderEmpty(width, height, tileWidth, map.layers[0].data);
 
+        const finded = find().map((t) => {
+            return {
+                x: t[0],
+                y: t[1],
+            };
+        });
+
         setTimeout(() => {
             console.log(find());
         }, 0);

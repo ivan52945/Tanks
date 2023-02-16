@@ -8,8 +8,8 @@ function setFinderEmpty(w: number, h: number, size: number, src: Phaser.Tilemaps
         for (let i = 0; i < h; i += 2) {
             for (let j = 0; j < w; j += 2) {
                 if (checkXY(i, j) && checkXY(i + 1, j) && checkXY(i, j + 1) && checkXY(i + 1, j + 1)) {
-                    const x = i * size * 2 + size;
-                    const y = j * size * 2 + size;
+                    const x = (j + 3) * size; // * size * 2 + size;
+                    const y = (i + 3) * size; // * size * 2 + size;
                     result.push([x, y]);
                 }
             }
