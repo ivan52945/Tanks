@@ -215,7 +215,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             this.score += points;
             console.log('Score: ', this.score);
 
-            // factory.produce();
+            factory.produce();
 
             setTimeout(() => {
                 if (this.tanks.children.entries.length <= -100) {
