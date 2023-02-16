@@ -34,7 +34,7 @@ import IBattleScene from '../interfaces/battle-scene';
 import Fabric from '../modules/fabric';
 import ITank from '../interfaces/tank';
 import { fCos, fSin } from '../modules/functions';
-import findFreeSpaceXY from '../modules/findFreeSpace';
+import setFinderEmpty from '../modules/findFreeSpace';
 
 class GameScene extends Phaser.Scene implements IBattleScene {
     private keyboard!: Keys;
@@ -45,9 +45,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private shots!: Group;
 
-    private life: number = 2;
+    private life = 2;
 
-    private score: number = 0;
+    private score = 0;
 
     constructor() {
         super({ key: 'GameScene' });
@@ -122,6 +122,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         walls.setCollisionByProperty({ collides: true });
 
+        const { width, height } = map;
+
+        const find = setFinderEmpty(width, height);
+
         this.tanks = this.physics.add.group();
         this.shots = this.physics.add.group();
 
@@ -149,7 +153,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         borders.create(480, 928, 'borderBlock').setScale(26, 2).refreshBody();
 
         // let stageTen = '0';
-        let stageOne = '1';
+        const stageOne = '1';
 
         // this.add.image(944, 816, 'numbers', stageTen); // первая цифра уровня
         this.add.image(944, 816, 'borderBlock');
@@ -219,7 +223,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
 
         this.events.on('GameOver', () => {
-            this.life--;
+            this.life -= 1;
             if (this.life >= 0 && this.player.HP <= 0) {
                 this.player = new Player(this, 250, 250);
                 this.addTank(this.player);
