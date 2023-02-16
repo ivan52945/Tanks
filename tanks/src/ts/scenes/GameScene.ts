@@ -34,6 +34,7 @@ import IBattleScene from '../interfaces/battle-scene';
 import Fabric from '../modules/fabric';
 import ITank from '../interfaces/tank';
 import { fCos, fSin } from '../modules/functions';
+import findFreeSpaceXY from '../modules/findFreeSpace';
 
 class GameScene extends Phaser.Scene implements IBattleScene {
     private keyboard!: Keys;
