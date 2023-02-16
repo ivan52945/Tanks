@@ -122,9 +122,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         walls.setCollisionByProperty({ collides: true });
 
-        const { width, height } = map;
+        const { width, height, tileWidth } = map;
 
-        const find = setFinderEmpty(width, height);
+        const find = setFinderEmpty(width, height, tileWidth);
 
         this.tanks = this.physics.add.group();
         this.shots = this.physics.add.group();
