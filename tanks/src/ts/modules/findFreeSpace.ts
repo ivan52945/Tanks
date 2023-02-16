@@ -1,11 +1,15 @@
-function setFinderEmpty(w: number, h: number, size: number) {
-    return function findFreeSpaceXY(src: [number]) {
+import Phaser from 'phaser';
+
+function setFinderEmpty(w: number, h: number, size: number, src: Phaser.Tilemaps.Tile[][]) {
+    const checkXY = (x: number, y: number) => src[x][y].index === -1;
+
+    return function findFreeSpaceXY() {
         const result: [number, number][] = [];
         for (let i = 0; i < h; i += 2) {
             for (let j = 0; j < w; j += 2) {
-                if (!src[i * h + j] && !src[(i + 1) * h + j] && !src[i * h + j + 1] && !src[(i + 1) * h + j + 1]) {
-                    const x = i + size;
-                    const y = j + size;
+                if (checkXY(i, j) && checkXY(i + 1, j) && checkXY(i, j + 1) && checkXY(i + 1, j + 1)) {
+                    const x = i * size * 2 + size;
+                    const y = j * size * 2 + size;
                     result.push([x, y]);
                 }
             }
