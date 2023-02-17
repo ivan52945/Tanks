@@ -20,6 +20,8 @@ import bigExplosion from '../../assets/images/big-explosion.png';
 import numbersIMGE from '../../assets/images/numbers.png';
 import numbersJSON from '../../assets/images/numbers.json';
 
+import pointsImg from '../../assets/images/points.png';
+
 import gameOver from '../../assets/images/game-over.png';
 
 import shotSound from '../../assets/audio/sounds-fire.ogg';
@@ -87,6 +89,11 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.load.spritesheet('bigExplosion', bigExplosion, { frameWidth: 127, frameHeight: 130, endFrame: 2 });
 
         this.load.atlas('numbers', numbersIMGE, numbersJSON);
+
+        this.load.spritesheet('pointsImg', pointsImg, {
+            frameWidth: 62,
+            frameHeight: 28,
+        });
 
         this.load.image('gameOver', gameOver);
 
@@ -238,10 +245,15 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                     this.scene.start('ScoreScene', { stage: this.stage, score: this.score });
                 }
             }, 1000);
+
             this.tanksInGame[this.tanksInGame.length - counterDestroyTanks] = 0;
             counterDestroyTanks += 1;
-            console.log('this.tanksInGame: ', this.tanksInGame);
             this.changeTankIsGame();
+
+            const points = this.add.sprite(500, 500, 'pointsImg').setFrame(type);
+            setTimeout(() => {
+                points.destroy();
+            }, 1000);
         });
 
         this.events.on('GameOver', () => {
