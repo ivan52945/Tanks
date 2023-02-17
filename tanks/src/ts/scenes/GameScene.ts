@@ -169,20 +169,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         borders.create(480, 32, 'borderBlock').setScale(26, 2).refreshBody();
         borders.create(480, 928, 'borderBlock').setScale(26, 2).refreshBody();
 
-        let miniTankX = 944;
-        let miniTankY = 80;
-
-        this.tanksInGame.forEach((el, i) => {
-            // -----------------------------------------отрисовка танков в игре
-            miniTankY += 32;
-            if (i === 10) {
-                miniTankX += 32;
-                miniTankY = 112;
-            }
-            if (el === 1) {
-                this.add.image(miniTankX, miniTankY, 'tankInGameImg');
-            }
-        });
+        this.changeTankIsGame(); // ---------------------отрисовывает танки в игре
 
         // let stageTen = '0';
 
@@ -226,7 +213,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
             console.log(find());
         });
-
         this.physics.add.collider(this.shots, this.tanks, (shot, tank: unknown) => {
             if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
                 (tank as ITank).getShot(shot as Shot);
@@ -240,6 +226,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
 
         // события убийства игрока и врагов
+        let counterDestroyTanks = 1;
 
         this.events.on('killed', (type: Enemies) => {
             this.score[type] += 1;
@@ -251,6 +238,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                     this.scene.start('ScoreScene', { stage: this.stage, score: this.score });
                 }
             }, 1000);
+            this.tanksInGame[this.tanksInGame.length - counterDestroyTanks] = 0;
+            counterDestroyTanks++;
+            console.log('this.tanksInGame: ', this.tanksInGame);
+            this.changeTankIsGame();
         });
 
         this.events.on('GameOver', () => {
@@ -287,6 +278,25 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             this.events.removeAllListeners('killed');
             this.events.removeAllListeners('getBonus');
             this.events.removeAllListeners('GameOver');
+        });
+    }
+
+    changeTankIsGame() {
+        let miniTankX = 944;
+        let miniTankY = 80;
+
+        this.tanksInGame.forEach((el, i) => {
+            // -----------------------------------------отрисовка танков в игре
+            miniTankY += 32;
+            if (i === 10) {
+                miniTankX += 32;
+                miniTankY = 112;
+            }
+            if (el === 1) {
+                this.add.image(miniTankX, miniTankY, 'tankInGameImg');
+            } else {
+                this.add.image(miniTankX, miniTankY, 'borderBlock');
+            }
         });
     }
 
