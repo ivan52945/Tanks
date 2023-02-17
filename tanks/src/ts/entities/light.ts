@@ -19,7 +19,7 @@ class Light extends Tank implements ITank {
     }
 
     lastChanse() {
-        this.scene.events.emit('killed', Enemies.light);
+        this.scene.events.emit('killed', Enemies.light, this.x, this.y);
     }
 
     getShot(shot: Shot) {

@@ -18,7 +18,7 @@ class Shooter extends Tank implements ITank {
     }
 
     lastChanse() {
-        this.scene.events.emit('killed', Enemies.shooter);
+        this.scene.events.emit('killed', Enemies.shooter, this.x, this.y);
     }
 }
 

@@ -235,7 +235,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         // события убийства игрока и врагов
         let counterDestroyTanks = 1;
 
-        this.events.on('killed', (type: Enemies) => {
+        this.events.on('killed', (type: Enemies, x: number, y: number) => {
             this.score[type] += 1;
 
             factory.produce();
@@ -250,7 +250,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             counterDestroyTanks += 1;
             this.changeTankIsGame();
 
-            const points = this.add.sprite(500, 500, 'pointsImg').setFrame(type);
+            const points = this.add.sprite(x, y, 'pointsImg').setFrame(type);
             setTimeout(() => {
                 points.destroy();
             }, 1000);
