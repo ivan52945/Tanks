@@ -46,6 +46,7 @@ class StartScene extends Phaser.Scene {
         });
 
         this.input.keyboard.on('keydown', (event: { key: string }) => {
+            console.log('key');
             // ------------------ перемещение курсора при нажатии вверх и вниз, при нажатии пробела выбор
             if (event.key === 'ArrowDown') {
                 this.cursor.y = 565;
@@ -62,7 +63,9 @@ class StartScene extends Phaser.Scene {
             }
         });
 
-        // TODO: add deleting keyboard event
+        this.events.on('shutdown', () => {
+            this.input.keyboard.removeListener('keydown');
+        });
     }
 
     update() {
