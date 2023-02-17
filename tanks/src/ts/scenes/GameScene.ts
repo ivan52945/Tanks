@@ -63,11 +63,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private tanksInGame = new Array(20).fill(1);
 
-    private score = [0, 0, 0, 0];
-
     private protection!: Phaser.GameObjects.Sprite;
 
-    private isProtection: boolean = true;
+    private isProtection = true;
 
     constructor() {
         super({ key: 'GameScene' });
@@ -145,6 +143,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     create() {
+        const score = [0, 0, 0, 0];
+
         this.anims.create({
             key: 'explodeAnimation',
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 3, first: 0 }),
@@ -293,12 +293,12 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         let counterDestroyTanks = 1;
         let killed = 0;
         this.events.on('killed', (type: Enemies, x: number, y: number) => {
-            this.score[type] += 1;
+            score[type] += 1;
             killed += 1;
 
             // if (this.tanks.getChildren().length > 2) {
             if (killed === 3) {
-                //---------------------------число равное количеству подбитых танков, что бы для спавна оставалось только 2() если спавнится 5, число 3
+                // ---------------------------число равное количеству подбитых танков, что бы для спавна оставалось только 2() если спавнится 5, число 3
                 this.add.sprite(450, 450, 'starImg').play('starImgAnimation');
             }
 
@@ -308,7 +308,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
             setTimeout(() => {
                 if (this.tanks.getChildren().length <= 1 && this.life >= 0) {
-                    this.scene.start('ScoreScene', { stage: this.stage, score: this.score });
+                    this.scene.start('ScoreScene', { stage: this.stage, score });
                 }
             }, 1000);
 
@@ -346,9 +346,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 });
                 setTimeout(() => {
                     this.life = 2;
-                    this.stage = 1;
                     this.sound.add('gameOverSound').play();
-                    this.score = [0, 0, 0, 0];
+                    this.stage = 1;
                     this.scene.start('GameOverScene');
                 }, 3000);
             }

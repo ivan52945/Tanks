@@ -7,6 +7,8 @@ class ScoreScene extends Phaser.Scene {
 
     private stage!: number;
 
+    private record = 0;
+
     constructor() {
         super({
             key: 'ScoreScene',
@@ -16,6 +18,8 @@ class ScoreScene extends Phaser.Scene {
     init(result: { stage: number; score: number[] }) {
         this.stage = result.stage;
         this.score = result.score;
+
+        if (this.stage === 1) this.record = 0;
     }
 
     preload() {
@@ -23,18 +27,18 @@ class ScoreScene extends Phaser.Scene {
     }
 
     create() {
-        const total = this.score.reduce((acc, c, i) => acc + c * EnemyPoints[i], 0);
+        this.record += this.score.reduce((acc, c, i) => acc + c * EnemyPoints[i], 0);
 
         const sum = this.score.reduce((a, b) => a + b, 0);
 
         const standardFont = { font: '35px Pixel' };
 
         this.add.text(100, 60, 'HI-Score ', { font: '35px Pixel', color: '#FF4500' });
-        this.add.text(600, 60, `${total}`, { font: '35px Pixel', color: '#FFD700' }); // рекорд очков
+        this.add.text(600, 60, `${this.record}`, { font: '35px Pixel', color: '#FFD700' }); // рекорд очков
         this.add.text(300, 130, 'STAGE ', standardFont);
         this.add.text(520, 130, `${this.stage}`, standardFont); // номер пройденного уровня
         this.add.text(10, 200, 'PLAYER', { font: '35px Pixel', color: '#FF4500' });
-        this.add.text(10, 270, `${total}`, { font: '35px Pixel', color: '#FFD700' }); // кол-во очков игрока за всю кампанию
+        this.add.text(10, 270, `${this.record}`, { font: '35px Pixel', color: '#FFD700' }); // кол-во очков игрока за всю кампанию
 
         const tanks = ['enemy_light_1', 'enemy_wheeled_1', 'enemy_shooter_1', 'enemy_heavy_1'];
 
