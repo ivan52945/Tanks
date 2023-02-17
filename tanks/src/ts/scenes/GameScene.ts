@@ -38,6 +38,7 @@ import Fabric from '../modules/fabric';
 import { Enemies } from '../modules/score-config';
 import ITank from '../interfaces/tank';
 import { fCos, fSin } from '../modules/functions';
+import setFinderEmpty from '../modules/findFreeSpace';
 
 class GameScene extends Phaser.Scene implements IBattleScene {
     private keyboard!: Keys;
@@ -137,6 +138,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         walls.setCollisionByProperty({ collides: true });
 
+        console.log(map);
+
+        const find = setFinderEmpty(map);
+
         this.tanks = this.physics.add.group();
         this.shots = this.physics.add.group();
 
@@ -218,6 +223,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             walls.removeTileAtWorldXY(xT + fCos(dir + 3) * 8, yT + fSin(dir + 3) * 8);
 
             shot.destroy();
+
+            console.log(find());
         });
 
         this.physics.add.collider(this.shots, this.tanks, (shot, tank: unknown) => {
