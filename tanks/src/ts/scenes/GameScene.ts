@@ -193,16 +193,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.player = new Player(this, 250, 250);
 
-        this.protection = this.add
-            .sprite(this.player.body.x, this.player.body.y, 'protection')
-            .setOrigin(0.15, 0.15)
-            .setScale(1.2, 1.2)
-            .play('protectionImgAnimation');
-        setTimeout(() => {
-            this.protection.destroy();
-            this.isProtection = false;
-        }, 5000);
-
         this.addTank(this.player);
 
         const fabricConfig = {
@@ -330,15 +320,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 this.isProtection = true;
                 this.player = new Player(this, 250, 250);
                 this.addTank(this.player);
-                this.protection = this.add
-                    .sprite(this.player.body.x, this.player.body.y, 'protection')
-                    .setOrigin(0.15, 0.15)
-                    .setScale(1.2, 1.2)
-                    .play('protectionImgAnimation');
-                setTimeout(() => {
-                    this.protection.destroy();
-                    this.isProtection = false;
-                }, 15000);
             } else {
                 this.tweens.add({
                     targets: element,
@@ -395,28 +376,12 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             if (this.player.manual) {
                 if (this.keyboard.left.isDown) {
                     this.player.move(3);
-                    this.protection.update([
-                        (this.protection.x = this.player.body.x),
-                        (this.protection.y = this.player.body.y),
-                    ]);
                 } else if (this.keyboard.right.isDown) {
                     this.player.move(1);
-                    this.protection.update([
-                        (this.protection.x = this.player.body.x),
-                        (this.protection.y = this.player.body.y),
-                    ]);
                 } else if (this.keyboard.down.isDown) {
                     this.player.move(2);
-                    this.protection.update([
-                        (this.protection.x = this.player.body.x),
-                        (this.protection.y = this.player.body.y),
-                    ]);
                 } else if (this.keyboard.up.isDown) {
                     this.player.move(4);
-                    this.protection.update([
-                        (this.protection.x = this.player.body.x),
-                        (this.protection.y = this.player.body.y),
-                    ]);
                 } else {
                     this.player.stopMove();
                 }
