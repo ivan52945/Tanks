@@ -278,7 +278,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 (!(shot as Shot).sideBad && (tank as ITank).sideBad)
             ) {
                 (tank as ITank).getShot(shot as Shot);
-                // this.protection.destroy();
             }
             // }
             this.add.image(976, 592, 'numbers', this.life); // --------------------меняет количество жизней на панели
@@ -323,6 +322,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
 
         this.events.on('GameOver', () => {
+            if (this.protection) {
+                this.protection.destroy();
+            }
             this.life -= 1;
             if (this.life >= 0) {
                 this.isProtection = true;
@@ -336,7 +338,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 setTimeout(() => {
                     this.protection.destroy();
                     this.isProtection = false;
-                }, 5000);
+                }, 15000);
             } else {
                 this.tweens.add({
                     targets: element,
