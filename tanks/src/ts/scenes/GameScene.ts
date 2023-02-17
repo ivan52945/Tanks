@@ -27,6 +27,8 @@ import gameOver from '../../assets/images/game-over.png';
 import shotSound from '../../assets/audio/sounds-fire.ogg';
 import moveSound from '../../assets/audio/sounds-background.ogg';
 import explosionSound from '../../assets/audio/sounds-explosion.ogg';
+import steelSound from '../../assets/audio/sounds-steel.ogg';
+
 import gameOverSound from '../../assets/audio/game-over.ogg';
 
 import Tank from '../entities/base/tank';
@@ -100,6 +102,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.load.audio('shotSound', shotSound);
         this.load.audio('moveSound', moveSound);
         this.load.audio('explosionSound', explosionSound);
+        this.load.audio('steelSound', steelSound);
+
         this.load.audio('gameOverSound', gameOverSound);
     }
 
@@ -280,6 +284,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.physics.add.collider(this.shots, borders, (shot) => {
             shot.destroy();
+            this.sound.add('steelSound').play();
         });
 
         this.physics.add.collider(this.tanks, borders, (tank) => {
