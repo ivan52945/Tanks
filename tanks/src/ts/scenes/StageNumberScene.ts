@@ -1,6 +1,7 @@
 class StageNumberScene extends Phaser.Scene {
     keys: unknown;
-    private stageNumber: number = 1;
+
+    private stageNumber = 1;
 
     constructor() {
         super({
