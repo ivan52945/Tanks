@@ -1,7 +1,7 @@
 const enum Enemies {
     light,
-    shooter,
     wheeled,
+    shooter,
     heavy,
 }
 
