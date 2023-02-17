@@ -21,45 +21,54 @@ class Fabric {
         this.scene = scene;
         this.plan = config.plan.reverse();
         this.coords = config.coords;
-
-        this.coords.forEach((coord) => {
-            this.scene.addTank(new Light(this.scene, coord.x, coord.y));
-        });
+        for (let i = 0; i < 2; i += 1) {
+            setTimeout(() => {
+                this.coords.forEach((coord) => {
+                    this.produceSingle(coord.x, coord.y, 'light');
+                });
+            }, 3000 * i);
+        }
 
         this.bonusing = new BonusFabric(this.scene);
+    }
+
+    produceSingle(x: number, y: number, type?: string) {
+        if (!type) return;
+
+        const star = this.scene.add.sprite(x, y, 'starImg').play('starImgAnimation');
+
+        setTimeout(() => {
+            let tank: Tank;
+
+            switch (this.plan.pop()) {
+                case 'wheeled': {
+                    tank = new Wheeled(this.scene, x, y);
+                    break;
+                }
+                case 'shooter': {
+                    tank = new Shooter(this.scene, x, y);
+                    break;
+                }
+                case 'heavy': {
+                    tank = new Heavy(this.scene, x, y);
+                    break;
+                }
+                default: {
+                    tank = new Light(this.scene, x, y);
+                    break;
+                }
+            }
+
+            star.destroy();
+            this.bonusing.select(tank);
+            this.scene.addTank(tank);
+        }, 1000);
     }
 
     produce() {
         const coord = this.coords[randIntFrZ(this.coords.length - 1)];
 
-        let tank: Tank | undefined;
-
-        switch (this.plan.pop()) {
-            case 'light': {
-                tank = new Light(this.scene, coord.x, coord.y);
-                break;
-            }
-            case 'wheeled': {
-                tank = new Wheeled(this.scene, coord.x, coord.y);
-                break;
-            }
-            case 'shooter': {
-                tank = new Shooter(this.scene, coord.x, coord.y);
-                break;
-            }
-            case 'heavy': {
-                tank = new Heavy(this.scene, coord.x, coord.y);
-                break;
-            }
-            default: {
-                console.log('no tanks');
-            }
-        }
-
-        if (!tank) return;
-
-        this.bonusing.select(tank as Tank);
-        this.scene.addTank(tank as Tank);
+        this.produceSingle(coord.x, coord.y, this.plan.pop());
     }
 
     get planSize() {

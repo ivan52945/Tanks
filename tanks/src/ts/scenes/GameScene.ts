@@ -63,10 +63,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private tanksInGame = new Array(20).fill(1);
 
-    private protection!: Phaser.GameObjects.Sprite;
-
-    private isProtection = true;
-
     constructor() {
         super({ key: 'GameScene' });
     }
@@ -262,14 +258,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             console.log(find());
         });
         this.physics.add.collider(this.shots, this.tanks, (shot, tank: unknown) => {
-            // if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
-            if (
-                ((shot as Shot).sideBad && !(tank as ITank).sideBad && !this.isProtection) ||
-                (!(shot as Shot).sideBad && (tank as ITank).sideBad)
-            ) {
+            if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
                 (tank as ITank).getShot(shot as Shot);
             }
-            // }
             this.add.image(976, 592, 'numbers', this.life); // --------------------меняет количество жизней на панели
 
             this.add.sprite(shot.body.x, shot.body.y, 'bigExplosion').play('bigExplodeAnimation');
@@ -288,12 +279,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             // if (this.tanks.getChildren().length > 2) {
             if (killed === 3) {
                 // ---------------------------число равное количеству подбитых танков, что бы для спавна оставалось только 2() если спавнится 5, число 3
-                this.add.sprite(450, 450, 'starImg').play('starImgAnimation');
-            }
-
-            setTimeout(() => {
                 factory.produce();
-            }, 1000);
+            }
 
             setTimeout(() => {
                 if (this.tanks.getChildren().length <= 1 && this.life >= 0) {
@@ -312,12 +299,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
 
         this.events.on('GameOver', () => {
-            if (this.protection) {
-                this.protection.destroy();
-            }
             this.life -= 1;
             if (this.life >= 0) {
-                this.isProtection = true;
                 this.player = new Player(this, 250, 250);
                 this.addTank(this.player);
             } else {
