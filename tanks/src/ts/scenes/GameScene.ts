@@ -5,7 +5,7 @@ import wallsIMGE from '../../assets/images/block-1.png';
 import wallsJSON from '../../assets/images/block-1.json';
 
 import block32 from '../../assets/images/blocks-32.png';
-import tilemap1 from '../../assets/maps/tilemap1.json';
+import tilemap1 from '../../assets/maps/tilemap1.json'; // ---- чтобы поменять тайлмап, надо поменять "1" на "2" или "3"
 
 import shotImge from '../../assets/images/shot-small.png';
 
@@ -60,7 +60,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.load.image('walls1', wallsIMGE);
 
         this.load.image('tiles1', block32);
-        this.load.tilemapTiledJSON('tilemap1', tilemap1);
+        this.load.tilemapTiledJSON('tilemap1', tilemap1); // здесь тоже надо цифру менять
 
         this.load.image('shotImge', shotImge);
 
@@ -115,12 +115,14 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             repeat: 0,
         });
 
-        const map = this.make.tilemap({ key: 'tilemap1' });
-        const tileset = map.addTilesetImage('tileSet1', 'tiles1');
+        const map = this.make.tilemap({ key: 'tilemap1' });// здесь надо менять цифру
+        const tileset = map.addTilesetImage('tileSet1', 'tiles1');// здесь тоже, но tiles1 оставить в покое
 
         const walls = map.createLayer('walls-layer', tileset);
+        const water = map.createLayer('water-layer', tileset);
 
         walls.setCollisionByProperty({ collides: true });
+        water.setCollisionByProperty({ collides: true });
 
         console.log(map);
 
@@ -166,6 +168,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         const element = this.add.image(484, 1000, 'gameOver');
 
         this.physics.add.collider(this.tanks, walls, (tank) => {
+            tank.update();
+        });
+
+        this.physics.add.collider(this.tanks, water, (tank) => {
             tank.update();
         });
 
