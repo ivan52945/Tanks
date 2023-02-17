@@ -272,9 +272,15 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             console.log(find());
         });
         this.physics.add.collider(this.shots, this.tanks, (shot, tank: unknown) => {
-            if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
+            // if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
+            if (
+                ((shot as Shot).sideBad && !(tank as ITank).sideBad && !this.isProtection) ||
+                (!(shot as Shot).sideBad && (tank as ITank).sideBad)
+            ) {
                 (tank as ITank).getShot(shot as Shot);
+                // this.protection.destroy();
             }
+            // }
             this.add.image(976, 592, 'numbers', this.life); // --------------------меняет количество жизней на панели
 
             this.add.sprite(shot.body.x, shot.body.y, 'bigExplosion').play('bigExplodeAnimation');
@@ -316,6 +322,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.events.on('GameOver', () => {
             this.life -= 1;
             if (this.life >= 0) {
+                this.isProtection = true;
                 this.player = new Player(this, 250, 250);
                 this.addTank(this.player);
                 this.protection = this.add
