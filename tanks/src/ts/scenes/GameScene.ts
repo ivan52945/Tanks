@@ -22,6 +22,8 @@ import numbersJSON from '../../assets/images/numbers.json';
 
 import pointsImg from '../../assets/images/points.png';
 
+import starImg from '../../assets/images/star.png';
+
 import gameOver from '../../assets/images/game-over.png';
 
 import shotSound from '../../assets/audio/sounds-fire.ogg';
@@ -70,8 +72,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     preload() {
-        console.log(this.stage);
-
         this.load.image('tankInGameImg', tankInGameImg);
 
         this.load.atlas('tanks', tanksImge, tanksJSON);
@@ -97,6 +97,12 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             frameHeight: 28,
         });
 
+        this.load.spritesheet('starImg', starImg, {
+            frameWidth: 64,
+            frameHeight: 60,
+            endFrame: 3,
+        });
+
         this.load.image('gameOver', gameOver);
 
         this.load.audio('shotSound', shotSound);
@@ -112,7 +118,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         можно и оставить
     */
-
     addTank(tank: Tank) {
         this.tanks.add(tank);
         setTimeout(() => {
@@ -142,6 +147,16 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             repeat: 0,
         });
 
+        this.anims.create({
+            key: 'starImgAnimation',
+            frames: this.anims.generateFrameNumbers('starImg', { start: 0, end: 3, first: 0 }),
+            frameRate: 20,
+            repeat: 4,
+        });
+
+        this.add.sprite(400, 400, 'starImg').play('starImgAnimation');
+        this.add.sprite(600, 600, 'starImg').play('starImgAnimation');
+
         const map = this.make.tilemap({ key: 'tilemap1' });
         const tileset = map.addTilesetImage('tileSet1', 'tiles1');
 
@@ -170,7 +185,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             plan: ['shooter', 'light', 'heavy'],
             // plan: ['light'],
         };
-
         const factory = new Fabric(this, fabricConfig);
 
         const borders = this.physics.add.staticGroup();
