@@ -3,6 +3,7 @@ import ITank from '../interfaces/tank';
 import Tank from './base/tank';
 import IBattleScene from '../interfaces/battle-scene';
 import Shot from './base/shot';
+import { Enemies } from '../modules/score-config';
 
 class Heavy extends Tank implements ITank {
     protected readyToUpdate = true;
@@ -31,7 +32,7 @@ class Heavy extends Tank implements ITank {
     }
 
     lastChanse() {
-        this.scene.events.emit('killed', 400);
+        this.scene.events.emit('killed', Enemies.heavy, this.x, this.y);
     }
 
     getShot(shot: Shot): void {

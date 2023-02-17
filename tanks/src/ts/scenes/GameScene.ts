@@ -9,6 +9,8 @@ import tilemap1 from '../../assets/maps/tilemap1.json';
 
 import shotImge from '../../assets/images/shot-small.png';
 
+import tankInGameImg from '../../assets/images/mini-tank.png';
+
 import rightBorder from '../../assets/images/right-border.png';
 import borderBlock from '../../assets/images/border-block-32.png';
 
@@ -18,11 +20,19 @@ import bigExplosion from '../../assets/images/big-explosion.png';
 import numbersIMGE from '../../assets/images/numbers.png';
 import numbersJSON from '../../assets/images/numbers.json';
 
+import pointsImg from '../../assets/images/points.png';
+
+import starImg from '../../assets/images/star.png';
+
+import protectionImg from '../../assets/images/protection.png';
+
 import gameOver from '../../assets/images/game-over.png';
 
 import shotSound from '../../assets/audio/sounds-fire.ogg';
 import moveSound from '../../assets/audio/sounds-background.ogg';
 import explosionSound from '../../assets/audio/sounds-explosion.ogg';
+import steelSound from '../../assets/audio/sounds-steel.ogg';
+
 import gameOverSound from '../../assets/audio/game-over.ogg';
 
 import Tank from '../entities/base/tank';
@@ -32,6 +42,8 @@ import Shot from '../entities/base/shot';
 import { Group, Keys } from '../interfaces/based';
 import IBattleScene from '../interfaces/battle-scene';
 import Fabric from '../modules/fabric';
+
+import { Enemies } from '../modules/score-config';
 import ITank from '../interfaces/tank';
 import { fCos, fSin } from '../modules/functions';
 import setFinderEmpty from '../modules/findFreeSpace';
@@ -47,13 +59,25 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private life = 2;
 
-    private score = 0;
+    private stage = 1;
+
+    private tanksInGame = new Array(20).fill(1);
+
+    private protection!: Phaser.GameObjects.Sprite;
+
+    private isProtection = true;
 
     constructor() {
         super({ key: 'GameScene' });
     }
 
+    init(result: { stage: number }) {
+        this.stage = result.stage || this.stage;
+    }
+
     preload() {
+        this.load.image('tankInGameImg', tankInGameImg);
+
         this.load.atlas('tanks', tanksImge, tanksJSON);
 
         this.load.atlas('walls', wallsIMGE, wallsJSON);
@@ -72,11 +96,28 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.load.atlas('numbers', numbersIMGE, numbersJSON);
 
+        this.load.spritesheet('pointsImg', pointsImg, {
+            frameWidth: 62,
+            frameHeight: 28,
+        });
+        this.load.spritesheet('protectionImg', protectionImg, {
+            frameWidth: 64,
+            frameHeight: 64,
+        });
+
+        this.load.spritesheet('starImg', starImg, {
+            frameWidth: 64,
+            frameHeight: 60,
+            endFrame: 3,
+        });
+
         this.load.image('gameOver', gameOver);
 
         this.load.audio('shotSound', shotSound);
         this.load.audio('moveSound', moveSound);
         this.load.audio('explosionSound', explosionSound);
+        this.load.audio('steelSound', steelSound);
+
         this.load.audio('gameOverSound', gameOverSound);
     }
 
@@ -97,11 +138,13 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.shots.add(shot);
     }
 
-    killAll() {
+    killScene() {
         this.tanks.destroy(true, true);
     }
 
     create() {
+        const score = [0, 0, 0, 0];
+
         this.anims.create({
             key: 'explodeAnimation',
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 3, first: 0 }),
@@ -114,6 +157,23 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             frameRate: 10,
             repeat: 0,
         });
+
+        this.anims.create({
+            key: 'protectionImgAnimation',
+            frames: this.anims.generateFrameNumbers('protectionImg', { start: 0, end: 1, first: 0 }),
+            frameRate: 20,
+            repeat: -1,
+        });
+
+        this.anims.create({
+            key: 'starImgAnimation',
+            frames: this.anims.generateFrameNumbers('starImg', { start: 0, end: 3, first: 0 }),
+            frameRate: 20,
+            repeat: 4,
+        });
+
+        this.add.sprite(450, 450, 'starImg').play('starImgAnimation');
+        this.add.sprite(650, 650, 'starImg').play('starImgAnimation');
 
         const map = this.make.tilemap({ key: 'tilemap1' });
         const tileset = map.addTilesetImage('tileSet1', 'tiles1');
@@ -138,12 +198,17 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         const fabricConfig = {
             coords: [
                 { x: 450, y: 450 },
-                // { x: 650, y: 650 },
+                { x: 650, y: 650 },
             ],
-            plan: ['shooter', 'light', 'shooter', 'heavy'],
+            plan: ['shooter', 'light', 'heavy'],
+            // plan: ['light'],
         };
 
-        const factory = new Fabric(this, fabricConfig);
+        let factory: { produce: () => void };
+
+        setTimeout(() => {
+            factory = new Fabric(this, fabricConfig);
+        }, 1000);
 
         const borders = this.physics.add.staticGroup();
 
@@ -152,12 +217,13 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         borders.create(480, 32, 'borderBlock').setScale(26, 2).refreshBody();
         borders.create(480, 928, 'borderBlock').setScale(26, 2).refreshBody();
 
+        this.changeTankIsGame(); // ---------------------отрисовывает танки в игре
+
         // let stageTen = '0';
-        const stageOne = '1';
 
         // this.add.image(944, 816, 'numbers', stageTen); // первая цифра уровня
         this.add.image(944, 816, 'borderBlock');
-        this.add.image(976, 816, 'numbers', stageOne); // вторая цифра уровня
+        this.add.image(976, 816, 'numbers', this.stage); // вторая цифра уровня
 
         this.add.image(976, 592, 'numbers', this.life);
 
@@ -195,38 +261,63 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
             console.log(find());
         });
-
         this.physics.add.collider(this.shots, this.tanks, (shot, tank: unknown) => {
-            if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
+            // if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
+            if (
+                ((shot as Shot).sideBad && !(tank as ITank).sideBad && !this.isProtection) ||
+                (!(shot as Shot).sideBad && (tank as ITank).sideBad)
+            ) {
                 (tank as ITank).getShot(shot as Shot);
             }
+            // }
             this.add.image(976, 592, 'numbers', this.life); // --------------------меняет количество жизней на панели
 
             this.add.sprite(shot.body.x, shot.body.y, 'bigExplosion').play('bigExplodeAnimation');
-            this.sound.add('explosionSound').play();
             this.sound.add('explosionSound').play();
 
             shot.destroy();
         });
 
         // события убийства игрока и врагов
+        let counterDestroyTanks = 1;
+        let killed = 0;
+        this.events.on('killed', (type: Enemies, x: number, y: number) => {
+            score[type] += 1;
+            killed += 1;
 
-        this.events.on('killed', (points: number) => {
-            this.score += points;
-            console.log('Score: ', this.score);
-
-            factory.produce();
+            // if (this.tanks.getChildren().length > 2) {
+            if (killed === 3) {
+                // ---------------------------число равное количеству подбитых танков, что бы для спавна оставалось только 2() если спавнится 5, число 3
+                this.add.sprite(450, 450, 'starImg').play('starImgAnimation');
+            }
 
             setTimeout(() => {
-                if (this.tanks.children.entries.length <= -100) {
-                    this.scene.start('ScoreScene');
+                factory.produce();
+            }, 1000);
+
+            setTimeout(() => {
+                if (this.tanks.getChildren().length <= 1 && this.life >= 0) {
+                    this.scene.start('ScoreScene', { stage: this.stage, score });
                 }
+            }, 1000);
+
+            this.tanksInGame[this.tanksInGame.length - counterDestroyTanks] = 0;
+            counterDestroyTanks += 1;
+            this.changeTankIsGame();
+
+            const points = this.add.sprite(x, y, 'pointsImg').setFrame(type);
+            setTimeout(() => {
+                points.destroy();
             }, 1000);
         });
 
         this.events.on('GameOver', () => {
+            if (this.protection) {
+                this.protection.destroy();
+            }
             this.life -= 1;
-            if (this.life >= 0 && this.player.HP <= 0) {
+            if (this.life >= 0) {
+                this.isProtection = true;
                 this.player = new Player(this, 250, 250);
                 this.addTank(this.player);
             } else {
@@ -237,7 +328,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                     ease: 'Power3',
                 });
                 setTimeout(() => {
+                    this.life = 2;
                     this.sound.add('gameOverSound').play();
+                    this.stage = 1;
                     this.scene.start('GameOverScene');
                 }, 3000);
             }
@@ -245,36 +338,35 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.physics.add.collider(this.shots, borders, (shot) => {
             shot.destroy();
+            this.sound.add('steelSound').play();
         });
 
         this.physics.add.collider(this.tanks, borders, (tank) => {
             tank.update();
         });
 
-        this.input.keyboard.on('keydown', (event: { key: string }) => {
-            if (event.key === 'p') {
-                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
-                this.scene.start('HiscoreScene');
-            }
+        this.events.once('shutdown', () => {
+            this.events.removeAllListeners('killed');
+            this.events.removeAllListeners('getBonus');
+            this.events.removeAllListeners('GameOver');
         });
+    }
 
-        this.input.keyboard.on('keydown', (event: { key: string }) => {
-            if (event.key === 'b') {
-                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
-                this.player.levelUp();
-            }
-        });
+    changeTankIsGame() {
+        let miniTankX = 944;
+        let miniTankY = 80;
 
-        this.input.keyboard.on('keydown', (event: { key: string }) => {
-            if (event.key === 'k') {
-                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
-                this.tanks.clear(true, true);
+        this.tanksInGame.forEach((el, i) => {
+            // -----------------------------------------отрисовка на панели количество танков в игре
+            miniTankY += 32;
+            if (i === 10) {
+                miniTankX += 32;
+                miniTankY = 112;
             }
-        });
-        this.input.keyboard.on('keydown', (event: { key: string }) => {
-            if (event.key === 'v') {
-                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
-                console.log(this.tanks.getChildren());
+            if (el === 1) {
+                this.add.image(miniTankX, miniTankY, 'tankInGameImg');
+            } else {
+                this.add.image(miniTankX, miniTankY, 'borderBlock');
             }
         });
     }

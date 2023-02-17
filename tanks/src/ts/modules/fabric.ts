@@ -2,7 +2,7 @@ import IBattleScene from '../interfaces/battle-scene';
 import { randIntFrZ } from './functions';
 import { FabticConfig } from '../interfaces/based';
 import Light from '../entities/light';
-import Whelled from '../entities/whelled';
+import Wheeled from '../entities/wheeled';
 import Shooter from '../entities/shooter';
 import Heavy from '../entities/heavy';
 import BonusFabric from './bonus-fabric';
@@ -39,8 +39,8 @@ class Fabric {
                 tank = new Light(this.scene, coord.x, coord.y);
                 break;
             }
-            case 'whelled': {
-                tank = new Whelled(this.scene, coord.x, coord.y);
+            case 'wheeled': {
+                tank = new Wheeled(this.scene, coord.x, coord.y);
                 break;
             }
             case 'shooter': {
