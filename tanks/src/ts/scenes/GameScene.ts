@@ -34,6 +34,7 @@ import IBattleScene from '../interfaces/battle-scene';
 import Fabric from '../modules/fabric';
 import ITank from '../interfaces/tank';
 import { fCos, fSin } from '../modules/functions';
+import setFinderEmpty from '../modules/findFreeSpace';
 
 class GameScene extends Phaser.Scene implements IBattleScene {
     private keyboard!: Keys;
@@ -44,9 +45,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private shots!: Group;
 
-    private life: number = 2;
+    private life = 2;
 
-    private score: number = 0;
+    private score = 0;
 
     constructor() {
         super({ key: 'GameScene' });
@@ -121,6 +122,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         walls.setCollisionByProperty({ collides: true });
 
+        console.log(map);
+
+        const find = setFinderEmpty(map);
+
         this.tanks = this.physics.add.group();
         this.shots = this.physics.add.group();
 
@@ -148,7 +153,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         borders.create(480, 928, 'borderBlock').setScale(26, 2).refreshBody();
 
         // let stageTen = '0';
-        let stageOne = '1';
+        const stageOne = '1';
 
         // this.add.image(944, 816, 'numbers', stageTen); // первая цифра уровня
         this.add.image(944, 816, 'borderBlock');
@@ -187,6 +192,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             walls.removeTileAtWorldXY(xT + fCos(dir + 3) * 8, yT + fSin(dir + 3) * 8);
 
             shot.destroy();
+
+            console.log(find());
         });
 
         this.physics.add.collider(this.shots, this.tanks, (shot, tank: unknown) => {
@@ -211,14 +218,14 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             factory.produce();
 
             setTimeout(() => {
-                if (this.tanks.children.entries.length <= 1) {
+                if (this.tanks.children.entries.length <= -100) {
                     this.scene.start('ScoreScene');
                 }
             }, 1000);
         });
 
         this.events.on('GameOver', () => {
-            this.life--;
+            this.life -= 1;
             if (this.life >= 0 && this.player.HP <= 0) {
                 this.player = new Player(this, 250, 250);
                 this.addTank(this.player);
