@@ -239,7 +239,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 }
             }, 1000);
             this.tanksInGame[this.tanksInGame.length - counterDestroyTanks] = 0;
-            counterDestroyTanks++;
+            counterDestroyTanks += 1;
             console.log('this.tanksInGame: ', this.tanksInGame);
             this.changeTankIsGame();
         });
