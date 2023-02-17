@@ -118,6 +118,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         можно и оставить
     */
+
     addTank(tank: Tank) {
         this.tanks.add(tank);
         setTimeout(() => {
@@ -154,8 +155,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             repeat: 4,
         });
 
-        this.add.sprite(400, 400, 'starImg').play('starImgAnimation');
-        this.add.sprite(600, 600, 'starImg').play('starImgAnimation');
+        this.add.sprite(450, 450, 'starImg').play('starImgAnimation');
+        this.add.sprite(650, 650, 'starImg').play('starImgAnimation');
 
         const map = this.make.tilemap({ key: 'tilemap1' });
         const tileset = map.addTilesetImage('tileSet1', 'tiles1');
@@ -185,7 +186,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             plan: ['shooter', 'light', 'heavy'],
             // plan: ['light'],
         };
-        const factory = new Fabric(this, fabricConfig);
+        let factory: { produce: () => void };
+        setTimeout(() => {
+            factory = new Fabric(this, fabricConfig);
+        }, 1000);
 
         const borders = this.physics.add.staticGroup();
 
@@ -256,7 +260,13 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.events.on('killed', (type: Enemies, x: number, y: number) => {
             this.score[type] += 1;
 
-            factory.produce();
+            if (this.tanks.getChildren().length > 2) {
+                this.add.sprite(450, 450, 'starImg').play('starImgAnimation');
+            }
+
+            setTimeout(() => {
+                factory.produce();
+            }, 1000);
 
             setTimeout(() => {
                 if (this.tanks.getChildren().length <= 1 && this.life >= 0) {
@@ -317,7 +327,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         let miniTankY = 80;
 
         this.tanksInGame.forEach((el, i) => {
-            // -----------------------------------------отрисовка танков в игре
+            // -----------------------------------------отрисовка на панели количество танков в игре
             miniTankY += 32;
             if (i === 10) {
                 miniTankX += 32;
