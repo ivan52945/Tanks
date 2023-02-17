@@ -291,11 +291,14 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         // события убийства игрока и врагов
         let counterDestroyTanks = 1;
-
+        let killed = 0;
         this.events.on('killed', (type: Enemies, x: number, y: number) => {
             this.score[type] += 1;
+            killed += 1;
 
-            if (this.tanks.getChildren().length > 2) {
+            // if (this.tanks.getChildren().length > 2) {
+            if (killed === 3) {
+                //---------------------------число равное количеству подбитых танков, что бы для спавна оставалось только 2() если спавнится 5, число 3
                 this.add.sprite(450, 450, 'starImg').play('starImgAnimation');
             }
 
