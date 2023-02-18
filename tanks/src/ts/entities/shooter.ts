@@ -2,6 +2,7 @@ import EnemyAI from '../AI/enemy-AI';
 import ITank from '../interfaces/tank';
 import Tank from './base/tank';
 import IBattleScene from '../interfaces/battle-scene';
+import { Enemies } from '../modules/score-config';
 
 class Shooter extends Tank implements ITank {
     protected readyToUpdate = true;
@@ -17,7 +18,7 @@ class Shooter extends Tank implements ITank {
     }
 
     lastChanse() {
-        this.scene.events.emit('killed', 500);
+        this.scene.events.emit('killed', Enemies.shooter, this.x, this.y);
     }
 }
 

@@ -17,6 +17,10 @@ class Player extends Tank implements ITank {
 
     readonly controller = new PlayerAI(1, this);
 
+    private protection: Phaser.GameObjects.Sprite | null = null;
+
+    private isProtected = false;
+
     constructor(scene: IBattleScene, x: number, y: number, manual = true, level = 0) {
         super(scene, x, y, false, 'base_up0', true);
 
@@ -33,6 +37,29 @@ class Player extends Tank implements ITank {
         }
 
         this.setLevel(level);
+
+        this.setProtection();
+    }
+
+    setProtection() {
+        this.isProtected = true;
+        this.protection = this.scene.add
+            .sprite(this.body.x, this.body.y, 'protection')
+            .setOrigin(0.15, 0.15)
+            .setScale(1.2, 1.2)
+            .play('protectionImgAnimation');
+        setTimeout(() => {
+            this.protection?.destroy();
+            this.protection = null;
+            this.isProtected = false;
+        }, 15000);
+    }
+
+    move(dir: number) {
+        super.move(dir);
+        if (!this.protection) return;
+        this.protection.x = this.body.x;
+        this.protection.y = this.body.y;
     }
 
     update() {
@@ -50,6 +77,8 @@ class Player extends Tank implements ITank {
     }
 
     getShot(shot: Shot) {
+        if (this.isProtected) return;
+
         if ((this.dir + shot.dir) % 4 === 2) {
             this.HP -= 1;
         } else {
