@@ -208,11 +208,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             // plan: ['light'],
         };
 
-        let factory: { produce: () => void };
-
-        setTimeout(() => {
-            factory = new Fabric(this, fabricConfig);
-        }, 1000);
+        const factory = new Fabric(this, fabricConfig);
 
         const borders = this.physics.add.staticGroup();
 
@@ -295,16 +291,11 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         // события убийства игрока и врагов
         let counterDestroyTanks = 1;
-        let killed = 0;
+
         this.events.on('killed', (type: Enemies, x: number, y: number) => {
             score[type] += 1;
-            killed += 1;
 
-            // if (this.tanks.getChildren().length > 2) {
-            if (killed === 3) {
-                // ---------------------------число равное количеству подбитых танков, что бы для спавна оставалось только 2() если спавнится 5, число 3
-                factory.produce();
-            }
+            factory.produce();
 
             setTimeout(() => {
                 if (this.tanks.getChildren().length <= 1 && this.life >= 0) {
@@ -322,26 +313,30 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             }, 1000);
         });
 
-        this.events.on('GameOver', () => {
+        this.events.on('PlayerDead', () => {
             this.life -= 1;
             this.add.image(976, 592, 'numbers', this.life); // --------------------меняет количество жизней на панели
             if (this.life >= 0) {
                 this.player = new Player(this, 250, 250);
                 this.addTank(this.player);
             } else {
-                this.tweens.add({
-                    targets: element,
-                    y: 450,
-                    duration: 3000,
-                    ease: 'Power3',
-                });
-                setTimeout(() => {
-                    this.life = 2;
-                    this.sound.add('gameOverSound').play();
-                    this.stage = 1;
-                    this.scene.start('GameOverScene');
-                }, 3000);
+                this.events.emit('GameOver');
             }
+        });
+
+        this.events.on('GameOver', () => {
+            this.tweens.add({
+                targets: element,
+                y: 450,
+                duration: 3000,
+                ease: 'Power3',
+            });
+            setTimeout(() => {
+                this.life = 2;
+                this.sound.add('gameOverSound').play();
+                this.stage = 1;
+                this.scene.start('GameOverScene');
+            }, 3000);
         });
 
         this.physics.add.collider(this.shots, borders, (shot) => {
@@ -355,7 +350,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.events.once('shutdown', () => {
             this.events.removeAllListeners('killed');
-            this.events.removeAllListeners('getBonus');
+            this.events.removeAllListeners('getBonuses');
+            this.events.removeAllListeners('PlayerDead');
             this.events.removeAllListeners('GameOver');
         });
     }

@@ -38,3 +38,11 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
+
+const canvas = document.querySelector('canvas') as HTMLCanvasElement;
+
+console.log(canvas);
+
+canvas.getContext('2d', {
+    willReadFrequently: true,
+});

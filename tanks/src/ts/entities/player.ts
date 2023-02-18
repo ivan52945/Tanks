@@ -116,7 +116,7 @@ class Player extends Tank implements ITank {
     }
 
     lastChanse(): void {
-        this.scene.events.emit('GameOver');
+        this.scene.events.emit('PlayerDead');
     }
 }
 
