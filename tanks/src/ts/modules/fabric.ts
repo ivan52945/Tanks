@@ -21,12 +21,12 @@ class Fabric {
         this.scene = scene;
         this.plan = config.plan.reverse();
         this.coords = config.coords;
-        for (let i = 0; i < 2; i += 1) {
+        for (let i = 0; i <= 2; i += 1) {
             setTimeout(() => {
                 this.coords.forEach((coord) => {
                     this.produceSingle(coord.x, coord.y, 'light');
                 });
-            }, 3000 * i);
+            }, 2000 * i);
         }
 
         this.bonusing = new BonusFabric(this.scene);
@@ -40,7 +40,7 @@ class Fabric {
         setTimeout(() => {
             let tank: Tank;
 
-            switch (this.plan.pop()) {
+            switch (type) {
                 case 'wheeled': {
                     tank = new Wheeled(this.scene, x, y);
                     break;

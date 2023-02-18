@@ -7,7 +7,7 @@ class BonusFabric {
     constructor(scene: IBattleScene) {
         this.scene = scene;
 
-        this.scene.events.on('getBonus', () => {
+        this.scene.events.on('getBonuses', () => {
             console.log('bonus geted');
             // TODO: add code of adding bonus to card
         });
