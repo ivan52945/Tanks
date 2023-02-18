@@ -23,7 +23,13 @@
     "no-console": "off",
     "class-methods-use-this": "off",
     "no-param-reassign": "off",
-    "@typescript-eslint/no-explicit-any": 2
+    "@typescript-eslint/no-explicit-any": 2,
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+]
   },
   "parser": "@typescript-eslint/parser"
 }
