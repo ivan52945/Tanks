@@ -1,27 +1,25 @@
 import Phaser from 'phaser';
+import tilemap1 from '../../assets/maps/tilemap1.json'
 import { randIntFrZ } from './functions';
 
-function setFinderEmpty(map: Phaser.Tilemaps.Tilemap) {
-    const { width, height, tileWidth } = map;
+function setFinderEmpty(tilemap: typeof tilemap1) {
+    let coordArr = [{x: 1, y: 1}]
 
-    const { data } = map.layers[0];
+    const sumArr: number[] = tilemap.layers[0].data.map((el, i)=>{ // сложение массивов
+        return tilemap.layers[0].data[i] + tilemap.layers[1].data[i]
+    })
 
-    const checkXY = (x: number, y: number) => data[y][x].index === -1;
-
-    const result: [number, number][] = [];
-    for (let i = 0; i < height; i += 2) {
-        for (let j = 0; j < width; j += 2) {
-            if (checkXY(i, j) && checkXY(i + 1, j) && checkXY(i, j + 1) && checkXY(i + 1, j + 1)) {
-                const x = (j + 3) * tileWidth; // * size * 2 + size;
-                const y = (i + 3) * tileWidth; // * size * 2 + size;
-                result.push([x, y]);
-            }
+    sumArr.forEach((el,i, arr) => {
+        if(!arr[i] && !arr[i+1] && !arr[i+26] && !arr[i+27]){
+            const x = ((i % 26) * 32) + 64 + 32
+            const y = Math.floor(i / 26)*32 + 64 + 32
+            coordArr.push({x, y})
         }
-    }
+    });
 
-    const { length } = result;
+    coordArr.splice(0,1)
 
-    return () => result[randIntFrZ(length - 1)];
+    return coordArr[randIntFrZ(coordArr.length-1)]
 }
 
 export default setFinderEmpty;
