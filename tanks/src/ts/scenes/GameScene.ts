@@ -5,7 +5,7 @@ import wallsIMGE from '../../assets/images/block-1.png';
 import wallsJSON from '../../assets/images/block-1.json';
 
 import block32 from '../../assets/images/blocks-32.png';
-// import tilemap1 from '../../assets/maps/tilemap1.json'; // ---- чтобы поменять тайлмап, надо поменять "1" на "2" или "3"
+import tilemap1 from '../../assets/maps/tilemap1.json'; // ---- чтобы поменять тайлмап, надо поменять "1" на "2" или "3"
 import maps from '../modules/maps';
 
 import shotImge from '../../assets/images/shot-small.png';
@@ -86,7 +86,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         if (!this.loaded) {
             maps.forEach((map, i) => {
-                this.load.tilemapTiledJSON(`tilemap${i}`, map); // здесь тоже надо цифру менять
+                this.load.tilemapTiledJSON(`tilemap${i}`, map);
             });
             this.loaded = true;
         }
@@ -174,7 +174,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         walls.setCollisionByProperty({ collides: true });
         water.setCollisionByProperty({ collides: true });
 
-        const find = setFinderEmpty(map);
+        const find = setFinderEmpty(maps[mapKeyNum]);
+        console.log(find)
 
         this.anims.create({
             key: 'protectionImgAnimation',
