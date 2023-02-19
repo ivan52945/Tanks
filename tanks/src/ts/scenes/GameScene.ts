@@ -46,8 +46,9 @@ import Fabric from '../modules/fabric';
 
 import { Enemies } from '../modules/score-config';
 import ITank from '../interfaces/tank';
-import { fCos, fSin } from '../modules/functions';
+import { fCos, fSin, randIntFrZ } from '../modules/functions';
 import setFinderEmpty from '../modules/findFreeSpace';
+import Bonus from '../interfaces/bonuses';
 
 class GameScene extends Phaser.Scene implements IBattleScene {
     private keyboard!: Keys;
@@ -147,6 +148,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.tanks.destroy(true, true);
     }
 
+    winCheck() { }
+
     create() {
         const score = [0, 0, 0, 0];
 
@@ -192,6 +195,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.tanks = this.physics.add.group();
         this.shots = this.physics.add.group();
+        const bonuses = this.physics.add.staticGroup();
 
         this.keyboard = this.input.keyboard.createCursorKeys();
 
@@ -252,13 +256,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.physics.add.collider(this.shots, walls, (shot) => {
             const { x, y, dir } = shot as Shot;
 
-            const exploze = this.add.sprite(x, y, 'explosion');
-
-            setTimeout(() => {
-                exploze.destroy();
-            }, 300.00000000001);
-            this.sound.add('explosionSound').play();
-            exploze.play('explodeAnimation');
+            (shot as Shot).explozion();
 
             const xT = x + fCos(dir) * 17;
             const yT = y + fSin(dir) * 17;
@@ -267,26 +265,16 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             walls.removeTileAtWorldXY(xT + fCos(dir + 3) * 8, yT + fSin(dir + 3) * 8);
 
             shot.destroy();
-
-            setTimeout(() => {
-                exploze.destroy();
-            }, 300);
         });
 
         this.physics.add.collider(this.shots, this.tanks, (shot, tank: unknown) => {
+            shot.destroy();
+
+            (tank as Tank).explozion();
+
             if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
                 (tank as ITank).getShot(shot as Shot);
             }
-
-            const exploze = this.add.sprite(shot.body.x, shot.body.y, 'bigExplosion');
-
-            setTimeout(() => {
-                exploze.destroy();
-            }, 300.00000000001);
-            this.sound.add('explosionSound').play();
-            exploze.play('bigExplodeAnimation');
-
-            shot.destroy();
         });
 
         // события убийства игрока и врагов
@@ -311,6 +299,15 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             setTimeout(() => {
                 points.destroy();
             }, 1000);
+        });
+
+        this.events.on('getBonuses', () => {
+            const { x, y } = find();
+
+            const bonus = bonuses.create(x, y, 'protection');
+            bonus.setData('bonus', 3);
+            bonus.anims.play('protectionImgAnimation');
+            setTimeout(() => bonus.destroy(), 8000);
         });
 
         this.events.on('PlayerDead', () => {
@@ -346,6 +343,39 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.physics.add.collider(this.tanks, borders, (tank) => {
             tank.update();
+        });
+
+        this.physics.add.overlap(this.player, bonuses, (player, bonusBody) => {
+            const bonus = bonusBody.getData('bonus');
+
+            console.log(bonus);
+
+            bonusBody.destroy();
+
+            if (bonus === Bonus.addLife) this.life += 1;
+            else if (bonus === Bonus.levelUp) this.player.levelUp();
+            else if (bonus === Bonus.protection) this.player.setProtection();
+            else if (bonus === Bonus.grenade) {
+                const tanks = this.tanks.getChildren().slice() as Tank[];
+
+                tanks.forEach((tank) => {
+                    if (tank instanceof Player) return;
+
+                    tank.explozion();
+                    tank.destroy();
+                });
+                if (factory.planSize > 0) {
+                    for (let i = 0; i < 4; i += 1) {
+                        setTimeout(() => factory.produce(), i * 2000);
+                    }
+                } else {
+                    setTimeout(() => {
+                        if (this.tanks.getChildren().length <= 1 && this.life >= 0) {
+                            this.scene.start('ScoreScene', { stage: this.stage, score });
+                        }
+                    }, 1000);
+                }
+            }
         });
 
         this.events.once('shutdown', () => {
