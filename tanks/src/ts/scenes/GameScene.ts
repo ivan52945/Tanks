@@ -4,8 +4,10 @@ import tanksJSON from '../../assets/images/tanks.json';
 import wallsIMGE from '../../assets/images/block-1.png';
 import wallsJSON from '../../assets/images/block-1.json';
 
+import bonusIMGE from '../../assets/images/bonus.png';
+import bonusJSON from '../../assets/images/bonus.json';
+
 import block32 from '../../assets/images/blocks-32.png';
-// import tilemap1 from '../../assets/maps/tilemap1.json'; // ---- чтобы поменять тайлмап, надо поменять "1" на "2" или "3"
 import maps from '../modules/maps';
 
 import shotImge from '../../assets/images/shot-small.png';
@@ -63,6 +65,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private stage = 1;
 
+    private level = 0;
+
     private loaded = false;
 
     private tanksInGame = new Array(20).fill(1);
@@ -87,7 +91,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         if (!this.loaded) {
             maps.forEach((map, i) => {
-                this.load.tilemapTiledJSON(`tilemap${i}`, map); // здесь тоже надо цифру менять
+                this.load.tilemapTiledJSON(`tilemap${i}`, map);
             });
             this.loaded = true;
         }
@@ -101,6 +105,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.load.spritesheet('bigExplosion', bigExplosion, { frameWidth: 127, frameHeight: 130, endFrame: 2 });
 
         this.load.atlas('numbers', numbersIMGE, numbersJSON);
+        this.load.atlas('bonuses', bonusIMGE, bonusJSON);
 
         this.load.spritesheet('pointsImg', pointsImg, {
             frameWidth: 62,
@@ -148,8 +153,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.tanks.destroy(true, true);
     }
 
-    winCheck() { }
-
     create() {
         const score = [0, 0, 0, 0];
 
@@ -168,8 +171,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             repeat: 0,
         });
 
-        const map = this.make.tilemap({ key: `tilemap${mapKeyNum}` }); // здесь надо менять цифру
-        const tileset = map.addTilesetImage(`tileSet${mapKeyNum + 1}`, 'tiles1'); // здесь тоже, но tiles1 оставить в покое
+        const map = this.make.tilemap({ key: `tilemap${mapKeyNum}` });
+        const tileset = map.addTilesetImage(`tileSet${mapKeyNum + 1}`, 'tiles1');
 
         const walls = map.createLayer('walls-layer', tileset);
         const water = map.createLayer('water-layer', tileset);
@@ -199,7 +202,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.keyboard = this.input.keyboard.createCursorKeys();
 
-        this.player = new Player(this, 250, 250);
+        this.player = new Player(this, 250, 250, true, this.level);
 
         this.addTank(this.player);
 
@@ -303,10 +306,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.events.on('getBonuses', () => {
             const { x, y } = find();
-
-            const bonus = bonuses.create(x, y, 'protection');
-            bonus.setData('bonus', 3);
-            bonus.anims.play('protectionImgAnimation');
+            const numB = randIntFrZ(5);
+            const bonus = bonuses.create(x, y, 'bonuses', `bonus_${numB}`);
+            bonus.setData('bonus', numB);
             setTimeout(() => bonus.destroy(), 8000);
         });
 
@@ -330,8 +332,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             });
             setTimeout(() => {
                 this.life = 2;
-                this.sound.add('gameOverSound').play();
                 this.stage = 1;
+                this.sound.add('gameOverSound').play();
+                this.level = 0;
                 this.scene.start('GameOverScene');
             }, 3000);
         });
