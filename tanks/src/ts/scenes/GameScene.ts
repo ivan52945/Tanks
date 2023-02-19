@@ -180,7 +180,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         walls.setCollisionByProperty({ collides: true });
         water.setCollisionByProperty({ collides: true });
 
-        const find = setFinderEmpty(map);
+        const find = setFinderEmpty(maps[mapKeyNum]);
+        console.log(find);
 
         this.anims.create({
             key: 'protectionImgAnimation',
