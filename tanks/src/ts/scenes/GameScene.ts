@@ -280,7 +280,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             }
         });
 
-        // события убийства игрока и врагов
         let counterDestroyTanks = 1;
 
         this.events.on('killed', (type: Enemies, x: number, y: number) => {
@@ -351,13 +350,13 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.physics.add.overlap(this.player, bonuses, (player, bonusBody) => {
             const bonus = bonusBody.getData('bonus');
 
-            console.log(bonus);
-
             bonusBody.destroy();
 
             if (bonus === Bonus.addLife) this.life += 1;
-            else if (bonus === Bonus.levelUp) this.player.levelUp();
-            else if (bonus === Bonus.protection) this.player.setProtection();
+            else if (bonus === Bonus.levelUp) {
+                this.player.levelUp();
+                this.level += 1;
+            } else if (bonus === Bonus.protection) this.player.setProtection();
             else if (bonus === Bonus.grenade) {
                 const tanks = this.tanks.getChildren().slice() as Tank[];
 
@@ -378,6 +377,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                         }
                     }, 1000);
                 }
+            } else if (bonus === Bonus.freeze) {
+                const tanks = this.tanks.getChildren().slice() as Tank[];
+                tanks.forEach((tank) => tank.freeze());
             }
         });
 
@@ -423,7 +425,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                     this.player.stopMove();
                 }
                 if (this.keyboard.space.isDown) {
-                    // ------------------------------выстрел при нажатии пробела
                     this.player.shot();
                 }
             }

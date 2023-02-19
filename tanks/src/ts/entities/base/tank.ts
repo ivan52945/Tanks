@@ -208,6 +208,10 @@ class Tank extends Entity {
 
         this.anims.play(this.animField);
     }
+
+    freeze() {
+        this.controller.freeze?.();
+    }
 }
 
 export default Tank;
