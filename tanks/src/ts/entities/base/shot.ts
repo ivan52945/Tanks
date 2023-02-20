@@ -24,6 +24,10 @@ class Shot extends Entity {
 
         this.angle = 90 * this.dir;
     }
+
+    explozion() {
+        super.explozion('e');
+    }
 }
 
 export default Shot;
