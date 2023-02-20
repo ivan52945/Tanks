@@ -4,9 +4,10 @@ interface ITank {
     sideBad: boolean;
     manual?: boolean;
 
-    update: () => void;
-    move: (dir: number) => void;
     shot: () => void;
+    move: (dir: number) => void;
+    update: () => void;
+    stopMove: () => void;
 
     getShot: (shot: Shot) => void;
 }
