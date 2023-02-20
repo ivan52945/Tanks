@@ -170,9 +170,12 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         const walls = map.createLayer('walls-layer', tileset);
         const water = map.createLayer('water-layer', tileset);
+        const bushes = map.createLayer('bushes-layer', tileset);
 
         walls.setCollisionByProperty({ collides: true });
         water.setCollisionByProperty({ collides: true });
+
+        bushes.setDepth(10)
 
         const find = setFinderEmpty(maps[mapKeyNum]);
         console.log(find)

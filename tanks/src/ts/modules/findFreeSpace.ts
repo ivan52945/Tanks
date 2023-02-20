@@ -6,7 +6,7 @@ function setFinderEmpty(tilemap: typeof tilemap1) {
     let coordArr = [{x: 1, y: 1}]
 
     const sumArr: number[] = tilemap.layers[0].data.map((el, i)=>{ // сложение массивов
-        return tilemap.layers[0].data[i] + tilemap.layers[1].data[i]
+        return tilemap.layers[0].data[i] + tilemap.layers[2].data[i]
     })
 
     sumArr.forEach((el,i, arr) => {
