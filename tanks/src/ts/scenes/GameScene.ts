@@ -27,6 +27,9 @@ import starImg from '../../assets/images/star.png';
 
 import protectionImg from '../../assets/images/protection.png';
 
+import flagOnImg from '../../assets/images/flag-on.png';
+import flagOffImg from '../../assets/images/flag-off.png';
+
 import gameOver from '../../assets/images/game-over.png';
 
 import shotSound from '../../assets/audio/sounds-fire.ogg';
@@ -66,6 +69,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private tanksInGame = new Array(20).fill(1);
 
+    private isGameOver: boolean = false;
+
     constructor() {
         super({ key: 'GameScene' });
     }
@@ -92,6 +97,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         }
 
         this.load.image('shotImge', shotImge);
+
+        this.load.image('flagOnImg', flagOnImg);
+        this.load.image('flagOffImg', flagOffImg);
 
         this.load.image('borderBlock', borderBlock);
         this.load.image('rightBorder', rightBorder);
@@ -175,7 +183,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         water.setCollisionByProperty({ collides: true });
 
         const find = setFinderEmpty(maps[mapKeyNum]);
-        console.log(find)
+        console.log(find);
 
         this.anims.create({
             key: 'protectionImgAnimation',
@@ -196,14 +204,16 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.keyboard = this.input.keyboard.createCursorKeys();
 
-        this.player = new Player(this, 250, 250);
+        this.player = new Player(this, 352, 870);
 
         this.addTank(this.player);
+        this.isGameOver = false;
 
         const fabricConfig = {
             coords: [
-                { x: 450, y: 450 },
-                { x: 650, y: 650 },
+                { x: 96, y: 96 },
+                { x: 650, y: 96 },
+                { x: 864, y: 96 },
             ],
             plan: ['shooter', 'light', 'heavy'],
             // plan: ['light'],
@@ -217,6 +227,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         borders.create(32, 480, 'borderBlock').setScale(2, 30).refreshBody();
         borders.create(480, 32, 'borderBlock').setScale(26, 2).refreshBody();
         borders.create(480, 928, 'borderBlock').setScale(26, 2).refreshBody();
+
+        const flag = this.physics.add.staticGroup();
+
+        flag.create(480, 864, 'flagOnImg');
 
         this.changeTankIsGame(); // ---------------------отрисовывает танки в игре
 
@@ -237,6 +251,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
 
         this.physics.add.collider(this.tanks, water, (tank) => {
+            tank.update();
+        });
+
+        this.physics.add.collider(this.tanks, flag, (tank) => {
             tank.update();
         });
 
@@ -290,6 +308,16 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             shot.destroy();
         });
 
+        this.physics.add.collider(this.shots, flag, (shot, flag) => {
+            this.add.sprite(shot.body.x, shot.body.y, 'explosion').play('explodeAnimation');
+            this.sound.add('explosionSound').play();
+            flag.destroy();
+            shot.destroy();
+            this.add.image(480, 864, 'flagOffImg');
+            this.isGameOver = true;
+            this.player.lastChanse();
+        });
+
         // события убийства игрока и врагов
         let counterDestroyTanks = 1;
 
@@ -317,8 +345,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.events.on('PlayerDead', () => {
             this.life -= 1;
             this.add.image(976, 592, 'numbers', this.life); // --------------------меняет количество жизней на панели
-            if (this.life >= 0) {
-                this.player = new Player(this, 250, 250);
+            if (this.life >= 0 && !this.isGameOver) {
+                this.player = new Player(this, 352, 870);
                 this.addTank(this.player);
             } else {
                 this.events.emit('GameOver');
