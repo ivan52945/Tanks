@@ -42,6 +42,8 @@ class Player extends Tank implements ITank {
     }
 
     setProtection() {
+        if (this.isProtected) return;
+
         this.isProtected = true;
         this.protection = this.scene.add
             .sprite(this.body.x, this.body.y, 'protection')

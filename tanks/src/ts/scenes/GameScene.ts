@@ -4,8 +4,10 @@ import tanksJSON from '../../assets/images/tanks.json';
 import wallsIMGE from '../../assets/images/block-1.png';
 import wallsJSON from '../../assets/images/block-1.json';
 
+import bonusIMGE from '../../assets/images/bonus.png';
+import bonusJSON from '../../assets/images/bonus.json';
+
 import block32 from '../../assets/images/blocks-32.png';
-import tilemap1 from '../../assets/maps/tilemap1.json'; // ---- чтобы поменять тайлмап, надо поменять "1" на "2" или "3"
 import maps from '../modules/maps';
 
 import shotImge from '../../assets/images/shot-small.png';
@@ -46,8 +48,9 @@ import Fabric from '../modules/fabric';
 
 import { Enemies } from '../modules/score-config';
 import ITank from '../interfaces/tank';
-import { fCos, fSin } from '../modules/functions';
+import { fCos, fSin, randIntFrZ } from '../modules/functions';
 import setFinderEmpty from '../modules/findFreeSpace';
+import Bonus from '../interfaces/bonuses';
 
 class GameScene extends Phaser.Scene implements IBattleScene {
     private keyboard!: Keys;
@@ -61,6 +64,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     private life = 2;
 
     private stage = 1;
+
+    private level = 0;
 
     private loaded = false;
 
@@ -100,6 +105,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.load.spritesheet('bigExplosion', bigExplosion, { frameWidth: 127, frameHeight: 130, endFrame: 2 });
 
         this.load.atlas('numbers', numbersIMGE, numbersJSON);
+        this.load.atlas('bonuses', bonusIMGE, bonusJSON);
 
         this.load.spritesheet('pointsImg', pointsImg, {
             frameWidth: 62,
@@ -165,8 +171,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             repeat: 0,
         });
 
-        const map = this.make.tilemap({ key: `tilemap${mapKeyNum}` }); // здесь надо менять цифру
-        const tileset = map.addTilesetImage(`tileSet${mapKeyNum + 1}`, 'tiles1'); // здесь тоже, но tiles1 оставить в покое
+        const map = this.make.tilemap({ key: `tilemap${mapKeyNum}` });
+        const tileset = map.addTilesetImage(`tileSet${mapKeyNum + 1}`, 'tiles1');
 
         const walls = map.createLayer('walls-layer', tileset);
         const water = map.createLayer('water-layer', tileset);
@@ -175,7 +181,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         water.setCollisionByProperty({ collides: true });
 
         const find = setFinderEmpty(maps[mapKeyNum]);
-        console.log(find)
+        console.log(find);
 
         this.anims.create({
             key: 'protectionImgAnimation',
@@ -193,10 +199,11 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.tanks = this.physics.add.group();
         this.shots = this.physics.add.group();
+        const bonuses = this.physics.add.staticGroup();
 
         this.keyboard = this.input.keyboard.createCursorKeys();
 
-        this.player = new Player(this, 250, 250);
+        this.player = new Player(this, 250, 250, true, this.level);
 
         this.addTank(this.player);
 
@@ -253,13 +260,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.physics.add.collider(this.shots, walls, (shot) => {
             const { x, y, dir } = shot as Shot;
 
-            const exploze = this.add.sprite(x, y, 'explosion');
-
-            setTimeout(() => {
-                exploze.destroy();
-            }, 300.00000000001);
-            this.sound.add('explosionSound').play();
-            exploze.play('explodeAnimation');
+            (shot as Shot).explozion();
 
             const xT = x + fCos(dir) * 17;
             const yT = y + fSin(dir) * 17;
@@ -268,29 +269,18 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             walls.removeTileAtWorldXY(xT + fCos(dir + 3) * 8, yT + fSin(dir + 3) * 8);
 
             shot.destroy();
-
-            setTimeout(() => {
-                exploze.destroy();
-            }, 300);
         });
 
         this.physics.add.collider(this.shots, this.tanks, (shot, tank: unknown) => {
+            shot.destroy();
+
+            (tank as Tank).explozion();
+
             if ((shot as Shot).sideBad !== (tank as ITank).sideBad) {
                 (tank as ITank).getShot(shot as Shot);
             }
-
-            const exploze = this.add.sprite(shot.body.x, shot.body.y, 'bigExplosion');
-
-            setTimeout(() => {
-                exploze.destroy();
-            }, 300.00000000001);
-            this.sound.add('explosionSound').play();
-            exploze.play('bigExplodeAnimation');
-
-            shot.destroy();
         });
 
-        // события убийства игрока и врагов
         let counterDestroyTanks = 1;
 
         this.events.on('killed', (type: Enemies, x: number, y: number) => {
@@ -314,6 +304,14 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             }, 1000);
         });
 
+        this.events.on('getBonuses', () => {
+            const { x, y } = find();
+            const numB = randIntFrZ(5);
+            const bonus = bonuses.create(x, y, 'bonuses', `bonus_${numB}`);
+            bonus.setData('bonus', numB);
+            setTimeout(() => bonus.destroy(), 8000);
+        });
+
         this.events.on('PlayerDead', () => {
             this.life -= 1;
             this.add.image(976, 592, 'numbers', this.life); // --------------------меняет количество жизней на панели
@@ -334,8 +332,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             });
             setTimeout(() => {
                 this.life = 2;
-                this.sound.add('gameOverSound').play();
                 this.stage = 1;
+                this.sound.add('gameOverSound').play();
+                this.level = 0;
                 this.scene.start('GameOverScene');
             }, 3000);
         });
@@ -347,6 +346,42 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         this.physics.add.collider(this.tanks, borders, (tank) => {
             tank.update();
+        });
+
+        this.physics.add.overlap(this.player, bonuses, (player, bonusBody) => {
+            const bonus = bonusBody.getData('bonus');
+
+            bonusBody.destroy();
+
+            if (bonus === Bonus.addLife) this.life += 1;
+            else if (bonus === Bonus.levelUp) {
+                this.player.levelUp();
+                this.level += 1;
+            } else if (bonus === Bonus.protection) this.player.setProtection();
+            else if (bonus === Bonus.grenade) {
+                const tanks = this.tanks.getChildren().slice() as Tank[];
+
+                tanks.forEach((tank) => {
+                    if (tank instanceof Player) return;
+
+                    tank.explozion();
+                    tank.destroy();
+                });
+                if (factory.planSize > 0) {
+                    for (let i = 0; i < 4; i += 1) {
+                        setTimeout(() => factory.produce(), i * 2000);
+                    }
+                } else {
+                    setTimeout(() => {
+                        if (this.tanks.getChildren().length <= 1 && this.life >= 0) {
+                            this.scene.start('ScoreScene', { stage: this.stage, score });
+                        }
+                    }, 1000);
+                }
+            } else if (bonus === Bonus.freeze) {
+                const tanks = this.tanks.getChildren().slice() as Tank[];
+                tanks.forEach((tank) => tank.freeze());
+            }
         });
 
         this.events.once('shutdown', () => {
@@ -391,7 +426,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                     this.player.stopMove();
                 }
                 if (this.keyboard.space.isDown) {
-                    // ------------------------------выстрел при нажатии пробела
                     this.player.shot();
                 }
             }

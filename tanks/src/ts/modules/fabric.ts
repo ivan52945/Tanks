@@ -5,7 +5,6 @@ import Light from '../entities/light';
 import Wheeled from '../entities/wheeled';
 import Shooter from '../entities/shooter';
 import Heavy from '../entities/heavy';
-import BonusFabric from './bonus-fabric';
 import Tank from '../entities/base/tank';
 
 class Fabric {
@@ -15,21 +14,17 @@ class Fabric {
 
     private plan: FabticConfig['plan'];
 
-    private bonusing: BonusFabric;
-
     constructor(scene: IBattleScene, config: FabticConfig) {
         this.scene = scene;
         this.plan = config.plan.reverse();
         this.coords = config.coords;
-        for (let i = 0; i <= 2; i += 1) {
+        for (let i = 0; i < 2; i += 1) {
             setTimeout(() => {
                 this.coords.forEach((coord) => {
                     this.produceSingle(coord.x, coord.y, 'light');
                 });
             }, 2000 * i);
         }
-
-        this.bonusing = new BonusFabric(this.scene);
     }
 
     produceSingle(x: number, y: number, type?: string) {
@@ -60,9 +55,19 @@ class Fabric {
             }
 
             star.destroy();
-            this.bonusing.select(tank);
             this.scene.addTank(tank);
+            this.setBonused(tank);
         }, 1000);
+    }
+
+    setBonused(tank: Tank) {
+        tank.setData('bonus', true);
+
+        tank.startBlink('bonus');
+
+        setTimeout(() => {
+            tank.setData('bonus', null);
+        }, 8000);
     }
 
     produce() {
