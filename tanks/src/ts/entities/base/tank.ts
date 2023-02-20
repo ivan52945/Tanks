@@ -140,14 +140,15 @@ class Tank extends Entity {
         this.move(randIntFrZ(3));
     }
 
-    lastChanse() {}
+    // eslint-disable-next-line prettier/prettier
+    lastChanse() { }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getShot(shot: Shot) {
         this.HP -= 1;
 
         if (this.getData('bonus')) {
-            this.scene.events.emit('getBonus');
+            this.scene.events.emit('getBonuses');
         }
 
         setTimeout(() => {
@@ -196,12 +197,20 @@ class Tank extends Entity {
         this.stopBlinking();
     }
 
+    explozion() {
+        super.explozion('bigE');
+    }
+
     set animSet(newKey: string) {
         this.key = newKey;
 
         this.animField = this.scene.anims.get(this.key);
 
         this.anims.play(this.animField);
+    }
+
+    freeze() {
+        this.controller.freeze?.();
     }
 }
 

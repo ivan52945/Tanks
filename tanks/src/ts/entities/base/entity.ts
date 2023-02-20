@@ -29,6 +29,16 @@ class Entity extends Phaser.Physics.Arcade.Sprite {
         this.scene.physics.world.enableBody(this, 0);
         this.scene.add.existing(this);
     }
+
+    explozion(size: 'bigE' | 'e') {
+        const exploze = this.scene.add.sprite(this.x, this.y, `${size}xplosion`);
+
+        setTimeout(() => {
+            exploze.destroy();
+        }, 300.00000000001);
+        this.scene.sound.add('explosionSound').play();
+        exploze.play(`${size}xplodeAnimation`);
+    }
 }
 
 export default Entity;
