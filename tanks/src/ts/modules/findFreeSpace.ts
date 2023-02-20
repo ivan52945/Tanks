@@ -12,6 +12,9 @@ function setFinderEmpty(map: typeof tilemap1) {
 
         let summLayers = 0;
         for (let iL = 0; iL < layers.length; iL += 1) {
+            if(iL === 1){
+                continue
+            }
             summLayers += layers[iL].data[i];
         }
 
