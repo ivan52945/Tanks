@@ -354,6 +354,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
 
         this.events.on('GameOver', () => {
+            this.events.removeListener('GameOver');
             this.tweens.add({
                 targets: element,
                 y: 450,
@@ -406,10 +407,13 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
 
         this.events.once('shutdown', () => {
-            this.events.removeAllListeners('killed');
-            this.events.removeAllListeners('getBonuses');
-            this.events.removeAllListeners('PlayerDead');
-            this.events.removeAllListeners('GameOver');
+            const { removeListener } = this.events;
+
+            factory.destroy();
+            removeListener('getBonuses');
+            removeListener('PlayerDead');
+            removeListener('killed');
+            removeListener('GameOver');
         });
     }
 
