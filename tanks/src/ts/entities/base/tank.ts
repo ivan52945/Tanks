@@ -125,7 +125,7 @@ class Tank extends Entity {
                     this.shotSpeedMod,
                     this.shotDurab
                 );
-                this.scene.sound.add('shotSound').play();
+                if (!this.scene.scene.isPaused('GameScene')) this.scene.sound.add('shotSound').play();
             }, i * 100);
         }
     }
@@ -141,7 +141,7 @@ class Tank extends Entity {
     }
 
     // eslint-disable-next-line prettier/prettier
-    lastChanse() { }
+    lastChanse() {}
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getShot(shot: Shot) {
