@@ -45,7 +45,7 @@ import Tank from '../entities/base/tank';
 import Player from '../entities/player';
 import Shot from '../entities/base/shot';
 
-import { Group, Keys } from '../interfaces/based';
+import { Group, Keys, Static } from '../interfaces/based';
 import IBattleScene from '../interfaces/battle-scene';
 import Fabric from '../modules/fabric';
 
@@ -64,6 +64,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private shots!: Group;
 
+    private flag!: Static;
+
     private life = 2;
 
     private stage = 1;
@@ -73,8 +75,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     private loaded = false;
 
     private tanksInGame = new Array(20).fill(1);
-
-    private isGameOver: boolean = false;
 
     constructor() {
         super({ key: 'GameScene' });
@@ -162,7 +162,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
     }
 
     create() {
-        const score = [0, 0, 0, 0];
+        const score = {
+            tanks: [0, 0, 0, 0],
+            add: 0,
+        };
 
         const mapKeyNum = (this.stage - 1) % maps.length;
 
@@ -192,7 +195,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         bushes.setDepth(10);
 
         const find = setFinderEmpty(maps[mapKeyNum]);
-        console.log(find);
 
         this.anims.create({
             key: 'protectionImgAnimation',
@@ -217,7 +219,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.player = new Player(this, 352, 870);
 
         this.addTank(this.player);
-        this.isGameOver = false;
 
         const fabricConfig = {
             coords: [
@@ -238,13 +239,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         borders.create(480, 32, 'borderBlock').setScale(26, 2).refreshBody();
         borders.create(480, 928, 'borderBlock').setScale(26, 2).refreshBody();
 
-        const flag = this.physics.add.staticGroup();
-
-        flag.create(480, 864, 'flagOnImg');
+        this.flag = this.physics.add.staticSprite(480, 864, 'flagOnImg');
 
         this.changeTankIsGame(); // ---------------------отрисовывает танки в игре
-
-        // let stageTen = '0';
 
         // this.add.image(944, 816, 'numbers', stageTen); // первая цифра уровня
         this.add.image(944, 816, 'borderBlock');
@@ -264,7 +261,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             tank.update();
         });
 
-        this.physics.add.collider(this.tanks, flag, (tank) => {
+        this.physics.add.collider(this.tanks, this.flag, (tank) => {
             tank.update();
         });
 
@@ -302,14 +299,12 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             }
         });
 
-        this.physics.add.collider(this.shots, flag, (shot, flag) => {
-            this.add.sprite(shot.body.x, shot.body.y, 'explosion').play('explodeAnimation');
-            this.sound.add('explosionSound').play();
-            flag.destroy();
+        this.physics.add.collider(this.shots, this.flag, (_, shot) => {
+            (shot as Shot).explozion();
+
             shot.destroy();
-            this.add.image(480, 864, 'flagOffImg');
-            this.isGameOver = true;
-            this.player.lastChanse();
+            this.flag.setTexture('flagOffImg');
+            this.events.emit('GameOver');
         });
 
         // события убийства игрока и врагов
@@ -317,12 +312,16 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         let counterDestroyTanks = 1;
 
         this.events.on('killed', (type: Enemies, x: number, y: number) => {
-            score[type] += 1;
+            score.tanks[type] += 1;
 
-            factory.produce();
+            const tCount = this.tanks.getLength();
+
+            factory.replanish(tCount - 1);
 
             setTimeout(() => {
-                if (this.tanks.getChildren().length <= 1 && this.life >= 0) {
+                const allT = this.tanks.getLength() + factory.planSize;
+
+                if (allT <= 1 && this.life >= 0) {
                     this.scene.start('ScoreScene', { stage: this.stage, score });
                 }
             }, 1000);
@@ -332,9 +331,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             this.changeTankIsGame();
 
             const points = this.add.sprite(x, y, 'pointsImg').setFrame(type);
-            setTimeout(() => {
-                points.destroy();
-            }, 1000);
+            setTimeout(() => points.destroy(), 1000);
         });
 
         this.events.on('getBonuses', () => {
@@ -348,7 +345,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.events.on('PlayerDead', () => {
             this.life -= 1;
             this.add.image(976, 592, 'numbers', this.life); // --------------------меняет количество жизней на панели
-            if (this.life >= 0 && !this.isGameOver) {
+            if (this.life >= 0 && !this.flag.body) {
                 this.player = new Player(this, 352, 870);
                 this.addTank(this.player);
             } else {
@@ -400,17 +397,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                     tank.explozion();
                     tank.destroy();
                 });
-                if (factory.planSize > 0) {
-                    for (let i = 0; i < 4; i += 1) {
-                        setTimeout(() => factory.produce(), i * 2000);
-                    }
-                } else {
-                    setTimeout(() => {
-                        if (this.tanks.getChildren().length <= 1 && this.life >= 0) {
-                            this.scene.start('ScoreScene', { stage: this.stage, score });
-                        }
-                    }, 1000);
-                }
+
+                factory.replanish(0);
             } else if (bonus === Bonus.freeze) {
                 const tanks = this.tanks.getChildren().slice() as Tank[];
                 tanks.forEach((tank) => tank.freeze());

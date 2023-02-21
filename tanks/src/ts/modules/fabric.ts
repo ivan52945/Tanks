@@ -14,16 +14,27 @@ class Fabric {
 
     private plan: FabticConfig['plan'];
 
+    readonly min = 3;
+
+    readonly max = 5;
+
+    private onProduce = 0;
+
+    private allTimers: Phaser.Time.TimerEvent[] = [];
+
+    private tCount = 0;
+
     constructor(scene: IBattleScene, config: FabticConfig) {
         this.scene = scene;
         this.plan = config.plan.reverse();
         this.coords = config.coords;
-        for (let i = 0; i < 2; i += 1) {
+        for (let i = 0; i < 1; i += 1) {
             setTimeout(() => {
                 this.coords.forEach((coord) => {
                     this.produceSingle(coord.x, coord.y, 'light');
                 });
             }, 2000 * i);
+            this.tCount += this.coords.length;
         }
     }
 
@@ -77,7 +88,28 @@ class Fabric {
     }
 
     get planSize() {
-        return this.plan.length;
+        return this.plan.length + this.onProduce;
+    }
+
+    replanish(current: number) {
+        if (current >= this.min || this.onProduce > 0) return;
+
+        this.onProduce = Math.min(this.max - current, this.plan.length);
+
+        for (let i = 0; i < this.onProduce; i += 1) {
+            this.allTimers.push(this.scene.time.delayedCall(1000, () => this.produce()));
+        }
+
+        this.allTimers.push(
+            this.scene.time.delayedCall(this.onProduce * 1000, () => {
+                this.onProduce = 0;
+            })
+        );
+        console.log(this.onProduce);
+    }
+
+    destroy() {
+        this.allTimers.forEach((timer) => this.scene.time.removeEvent(timer));
     }
 }
 export default Fabric;
