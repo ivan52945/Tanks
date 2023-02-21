@@ -59,8 +59,8 @@ class ScoreScene extends Phaser.Scene {
         }, 3000);
 
         this.input.keyboard.on('keydown', (event: { key: string }) => {
-            if (event.key === 'p') {
-                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
+            if (event.key === 'q') {
+                // ------- Инструмент разработчика. Переключатель сцен на англ. 'q'
                 this.scene.start('HiscoreScene');
             }
         });
