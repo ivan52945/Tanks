@@ -48,11 +48,14 @@ class TeamScene extends Phaser.Scene {
             window.open('https://github.com/guschins');
         });
 
-        this.input.on('pointerover', function (event: any, gameObjects: { setTint: (arg0: number) => void }[]) {
-            gameObjects[0].setTint(0xff5000);
-        });
+        this.input.on(
+            'pointerover',
+            function (event: { key: string }, gameObjects: { setTint: (arg0: number) => void }[]) {
+                gameObjects[0].setTint(0xff5000);
+            }
+        );
 
-        this.input.on('pointerout', function (event: any, gameObjects: { clearTint: () => void }[]) {
+        this.input.on('pointerout', function (event: { key: string }, gameObjects: { clearTint: () => void }[]) {
             gameObjects[0].clearTint();
         });
     }
