@@ -6,7 +6,9 @@ import ScoreScene from './ts/scenes/ScoreScene';
 import HiscoreScene from './ts/scenes/HiscoreScene';
 import GameOverScene from './ts/scenes/GameOverScene';
 import StageNumberScene from './ts/scenes/StageNumberScene';
+import TeamScene from './ts/scenes/TeamScene';
 import PauseScene from './ts/scenes/PauseScene';
+
 
 const config = {
     type: Phaser.AUTO,
@@ -35,7 +37,8 @@ const config = {
         },
         // */
     },
-    scene: [StartScene, StageNumberScene, GameScene, ScoreScene, HiscoreScene, GameOverScene, PauseScene],
+
+    scene: [StartScene, StageNumberScene, GameScene, ScoreScene, HiscoreScene, GameOverScene, TeamScene, PauseScene],
 };
 
 const game = new Phaser.Game(config);
