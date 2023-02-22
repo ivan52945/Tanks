@@ -10,6 +10,8 @@ import bonusJSON from '../../assets/images/bonus.json';
 import block32 from '../../assets/images/blocks-32.png';
 import maps from '../modules/maps';
 
+import planJson from '../../assets/plan.json';
+
 import shotImge from '../../assets/images/shot-small.png';
 
 import tankInGameImg from '../../assets/images/mini-tank.png';
@@ -74,7 +76,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private loaded = false;
 
-    private tanksInGame = new Array(20).fill(1);
+    private tanksInGame!: number[];
 
     constructor() {
         super({ key: 'GameScene' });
@@ -165,6 +167,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         const mapKeyNum = (this.stage - 1) % maps.length;
 
+        this.tanksInGame = new Array(planJson.plans[this.stage - 1].plan.length + 3).fill(1);
+
         this.anims.create({
             key: 'explodeAnimation',
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 3, first: 0 }),
@@ -222,8 +226,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 { x: 650, y: 96 },
                 { x: 864, y: 96 },
             ],
-            plan: ['shooter', 'light', 'heavy'],
-            // plan: ['light'],
+            plan: planJson.plans[this.stage - 1].plan,
         };
 
         const factory = new Fabric(this, fabricConfig);
