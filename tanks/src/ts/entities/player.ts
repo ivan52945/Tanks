@@ -117,6 +117,10 @@ class Player extends Tank implements ITank {
         this.body.setSize(56, 56);
     }
 
+    getLevel(){
+        return this.level
+    }
+
     lastChanse(): void {
         this.scene.events.emit('PlayerDead');
     }
