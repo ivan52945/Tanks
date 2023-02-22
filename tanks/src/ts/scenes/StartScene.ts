@@ -45,6 +45,8 @@ class StartScene extends Phaser.Scene {
             repeat: -1,
         });
 
+        let team: string[] = [];
+
         this.input.keyboard.on('keydown', (event: { key: string }) => {
             console.log('key');
             // ------------------ перемещение курсора при нажатии вверх и вниз, при нажатии пробела выбор
@@ -57,9 +59,20 @@ class StartScene extends Phaser.Scene {
                 this.sound.add('startSound').play(); // звук начала игры
             } else if (event.key === ' ' && this.cursor.y === 565) {
                 console.log('Construction');
-            } else if (event.key === 'p') {
-                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
+            } else if (event.key === 'q') {
+                // ------- Инструмент разработчика. Переключатель сцен на англ. 'q'
                 this.scene.start('GameOverScene');
+            } else if (event.key === 't') {
+                team.push('t');
+            } else if (event.key === 'e') {
+                team.push('e');
+            } else if (event.key === 'a') {
+                team.push('a');
+            } else if (event.key === 'm') {
+                team.push('m');
+                if (team.join('') === 'team') {
+                    this.scene.start('TeamScene');
+                }
             }
         });
 
