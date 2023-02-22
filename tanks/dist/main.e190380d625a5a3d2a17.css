@@ -1,12 +1,12 @@
 @font-face {
   font-family: "Pixel";
-  src: url("./assets/fonts/Emulogic.ttf") format("truetype");
+  src: url(b6b5c4e9d41c3af65443.ttf) format("truetype");
   font-style: 500;
   font-weight: normal;
 }
 @font-face {
   font-family: "Namco";
-  src: url("./assets/fonts/Hemico.ttf") format("truetype");
+  src: url(086969ce3ac6dca9b1f7.ttf) format("truetype");
   font-style: 500;
   font-weight: normal;
 }
@@ -19,7 +19,7 @@ body {
 #app {
   display: flex;
   justify-content: center;
-  animation: 4s ease-out 0s 1 slideInFromBottom;
+  animation: 6s ease-out 2s slideInFromBottom;
 }
 
 @keyframes slideInFromBottom {
@@ -30,3 +30,4 @@ body {
     transform: translateY(0);
   }
 }
+
