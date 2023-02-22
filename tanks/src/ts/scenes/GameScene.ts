@@ -74,7 +74,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private tanksInGame = new Array(20).fill(1);
 
-    private isGameOver: boolean = false;
+    private isGameOver = false;
 
     constructor() {
         super({ key: 'GameScene' });
@@ -423,7 +423,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             this.events.removeAllListeners('PlayerDead');
             this.events.removeAllListeners('GameOver');
         });
-        //-------------------------------------------------------------------------pause
+        // -------------------------------------------------------------------------pause
         this.input.keyboard.on('keydown', (event: { key: string }) => {
             if (event.key === 'p') {
                 this.scene.pause('GameScene');

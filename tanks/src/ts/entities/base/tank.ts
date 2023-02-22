@@ -79,23 +79,24 @@ class Tank extends Entity {
     }
 
     move(dir: number) {
+        if (this.scene.scene.isPaused('GameScene')) return;
+
         this.dir = dir % 4;
 
         this.setVelocityX(fCos(this.dir) * this.speed);
         this.setVelocityY(fSin(this.dir) * this.speed);
-        if (!this.scene.scene.isPaused('GameScene')) {
-            if (!this.moving) {
-                this.moving = true;
-                this.scene.sound.play('moveSound', { loop: true });
-                this.anims.play(this.animField, true);
-            } else {
-                this.scene.sound.stopByKey('moveSound');
-            }
 
-            this.scene.sound.play('moveSound');
-
-            this.angle = 90 * this.dir;
+        if (!this.moving) {
+            this.moving = true;
+            this.scene.sound.play('moveSound', { loop: true });
+            this.anims.play(this.animField, true);
+        } else {
+            this.scene.sound.stopByKey('moveSound');
         }
+
+        this.scene.sound.play('moveSound');
+
+        this.angle = 90 * this.dir;
     }
 
     stopMove() {
@@ -104,6 +105,8 @@ class Tank extends Entity {
     }
 
     shot() {
+        if (this.scene.scene.isPaused('GameScene')) return;
+
         if (!this.readyShot) return;
 
         this.readyShot = false;
@@ -111,24 +114,23 @@ class Tank extends Entity {
         setTimeout(() => {
             this.readyShot = true;
         }, this.coolDown * 1000);
-        if (!this.scene.scene.isPaused('GameScene')) {
-            for (let i = 0; i < this.shotQuantity; i += 1) {
-                setTimeout(() => {
-                    const xShot = this.x + fCos(this.dir) * 30;
-                    const yShot = this.y + fSin(this.dir) * 30;
-                    // eslint-disable-next-line no-new
-                    new Shot(
-                        this.scene as IBattleScene,
-                        xShot,
-                        yShot,
-                        this.dir,
-                        this.sideBad,
-                        this.shotSpeedMod,
-                        this.shotDurab
-                    );
-                    this.scene.sound.add('shotSound').play();
-                }, i * 100);
-            }
+
+        for (let i = 0; i < this.shotQuantity; i += 1) {
+            setTimeout(() => {
+                const xShot = this.x + fCos(this.dir) * 30;
+                const yShot = this.y + fSin(this.dir) * 30;
+                // eslint-disable-next-line no-new
+                new Shot(
+                    this.scene as IBattleScene,
+                    xShot,
+                    yShot,
+                    this.dir,
+                    this.sideBad,
+                    this.shotSpeedMod,
+                    this.shotDurab
+                );
+                this.scene.sound.add('shotSound').play();
+            }, i * 100);
         }
     }
 
@@ -143,7 +145,7 @@ class Tank extends Entity {
     }
 
     // eslint-disable-next-line prettier/prettier
-    lastChanse() {}
+    lastChanse() { }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getShot(shot: Shot) {

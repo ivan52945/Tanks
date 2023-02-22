@@ -1,4 +1,3 @@
-import Phaser from 'phaser';
 import tilemap1 from '../../assets/maps/tilemap1.json';
 import { randIntFrZ } from './functions';
 
@@ -12,10 +11,7 @@ function setFinderEmpty(map: typeof tilemap1) {
 
         let summLayers = 0;
         for (let iL = 0; iL < layers.length; iL += 1) {
-            if(iL === 1){
-                continue
-            }
-            summLayers += layers[iL].data[i];
+            if (iL !== 1) summLayers += layers[iL].data[i];
         }
 
         if (summLayers > 0) {
