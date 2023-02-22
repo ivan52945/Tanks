@@ -313,14 +313,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.events.on('killed', (type: Enemies, x: number, y: number) => {
             score.tanks[type] += 1;
 
-            const tCount = this.tanks.getLength();
-
-            factory.replanish(tCount - 1);
+            factory.produce();
 
             setTimeout(() => {
-                const allT = this.tanks.getLength() + factory.planSize;
-
-                if (allT <= 1 && this.life >= 0) {
+                if (this.tanks.getChildren().length <= 1 && this.life >= 0) {
                     this.scene.start('ScoreScene', { stage: this.stage, score });
                 }
             }, 1000);
@@ -397,16 +393,18 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                     tank.explozion();
                     tank.destroy();
                 });
-
-                factory.replanish(0);
-
-                setTimeout(() => {
-                    const allT = this.tanks.getLength() + factory.planSize;
-
-                    if (allT <= 1 && this.life >= 0) {
-                        this.scene.start('ScoreScene', { stage: this.stage, score });
+                if (factory.planSize > 0) {
+                    for (let i = 0; i < 4; i += 1) {
+                        setTimeout(() => factory.produce(), i * 2000);
                     }
-                }, 1000);
+                } else {
+                    setTimeout(() => {
+                        if (this.tanks.getChildren().length <= 1 && this.life >= 0) {
+                            this.scene.start('ScoreScene', { stage: this.stage, score });
+                        }
+                    }, 1000);
+                }
+                // }, 1000);
             } else if (bonus === Bonus.freeze) {
                 const tanks = this.tanks.getChildren().slice() as Tank[];
                 tanks.forEach((tank) => tank.freeze());
@@ -417,7 +415,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             const removeListener = this.events.removeAllListeners.bind(this.events);
             this.tanks.destroy(true, true);
 
-            factory.destroy();
             removeListener('getBonuses');
             removeListener('PlayerDead');
             removeListener('killed');
