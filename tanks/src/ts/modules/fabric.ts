@@ -75,10 +75,6 @@ class Fabric {
         tank.setData('bonus', true);
 
         tank.startBlink('bonus');
-
-        setTimeout(() => {
-            tank.setData('bonus', null);
-        }, 8000);
     }
 
     produce() {

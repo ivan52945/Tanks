@@ -175,10 +175,6 @@ class Tank extends Entity {
 
             this.anims.play(keyCurrent);
         }, 200);
-
-        setTimeout(() => {
-            this.stopBlinking();
-        }, 8000);
     }
 
     stopBlinking() {

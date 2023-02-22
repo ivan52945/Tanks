@@ -157,10 +157,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.shots.add(shot);
     }
 
-    killScene() {
-        this.tanks.destroy(true, true);
-    }
-
     create() {
         const score = {
             tanks: [0, 0, 0, 0],
@@ -415,7 +411,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
 
         this.events.once('shutdown', () => {
-            const { removeListener } = this.events;
+            const removeListener = this.events.removeAllListeners.bind(this.events);
+            this.tanks.destroy(true, true);
 
             factory.destroy();
             removeListener('getBonuses');
