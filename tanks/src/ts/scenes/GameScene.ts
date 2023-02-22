@@ -420,6 +420,13 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             removeListener('killed');
             removeListener('GameOver');
         });
+        // -------------------------------------------------------------------------pause
+        this.input.keyboard.on('keydown', (event: { key: string }) => {
+            if (event.key === 'p') {
+                this.scene.pause('GameScene');
+                this.scene.launch('PauseScene');
+            }
+        });
     }
 
     changeTankIsGame() {
