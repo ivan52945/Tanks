@@ -341,7 +341,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.events.on('PlayerDead', () => {
             this.life -= 1;
             this.add.image(976, 592, 'numbers', this.life); // --------------------меняет количество жизней на панели
-            if (this.life >= 0 && !this.flag.body) {
+            if (this.life >= 0 && this.flag.body) {
                 this.player = new Player(this, 352, 870);
                 this.addTank(this.player);
             } else {
