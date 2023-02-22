@@ -412,10 +412,13 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
 
         this.events.once('shutdown', () => {
-            this.events.removeAllListeners('killed');
-            this.events.removeAllListeners('getBonuses');
-            this.events.removeAllListeners('PlayerDead');
-            this.events.removeAllListeners('GameOver');
+            const removeListener = this.events.removeAllListeners.bind(this.events);
+            this.tanks.destroy(true, true);
+
+            removeListener('getBonuses');
+            removeListener('PlayerDead');
+            removeListener('killed');
+            removeListener('GameOver');
         });
         // -------------------------------------------------------------------------pause
         this.input.keyboard.on('keydown', (event: { key: string }) => {
