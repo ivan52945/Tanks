@@ -3,7 +3,7 @@ import { EnemyPoints } from '../modules/score-config';
 class ScoreScene extends Phaser.Scene {
     keys: unknown;
 
-    private score!: number[];
+    private score!: { tanks: number[]; add: number };
 
     private stage!: number;
 
@@ -15,7 +15,7 @@ class ScoreScene extends Phaser.Scene {
         });
     }
 
-    init(result: { stage: number; score: number[] }) {
+    init(result: { stage: number; score: { tanks: number[]; add: number } }) {
         this.stage = result.stage;
         this.score = result.score;
 
@@ -27,9 +27,11 @@ class ScoreScene extends Phaser.Scene {
     }
 
     create() {
-        this.record += this.score.reduce((acc, c, i) => acc + c * EnemyPoints[i], 0);
+        const { tanks: score, add } = this.score;
 
-        const sum = this.score.reduce((a, b) => a + b, 0);
+        this.record += score.reduce((acc, c, i) => acc + c * EnemyPoints[i], 0) + add;
+
+        const sum = this.score.tanks.reduce((a, b) => a + b, 0);
 
         const standardFont = { font: '35px Pixel' };
 
@@ -42,14 +44,14 @@ class ScoreScene extends Phaser.Scene {
 
         const tanks = ['enemy_light_1', 'enemy_wheeled_1', 'enemy_shooter_1', 'enemy_heavy_1'];
 
-        this.score.forEach((count, i) => {
+        score.forEach((count, i) => {
             const pos = i * 70;
 
             this.add.image(540, 410 + pos, 'tanks', tanks[i]);
             this.add.text(10, 400 + pos, `${EnemyPoints[i]}`, { font: '35px Pixel' });
             this.add.text(250, 400 + pos, `PTS`, standardFont);
 
-            this.add.text(400, 400 + pos, `${this.score[i]}`, standardFont);
+            this.add.text(400, 400 + pos, `${score[i]}`, standardFont);
         });
 
         this.add.text(190, 680, `TOTAL ${sum}`, standardFont); // всего уничтожено
@@ -59,8 +61,8 @@ class ScoreScene extends Phaser.Scene {
         }, 3000);
 
         this.input.keyboard.on('keydown', (event: { key: string }) => {
-            if (event.key === 'p') {
-                // ------- Инструмент разработчика. Переключатель сцен на англ. 'p'
+            if (event.key === 'q') {
+                // ------- Инструмент разработчика. Переключатель сцен на англ. 'q'
                 this.scene.start('HiscoreScene');
             }
         });

@@ -79,6 +79,8 @@ class Tank extends Entity {
     }
 
     move(dir: number) {
+        if (this.scene.scene.isPaused('GameScene')) return;
+
         this.dir = dir % 4;
 
         this.setVelocityX(fCos(this.dir) * this.speed);
@@ -103,6 +105,8 @@ class Tank extends Entity {
     }
 
     shot() {
+        if (this.scene.scene.isPaused('GameScene')) return;
+
         if (!this.readyShot) return;
 
         this.readyShot = false;
@@ -149,6 +153,7 @@ class Tank extends Entity {
 
         if (this.getData('bonus')) {
             this.scene.events.emit('getBonuses');
+            this.setData('bonus', undefined);
         }
 
         setTimeout(() => {
@@ -175,10 +180,6 @@ class Tank extends Entity {
 
             this.anims.play(keyCurrent);
         }, 200);
-
-        setTimeout(() => {
-            this.stopBlinking();
-        }, 8000);
     }
 
     stopBlinking() {
