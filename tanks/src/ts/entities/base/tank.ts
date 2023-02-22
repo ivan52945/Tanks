@@ -153,6 +153,7 @@ class Tank extends Entity {
 
         if (this.getData('bonus')) {
             this.scene.events.emit('getBonuses');
+            this.setData('bonus', undefined);
         }
 
         setTimeout(() => {
