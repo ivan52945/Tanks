@@ -400,6 +400,14 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 });
 
                 factory.replanish(0);
+
+                setTimeout(() => {
+                    const allT = this.tanks.getLength() + factory.planSize;
+
+                    if (allT <= 1 && this.life >= 0) {
+                        this.scene.start('ScoreScene', { stage: this.stage, score });
+                    }
+                }, 1000);
             } else if (bonus === Bonus.freeze) {
                 const tanks = this.tanks.getChildren().slice() as Tank[];
                 tanks.forEach((tank) => tank.freeze());
