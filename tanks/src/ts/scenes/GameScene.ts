@@ -185,11 +185,13 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         const map = this.make.tilemap({ key: `tilemap${mapKeyNum}` });
         const tileset = map.addTilesetImage(`tileSet${mapKeyNum + 1}`, 'tiles1');
 
-        const walls = map.createLayer('walls-layer', tileset);
+        const bricks = map.createLayer('bricks-layer', tileset);
+        const concrete = map.createLayer('concrete-layer', tileset);
         const water = map.createLayer('water-layer', tileset);
         const bushes = map.createLayer('bushes-layer', tileset);
 
-        walls.setCollisionByProperty({ collides: true });
+        bricks.setCollisionByProperty({ collides: true });
+        concrete.setCollisionByProperty({ collides: true });
         water.setCollisionByProperty({ collides: true });
 
         bushes.setDepth(10);
@@ -252,7 +254,11 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         const element = this.add.image(484, 1000, 'gameOver');
 
-        this.physics.add.collider(this.tanks, walls, (tank) => {
+        this.physics.add.collider(this.tanks, bricks, (tank) => {
+            tank.update();
+        });
+
+        this.physics.add.collider(this.tanks, concrete, (tank) => {
             tank.update();
         });
 
@@ -274,7 +280,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             shot2.destroy();
         });
 
-        this.physics.add.collider(this.shots, walls, (shot) => {
+        this.physics.add.collider(this.shots, bricks, (shot) => {
             const { x, y, dir } = shot as Shot;
 
             (shot as Shot).explozion();
@@ -282,9 +288,24 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             const xT = x + fCos(dir) * 17;
             const yT = y + fSin(dir) * 17;
 
-            walls.removeTileAtWorldXY(xT + fCos(dir + 1) * 8, yT + fSin(dir + 1) * 8);
-            walls.removeTileAtWorldXY(xT + fCos(dir + 3) * 8, yT + fSin(dir + 3) * 8);
+            bricks.removeTileAtWorldXY(xT + fCos(dir + 1) * 8, yT + fSin(dir + 1) * 8);
+            bricks.removeTileAtWorldXY(xT + fCos(dir + 3) * 8, yT + fSin(dir + 3) * 8);
 
+            shot.destroy();
+        });
+
+        this.physics.add.collider(this.shots, concrete, (shot) => {
+            const { x, y, dir } = shot as Shot;
+
+            (shot as Shot).explozion();
+            console.log(this.player.getLevel())
+            if(this.player.getLevel() === 3 && !(shot as Shot).sideBad){
+                const xT = x + fCos(dir) * 17;
+                const yT = y + fSin(dir) * 17;
+
+                concrete.removeTileAtWorldXY(xT + fCos(dir + 1) * 8, yT + fSin(dir + 1) * 8);
+                concrete.removeTileAtWorldXY(xT + fCos(dir + 3) * 8, yT + fSin(dir + 3) * 8);
+            }
             shot.destroy();
         });
 
@@ -408,6 +429,29 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             } else if (bonus === Bonus.freeze) {
                 const tanks = this.tanks.getChildren().slice() as Tank[];
                 tanks.forEach((tank) => tank.freeze());
+            }else if(bonus === Bonus.blockBase){
+                const baseConcrete = map.createLayer('base-concrete-layer', tileset);
+                baseConcrete.setCollisionByProperty({ collides: true });
+
+                this.physics.add.collider(this.shots, baseConcrete, (shot) => {
+                    const { x, y, dir } = shot as Shot;
+        
+                    (shot as Shot).explozion();
+                    console.log(this.player.getLevel())
+                    if(this.player.getLevel() === 3 && !(shot as Shot).sideBad){
+                        const xT = x + fCos(dir) * 17;
+                        const yT = y + fSin(dir) * 17;
+        
+                        baseConcrete.removeTileAtWorldXY(xT + fCos(dir + 1) * 8, yT + fSin(dir + 1) * 8);
+                        baseConcrete.removeTileAtWorldXY(xT + fCos(dir + 3) * 8, yT + fSin(dir + 3) * 8);
+                    }
+                    shot.destroy();
+                });
+
+                this.physics.add.collider(this.tanks, baseConcrete, (tank) => {
+                    tank.update();
+                });        
+        
             }
         });
 
