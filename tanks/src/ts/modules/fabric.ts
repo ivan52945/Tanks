@@ -14,16 +14,26 @@ class Fabric {
 
     private plan: FabticConfig['plan'];
 
+    readonly min = 3;
+
+    readonly max = 5;
+
+    // private onProduce = 0;
+
+    // private allTimers: Phaser.Time.TimerEvent[] = [];
+
+    // private tCount = 0;
+
     constructor(scene: IBattleScene, config: FabticConfig) {
         this.scene = scene;
         this.plan = config.plan.reverse();
         this.coords = config.coords;
-        for (let i = 0; i < 2; i += 1) {
+        for (let i = 0; i < 1; i += 1) {
             setTimeout(() => {
                 this.coords.forEach((coord) => {
                     this.produceSingle(coord.x, coord.y, 'light');
                 });
-            }, 2000 * i);
+            }, 3000 * i);
         }
     }
 
@@ -53,7 +63,6 @@ class Fabric {
                     break;
                 }
             }
-
             star.destroy();
             this.scene.addTank(tank);
             this.setBonused(tank);

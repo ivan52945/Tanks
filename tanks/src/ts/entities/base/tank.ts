@@ -145,7 +145,7 @@ class Tank extends Entity {
     }
 
     // eslint-disable-next-line prettier/prettier
-    lastChanse() { }
+    lastChanse() {}
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getShot(shot: Shot) {
@@ -153,6 +153,7 @@ class Tank extends Entity {
 
         if (this.getData('bonus')) {
             this.scene.events.emit('getBonuses');
+            // this.setData('bonus', undefined);
         }
 
         setTimeout(() => {
@@ -179,9 +180,6 @@ class Tank extends Entity {
 
             this.anims.play(keyCurrent);
         }, 200);
-        setTimeout(() => {
-            this.stopBlinking();
-        }, 8000);
     }
 
     stopBlinking() {

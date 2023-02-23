@@ -10,6 +10,8 @@ import bonusJSON from '../../assets/images/bonus.json';
 import block32 from '../../assets/images/blocks-32.png';
 import maps from '../modules/maps';
 
+import planJson from '../../assets/plan.json';
+
 import shotImge from '../../assets/images/shot-small.png';
 
 import tankInGameImg from '../../assets/images/mini-tank.png';
@@ -45,7 +47,7 @@ import Tank from '../entities/base/tank';
 import Player from '../entities/player';
 import Shot from '../entities/base/shot';
 
-import { Group, Keys } from '../interfaces/based';
+import { Group, Keys, Static } from '../interfaces/based';
 import IBattleScene from '../interfaces/battle-scene';
 import Fabric from '../modules/fabric';
 
@@ -64,6 +66,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private shots!: Group;
 
+    private flag!: Static;
+
     private life = 2;
 
     private stage = 1;
@@ -72,9 +76,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
     private loaded = false;
 
-    private tanksInGame = new Array(20).fill(1);
-
-    private isGameOver = false;
+    private tanksInGame!: number[];
 
     constructor() {
         super({ key: 'GameScene' });
@@ -157,14 +159,15 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.shots.add(shot);
     }
 
-    killScene() {
-        this.tanks.destroy(true, true);
-    }
-
     create() {
-        const score = [0, 0, 0, 0];
+        const score = {
+            tanks: [0, 0, 0, 0],
+            add: 0,
+        };
 
         const mapKeyNum = (this.stage - 1) % maps.length;
+
+        this.tanksInGame = new Array(planJson.plans[this.stage - 1].plan.length + 3).fill(1);
 
         this.anims.create({
             key: 'explodeAnimation',
@@ -186,13 +189,12 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         const water = map.createLayer('water-layer', tileset);
         const bushes = map.createLayer('bushes-layer', tileset);
 
+        bushes.setDepth(10);
+
         walls.setCollisionByProperty({ collides: true });
         water.setCollisionByProperty({ collides: true });
 
-        bushes.setDepth(10);
-
         const find = setFinderEmpty(maps[mapKeyNum]);
-        console.log(find);
 
         this.anims.create({
             key: 'protectionImgAnimation',
@@ -217,7 +219,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.player = new Player(this, 352, 870);
 
         this.addTank(this.player);
-        this.isGameOver = false;
 
         const fabricConfig = {
             coords: [
@@ -225,8 +226,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 { x: 650, y: 96 },
                 { x: 864, y: 96 },
             ],
-            plan: ['shooter', 'light', 'heavy'],
-            // plan: ['light'],
+            plan: planJson.plans[this.stage - 1].plan,
         };
 
         const factory = new Fabric(this, fabricConfig);
@@ -238,13 +238,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         borders.create(480, 32, 'borderBlock').setScale(26, 2).refreshBody();
         borders.create(480, 928, 'borderBlock').setScale(26, 2).refreshBody();
 
-        const flag = this.physics.add.staticGroup();
-
-        flag.create(480, 864, 'flagOnImg');
+        this.flag = this.physics.add.staticSprite(480, 864, 'flagOnImg');
 
         this.changeTankIsGame(); // ---------------------отрисовывает танки в игре
-
-        // let stageTen = '0';
 
         // this.add.image(944, 816, 'numbers', stageTen); // первая цифра уровня
         this.add.image(944, 816, 'borderBlock');
@@ -264,7 +260,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             tank.update();
         });
 
-        this.physics.add.collider(this.tanks, flag, (tank) => {
+        this.physics.add.collider(this.tanks, this.flag, (tank) => {
             tank.update();
         });
 
@@ -286,9 +282,17 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             const xT = x + fCos(dir) * 17;
             const yT = y + fSin(dir) * 17;
 
-            walls.removeTileAtWorldXY(xT + fCos(dir + 1) * 8, yT + fSin(dir + 1) * 8);
-            walls.removeTileAtWorldXY(xT + fCos(dir + 3) * 8, yT + fSin(dir + 3) * 8);
+            const AOE = [dir + 1, dir + 3];
 
+            AOE.forEach((dirAOE) => {
+                const tile = walls.getTileAtWorldXY(xT + fCos(dirAOE) * 8, yT + fSin(dirAOE) * 8);
+
+                if (!tile || (tile.index === 1 && (shot as Shot).durability < 2)) return;
+
+                console.log((shot as Shot).durability, tile.index);
+
+                walls.removeTileAtWorldXY(xT + fCos(dirAOE) * 8, yT + fSin(dirAOE) * 8);
+            });
             shot.destroy();
         });
 
@@ -302,14 +306,12 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             }
         });
 
-        this.physics.add.collider(this.shots, flag, (shot, flag) => {
-            this.add.sprite(shot.body.x, shot.body.y, 'explosion').play('explodeAnimation');
-            this.sound.add('explosionSound').play();
-            flag.destroy();
+        this.physics.add.collider(this.shots, this.flag, (_, shot) => {
+            (shot as Shot).explozion();
+
             shot.destroy();
-            this.add.image(480, 864, 'flagOffImg');
-            this.isGameOver = true;
-            this.player.lastChanse();
+            this.flag.setTexture('flagOffImg');
+            this.events.emit('GameOver');
         });
 
         // события убийства игрока и врагов
@@ -317,7 +319,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         let counterDestroyTanks = 1;
 
         this.events.on('killed', (type: Enemies, x: number, y: number) => {
-            score[type] += 1;
+            score.tanks[type] += 1;
 
             factory.produce();
 
@@ -332,9 +334,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             this.changeTankIsGame();
 
             const points = this.add.sprite(x, y, 'pointsImg').setFrame(type);
-            setTimeout(() => {
-                points.destroy();
-            }, 1000);
+            setTimeout(() => points.destroy(), 1000);
         });
 
         this.events.on('getBonuses', () => {
@@ -348,7 +348,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.events.on('PlayerDead', () => {
             this.life -= 1;
             this.add.image(976, 592, 'numbers', this.life); // --------------------меняет количество жизней на панели
-            if (this.life >= 0 && !this.isGameOver) {
+            if (this.life >= 0 && this.flag.body) {
                 this.player = new Player(this, 352, 870);
                 this.addTank(this.player);
             } else {
@@ -357,6 +357,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
 
         this.events.on('GameOver', () => {
+            this.events.removeListener('GameOver');
             this.tweens.add({
                 targets: element,
                 y: 450,
@@ -411,17 +412,43 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                         }
                     }, 1000);
                 }
+                // }, 1000);
             } else if (bonus === Bonus.freeze) {
                 const tanks = this.tanks.getChildren().slice() as Tank[];
                 tanks.forEach((tank) => tank.freeze());
+            } else if (bonus === Bonus.blockBase) {
+                const baseConcrete = map.createLayer('base-concrete-layer', tileset);
+                baseConcrete.setCollisionByProperty({ collides: true });
+
+                this.physics.add.collider(this.shots, baseConcrete, (shot) => {
+                    const { x, y, dir } = shot as Shot;
+
+                    (shot as Shot).explozion();
+                    console.log(this.player.getLevel());
+                    if (this.player.getLevel() === 3 && !(shot as Shot).sideBad) {
+                        const xT = x + fCos(dir) * 17;
+                        const yT = y + fSin(dir) * 17;
+
+                        baseConcrete.removeTileAtWorldXY(xT + fCos(dir + 1) * 8, yT + fSin(dir + 1) * 8);
+                        baseConcrete.removeTileAtWorldXY(xT + fCos(dir + 3) * 8, yT + fSin(dir + 3) * 8);
+                    }
+                    shot.destroy();
+                });
+
+                this.physics.add.collider(this.tanks, baseConcrete, (tank) => {
+                    tank.update();
+                });
             }
         });
 
         this.events.once('shutdown', () => {
-            this.events.removeAllListeners('killed');
-            this.events.removeAllListeners('getBonuses');
-            this.events.removeAllListeners('PlayerDead');
-            this.events.removeAllListeners('GameOver');
+            const removeListener = this.events.removeAllListeners.bind(this.events);
+            this.tanks.destroy(true, true);
+
+            removeListener('getBonuses');
+            removeListener('PlayerDead');
+            removeListener('killed');
+            removeListener('GameOver');
         });
         // -------------------------------------------------------------------------pause
         this.input.keyboard.on('keydown', (event: { key: string }) => {

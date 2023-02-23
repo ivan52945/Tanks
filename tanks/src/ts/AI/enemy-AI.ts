@@ -11,6 +11,8 @@ class EnemyAI implements IController {
 
     readonly shotTimer: NodeJS.Timer;
 
+    private frezeTimer!: NodeJS.Timeout;
+
     constructor(time: number, tank: ITank) {
         this.tank = tank;
 
@@ -43,13 +45,14 @@ class EnemyAI implements IController {
     destroy() {
         clearInterval(this.moveTimer);
         clearInterval(this.shotTimer);
+        clearTimeout(this.frezeTimer);
     }
 
     freeze() {
         this.freezed = true;
         this.tank.stopMove();
 
-        setTimeout(() => {
+        this.frezeTimer = setTimeout(() => {
             this.freezed = false;
             this.tank.update?.();
         }, 8000);
