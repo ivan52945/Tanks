@@ -18,11 +18,7 @@ class Fabric {
 
     readonly max = 5;
 
-    // private onProduce = 0;
-
-    // private allTimers: Phaser.Time.TimerEvent[] = [];
-
-    // private tCount = 0;
+    private counter = 20;
 
     constructor(scene: IBattleScene, config: FabticConfig) {
         this.scene = scene;
@@ -65,7 +61,10 @@ class Fabric {
             }
             star.destroy();
             this.scene.addTank(tank);
-            this.setBonused(tank);
+            if (this.counter % 4 === 0) {
+                this.setBonused(tank);
+            }
+            this.counter -= 1;
         }, 1000);
     }
 
@@ -73,10 +72,6 @@ class Fabric {
         tank.setData('bonus', true);
 
         tank.startBlink('bonus');
-
-        setTimeout(() => {
-            tank.setData('bonus', null);
-        }, 8000);
     }
 
     produce() {
