@@ -167,7 +167,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         const mapKeyNum = (this.stage - 1) % maps.length;
 
-        this.tanksInGame = new Array(planJson.plans[this.stage - 1].plan.length + 3).fill(1);
+        this.tanksInGame = new Array(planJson.plans[this.stage].plan.length + 3).fill(1);
 
         this.anims.create({
             key: 'explodeAnimation',
