@@ -153,12 +153,7 @@ class Tank extends Entity {
 
         if (this.getData('bonus')) {
             this.scene.events.emit('getBonuses');
-            // this.setData('bonus', undefined);
         }
-
-        setTimeout(() => {
-            this.stopBlinking();
-        }, 0);
 
         if (this.HP > 0) return;
 
@@ -177,7 +172,6 @@ class Tank extends Entity {
             frame = !frame;
 
             keyCurrent = frame ? this.key : `${this.key}_${adding}`;
-
             this.anims.play(keyCurrent);
         }, 200);
     }

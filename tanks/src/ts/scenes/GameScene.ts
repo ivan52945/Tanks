@@ -167,7 +167,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         const mapKeyNum = (this.stage - 1) % maps.length;
 
-        this.tanksInGame = new Array(planJson.plans[this.stage - 1].plan.length + 3).fill(1);
+        this.tanksInGame = new Array(planJson.plans[this.stage].plan.length + 3).fill(1);
 
         this.anims.create({
             key: 'explodeAnimation',
@@ -298,8 +298,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             const { x, y, dir } = shot as Shot;
 
             (shot as Shot).explozion();
-            console.log(this.player.getLevel())
-            if(this.player.getLevel() === 3 && !(shot as Shot).sideBad){
+            if (this.player.getLevel() === 3 && !(shot as Shot).sideBad) {
                 const xT = x + fCos(dir) * 17;
                 const yT = y + fSin(dir) * 17;
 
@@ -395,13 +394,16 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             tank.update();
         });
 
-        this.physics.add.overlap(this.player, bonuses, (player, bonusBody) => {
+        this.physics.add.overlap(this.tanks, bonuses, (player, bonusBody) => {
+            if (!player.body.gameObject.key.includes('player')) return;
             const bonus = bonusBody.getData('bonus');
 
             bonusBody.destroy();
 
-            if (bonus === Bonus.addLife) this.life += 1;
-            else if (bonus === Bonus.levelUp) {
+            if (bonus === Bonus.addLife) {
+                this.life += 1;
+                this.add.image(976, 592, 'numbers', this.life);
+            } else if (bonus === Bonus.levelUp) {
                 this.player.levelUp();
                 this.level += 1;
             } else if (bonus === Bonus.protection) this.player.setProtection();
@@ -412,10 +414,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                     if (tank instanceof Player) return;
 
                     tank.explozion();
-                    tank.destroy();
+                    (tank as Tank).lastChanse();
                 });
                 if (factory.planSize > 0) {
-                    for (let i = 0; i < 4; i += 1) {
+                    for (let i = 0; i < 1; i += 1) {
                         setTimeout(() => factory.produce(), i * 2000);
                     }
                 } else {
@@ -425,23 +427,21 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                         }
                     }, 1000);
                 }
-                // }, 1000);
             } else if (bonus === Bonus.freeze) {
                 const tanks = this.tanks.getChildren().slice() as Tank[];
                 tanks.forEach((tank) => tank.freeze());
-            }else if(bonus === Bonus.blockBase){
+            } else if (bonus === Bonus.blockBase) {
                 const baseConcrete = map.createLayer('base-concrete-layer', tileset);
                 baseConcrete.setCollisionByProperty({ collides: true });
 
                 this.physics.add.collider(this.shots, baseConcrete, (shot) => {
                     const { x, y, dir } = shot as Shot;
-        
+
                     (shot as Shot).explozion();
-                    console.log(this.player.getLevel())
-                    if(this.player.getLevel() === 3 && !(shot as Shot).sideBad){
+                    if (this.player.getLevel() === 3 && !(shot as Shot).sideBad) {
                         const xT = x + fCos(dir) * 17;
                         const yT = y + fSin(dir) * 17;
-        
+
                         baseConcrete.removeTileAtWorldXY(xT + fCos(dir + 1) * 8, yT + fSin(dir + 1) * 8);
                         baseConcrete.removeTileAtWorldXY(xT + fCos(dir + 3) * 8, yT + fSin(dir + 3) * 8);
                     }
@@ -450,8 +450,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
                 this.physics.add.collider(this.tanks, baseConcrete, (tank) => {
                     tank.update();
-                });        
-        
+                });
             }
         });
 
