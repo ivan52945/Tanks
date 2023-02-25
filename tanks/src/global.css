@@ -19,7 +19,7 @@ body {
 #app {
   display: flex;
   justify-content: center;
-  animation: 4s ease-out 0s 1 slideInFromBottom;
+  animation: 6s ease-out 2s slideInFromBottom;
 }
 
 @keyframes slideInFromBottom {
