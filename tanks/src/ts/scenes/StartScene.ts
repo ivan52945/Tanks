@@ -45,7 +45,7 @@ class StartScene extends Phaser.Scene {
             repeat: -1,
         });
 
-        let team: string[] = [];
+        const team: string[] = [];
 
         this.input.keyboard.on('keydown', (event: { key: string }) => {
             console.log('key');
