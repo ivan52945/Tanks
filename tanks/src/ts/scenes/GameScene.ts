@@ -398,8 +398,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
             bonusBody.destroy();
 
-            if (bonus === Bonus.addLife) this.life += 1;
-            else if (bonus === Bonus.levelUp) {
+            if (bonus === Bonus.addLife) {
+                this.life += 1;
+                this.add.image(976, 592, 'numbers', this.life);
+            } else if (bonus === Bonus.levelUp) {
                 this.player.levelUp();
                 this.level += 1;
             } else if (bonus === Bonus.protection) this.player.setProtection();
@@ -410,7 +412,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                     if (tank instanceof Player) return;
 
                     tank.explozion();
-                    tank.destroy();
+                    (tank as Tank).lastChanse();
                 });
                 if (factory.planSize > 0) {
                     for (let i = 0; i < 4; i += 1) {
