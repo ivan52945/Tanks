@@ -331,7 +331,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             setTimeout(() => factory.replanish(this.tanks.getLength() - 1), 0);
 
             delayer(() => {
-                if (this.tanks.getChildren().length <= 1 && this.life >= 0) {
+                if (this.tanks.getChildren().length + factory.planSize <= 1 && this.life >= 0) {
                     this.scene.start('ScoreScene', { stage: this.stage, score });
                 }
             }, 1000);

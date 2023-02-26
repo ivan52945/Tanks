@@ -71,8 +71,10 @@ class Tank extends Entity {
             repeat: -1,
         }) as Animation;
 
-        const delayerCall = this.scene.time.delayedCall.bind(this.scene.time);
-        this.setTimeout = (callback, delay) => delayerCall(delay, callback);
+        this.setTimeout = (function memoizer() {
+            const delayerBind = scene.time.delayedCall.bind(scene.time);
+            return (callback: () => void, delay: number) => delayerBind(delay, callback);
+        })();
 
         if (!sideBad) return;
 

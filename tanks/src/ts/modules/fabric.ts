@@ -24,7 +24,7 @@ class Fabric {
 
     constructor(scene: IBattleScene, config: FabticConfig) {
         this.scene = scene;
-        this.plan = config.plan.reverse();
+        this.plan = config.plan.reverse().concat(new Array(6).fill('light'));
         this.coords = config.coords;
 
         this.setTimeout = (function memoizer() {
@@ -35,8 +35,10 @@ class Fabric {
         this.replanish(0);
     }
 
-    produceSingle(x: number, y: number, type?: string) {
+    produceSingle(coords: { x: number; y: number }, type?: string) {
         if (!type) return;
+
+        const { x, y } = coords;
 
         const star = this.scene.add.sprite(x, y, 'starImg').play('starImgAnimation');
 
@@ -79,8 +81,6 @@ class Fabric {
     }
 
     replanish(current: number) {
-        console.log(current);
-
         if (current >= this.treshold) return;
 
         let needToProduce = this.treshold - current;
@@ -97,13 +97,11 @@ class Fabric {
 
             const spawns = shuffle(Array.from(Array(3).keys())).splice(0, balance);
 
-            console.log(balance);
-
             this.setTimeout(() => {
                 spawns
-                    .map((p) => this.coords[p])
+                    .map((s) => this.coords[s])
                     .forEach((coord) => {
-                        this.produceSingle(coord.x, coord.y, this.plan.pop());
+                        this.producePlan(coord);
                     });
 
                 this.qeue -= 1;
@@ -111,10 +109,14 @@ class Fabric {
         }
     }
 
+    producePlan(coord: { x: number; y: number }) {
+        this.produceSingle(coord, this.plan.pop());
+    }
+
     produce() {
         const coord = this.coords[randIntFrZ(this.coords.length - 1)];
 
-        this.produceSingle(coord.x, coord.y, this.plan.pop());
+        this.produceSingle(coord, this.plan.pop());
     }
 
     get planSize() {
