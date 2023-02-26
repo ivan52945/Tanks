@@ -9,7 +9,6 @@ import StageNumberScene from './ts/scenes/StageNumberScene';
 import TeamScene from './ts/scenes/TeamScene';
 import PauseScene from './ts/scenes/PauseScene';
 
-
 const config = {
     type: Phaser.AUTO,
     parent: 'app',

@@ -327,16 +327,18 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         let counterDestroyTanks = 1;
 
-        this.events.on('killed', (type: Enemies, x: number, y: number) => {
-            score.tanks[type] += 1;
-
-            factory.produce();
+        this.events.on('killed', () => {
+            setTimeout(() => factory.replanish(this.tanks.getLength() - 1), 0);
 
             delayer(() => {
                 if (this.tanks.getChildren().length <= 1 && this.life >= 0) {
                     this.scene.start('ScoreScene', { stage: this.stage, score });
                 }
             }, 1000);
+        });
+
+        this.events.on('count', (type: Enemies, x: number, y: number) => {
+            score.tanks[type] += 1;
 
             this.tanksInGame[this.tanksInGame.length - counterDestroyTanks] = 0;
             counterDestroyTanks += 1;
@@ -413,11 +415,10 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
                     tank.explozion();
                     (tank as Tank).lastChanse();
+                    tank.destroy();
                 });
                 if (factory.planSize > 0) {
-                    for (let i = 0; i < 4; i += 1) {
-                        delayer(() => factory.produce(), i * 2000);
-                    }
+                    setTimeout(() => factory.replanish(this.tanks.getLength() - 1), 0);
                 } else {
                     delayer(() => {
                         if (this.tanks.getChildren().length <= 1 && this.life >= 0) {
@@ -425,7 +426,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                         }
                     }, 1000);
                 }
-                // }, 1000);
             } else if (bonus === Bonus.freeze) {
                 const tanks = this.tanks.getChildren().slice() as Tank[];
                 tanks.forEach((tank) => tank.freeze());

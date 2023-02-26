@@ -105,6 +105,7 @@ class Tank extends Entity {
     }
 
     stopMove() {
+        this.anims.stop();
         this.setVelocity(0, 0);
         this.moving = false;
     }
@@ -163,6 +164,7 @@ class Tank extends Entity {
         if (this.HP > 0) return;
 
         this.lastChanse();
+        this.scene.events.emit('killed');
         this.destroy();
     }
 
