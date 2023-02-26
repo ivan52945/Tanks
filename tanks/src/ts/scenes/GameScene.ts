@@ -446,6 +446,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
 
         this.events.once('shutdown', () => {
+            this.input.keyboard.shutdown();
             const removeListener = this.events.removeAllListeners.bind(this.events);
             this.tanks.destroy(true, true);
 
