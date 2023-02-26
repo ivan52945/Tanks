@@ -9,6 +9,8 @@ class ScoreScene extends Phaser.Scene {
 
     private record = 0;
 
+    private hiScore = 20000;
+
     constructor() {
         super({
             key: 'ScoreScene',
@@ -34,9 +36,10 @@ class ScoreScene extends Phaser.Scene {
         const sum = this.score.tanks.reduce((a, b) => a + b, 0);
 
         const standardFont = { font: '35px Pixel' };
-
+        if (this.hiScore > this.record) {
+            this.add.text(600, 60, `${this.hiScore}`, { font: '35px Pixel', color: '#FFD700' }); // рекорд очков
+        }
         this.add.text(100, 60, 'HI-Score ', { font: '35px Pixel', color: '#FF4500' });
-        this.add.text(600, 60, `${this.record}`, { font: '35px Pixel', color: '#FFD700' }); // рекорд очков
         this.add.text(300, 130, 'STAGE ', standardFont);
         this.add.text(520, 130, `${this.stage}`, standardFont); // номер пройденного уровня
         this.add.text(10, 200, 'PLAYER', { font: '35px Pixel', color: '#FF4500' });
@@ -55,10 +58,17 @@ class ScoreScene extends Phaser.Scene {
         });
 
         this.add.text(190, 680, `TOTAL ${sum}`, standardFont); // всего уничтожено
-
-        setTimeout(() => {
-            this.scene.start('StageNumberScene', { stage: this.stage + 1 });
-        }, 3000);
+        if (this.record > this.hiScore) {
+            this.hiScore = this.record;
+            this.add.text(600, 60, `${this.hiScore}`, { font: '35px Pixel', color: '#FFD700' }); // рекорд очков
+            setTimeout(() => {
+                this.scene.start('HiscoreScene', { stage: this.stage + 1, hiScore: this.hiScore });
+            }, 3000);
+        } else {
+            setTimeout(() => {
+                this.scene.start('StageNumberScene', { stage: this.stage + 1 });
+            }, 3000);
+        }
 
         this.input.keyboard.on('keydown', (event: { key: string }) => {
             if (event.key === 'q') {
