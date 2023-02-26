@@ -54,7 +54,7 @@ import Fabric from '../modules/fabric';
 import { Enemies } from '../modules/score-config';
 import ITank from '../interfaces/tank';
 import { fCos, fSin, randIntFrZ } from '../modules/functions';
-import setFinderEmpty from '../modules/findFreeSpace';
+import setFinderEmpty from '../modules/find-free-space';
 import Bonus from '../interfaces/bonuses';
 
 class GameScene extends Phaser.Scene implements IBattleScene {
@@ -204,6 +204,8 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         walls.setCollisionByProperty({ collides: true });
         water.setCollisionByProperty({ collides: true });
+
+        console.log(maps[mapKeyNum]);
 
         const find = setFinderEmpty(maps[mapKeyNum]);
 
