@@ -48,7 +48,6 @@ class StartScene extends Phaser.Scene {
         const team: string[] = [];
 
         this.input.keyboard.on('keydown', (event: { key: string }) => {
-            console.log('key');
             // ------------------ перемещение курсора при нажатии вверх и вниз, при нажатии пробела выбор
             if (event.key === 'ArrowDown') {
                 this.cursor.y = 565;
