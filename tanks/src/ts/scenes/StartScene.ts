@@ -59,9 +59,6 @@ class StartScene extends Phaser.Scene {
                 this.sound.add('startSound').play(); // звук начала игры
             } else if (event.key === ' ' && this.cursor.y === 565) {
                 console.log('Construction');
-            } else if (event.key === 'q') {
-                // ------- Инструмент разработчика. Переключатель сцен на англ. 'q'
-                this.scene.start('GameOverScene');
             } else if (event.key === 't') {
                 team.push('t');
             } else if (event.key === 'e') {
@@ -76,7 +73,7 @@ class StartScene extends Phaser.Scene {
             }
         });
 
-        this.events.on('shutdown', () => {
+        this.events.once('shutdown', () => {
             this.input.keyboard.removeListener('keydown');
         });
     }
