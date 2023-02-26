@@ -394,7 +394,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         });
 
         this.physics.add.overlap(this.tanks, bonuses, (player, bonusBody) => {
-            if (!(player instanceof Tank)) return;
+            if (!(player instanceof Player)) return;
 
             const bonus = bonusBody.getData('bonus');
 
@@ -449,8 +449,9 @@ class GameScene extends Phaser.Scene implements IBattleScene {
             const removeListener = this.events.removeAllListeners.bind(this.events);
             this.tanks.destroy(true, true);
 
-            removeListener('killed');
+            removeListener('count');
             removeListener('getBonuses');
+            removeListener('killed');
             removeListener('PlayerDead');
             removeListener('GameOver');
         });

@@ -24,7 +24,8 @@ class Fabric {
 
     constructor(scene: IBattleScene, config: FabticConfig) {
         this.scene = scene;
-        this.plan = config.plan.reverse().concat(new Array(6).fill('light'));
+        this.plan = config.plan.reverse().concat(new Array(3).fill('light'));
+
         this.coords = config.coords;
 
         this.setTimeout = (function memoizer() {
