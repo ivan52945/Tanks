@@ -1,8 +1,6 @@
 import { EnemyPoints } from '../modules/score-config';
 
 class ScoreScene extends Phaser.Scene {
-    keys: unknown;
-
     private score!: { tanks: number[]; add: number };
 
     private stage!: number;
@@ -69,17 +67,6 @@ class ScoreScene extends Phaser.Scene {
                 this.scene.start('StageNumberScene', { stage: this.stage + 1 });
             }, 3000);
         }
-
-        this.input.keyboard.on('keydown', (event: { key: string }) => {
-            if (event.key === 'q') {
-                // ------- Инструмент разработчика. Переключатель сцен на англ. 'q'
-                this.scene.start('HiscoreScene');
-            }
-        });
-    }
-
-    update() {
-        ('');
     }
 }
 

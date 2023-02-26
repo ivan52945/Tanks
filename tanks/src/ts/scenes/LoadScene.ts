@@ -1,6 +1,4 @@
 class LoadScene extends Phaser.Scene {
-    keys: unknown;
-
     constructor() {
         super({
             key: 'LoadScene',
@@ -16,7 +14,5 @@ class LoadScene extends Phaser.Scene {
             this.scene.start('StartScene');
         }, 3000);
     }
-
-    update() {}
 }
 export default LoadScene;
