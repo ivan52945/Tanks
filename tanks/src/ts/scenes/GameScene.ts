@@ -205,6 +205,18 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         walls.setCollisionByProperty({ collides: true });
         water.setCollisionByProperty({ collides: true });
 
+        function getSpawnCoords(){
+            let result:{x:number,y:number}[] = []
+            maps[mapKeyNum].layers[0].data.forEach((el,i,arr)=>{
+                if(arr[i] === 4){
+                    result.push({x: ((i%26)*32)+64+32, y: ((Math.floor(i/26)*32)+64+32)})
+                    const xxl=0
+                } 
+            }) 
+            return result   
+        }
+        console.log(getSpawnCoords())
+
         console.log(maps[mapKeyNum]);
 
         const find = setFinderEmpty(maps[mapKeyNum]);
@@ -234,11 +246,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.addTank(this.player);
 
         const fabricConfig = {
-            coords: [
-                { x: 96, y: 96 },
-                { x: 650, y: 96 },
-                { x: 864, y: 96 },
-            ],
+            coords: getSpawnCoords(),
             plan: planJson.plans[this.stage - 1].plan.slice(),
         };
 
