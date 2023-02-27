@@ -1,5 +1,7 @@
 class HiscoreScene extends Phaser.Scene {
+
     private stageNumber = 1;
+
     private hiScore = 0;
 
     constructor() {

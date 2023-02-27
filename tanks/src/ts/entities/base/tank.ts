@@ -34,6 +34,8 @@ class Tank extends Entity {
 
     protected blinkTimer!: NodeJS.Timer | null;
 
+    protected setTimeout: (callback: () => void, delay: number) => void;
+
     protected key: string;
 
     protected controller!: IController;
@@ -69,6 +71,11 @@ class Tank extends Entity {
             repeat: -1,
         }) as Animation;
 
+        this.setTimeout = (function memoizer() {
+            const delayerBind = scene.time.delayedCall.bind(scene.time);
+            return (callback: () => void, delay: number) => delayerBind(delay, callback);
+        })();
+
         if (!sideBad) return;
 
         scene.anims.create({
@@ -100,6 +107,7 @@ class Tank extends Entity {
     }
 
     stopMove() {
+        this.anims.stop();
         this.setVelocity(0, 0);
         this.moving = false;
     }
@@ -111,12 +119,12 @@ class Tank extends Entity {
 
         this.readyShot = false;
 
-        setTimeout(() => {
+        this.setTimeout(() => {
             this.readyShot = true;
         }, this.coolDown * 1000);
 
         for (let i = 0; i < this.shotQuantity; i += 1) {
-            setTimeout(() => {
+            this.setTimeout(() => {
                 const xShot = this.x + fCos(this.dir) * 30;
                 const yShot = this.y + fSin(this.dir) * 30;
                 // eslint-disable-next-line no-new
@@ -137,7 +145,7 @@ class Tank extends Entity {
     update() {
         if (!this.readyToUpdate) return;
 
-        setTimeout(() => {
+        this.setTimeout(() => {
             this.readyToUpdate = true;
         }, 200);
         this.readyToUpdate = false;
@@ -145,7 +153,7 @@ class Tank extends Entity {
     }
 
     // eslint-disable-next-line prettier/prettier
-    lastChanse() {}
+    lastChanse() { }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getShot(shot: Shot) {
@@ -158,6 +166,7 @@ class Tank extends Entity {
         if (this.HP > 0) return;
 
         this.lastChanse();
+        this.scene.events.emit('killed');
         this.destroy();
     }
 

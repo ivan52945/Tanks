@@ -32,3 +32,22 @@ export function fSin(dir: number) {
     if (dir === 2) return 1;
     return 0;
 }
+
+/**
+ * Function shuffle
+ *
+ * @param {array: any[]} array source
+ *
+ * @return shuffled array
+ */
+
+export function shuffle<T>(array: T[]) {
+    const src = array.slice();
+
+    for (let i = src.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [src[i], src[j]] = [src[j], src[i]];
+    }
+
+    return src;
+}

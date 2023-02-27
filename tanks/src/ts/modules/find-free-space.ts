@@ -11,7 +11,7 @@ function setFinderEmpty(map: typeof tilemap1) {
 
         let summLayers = 0;
         for (let iL = 0; iL < layers.length; iL += 1) {
-            if (iL !== 3) summLayers += layers[iL].data[i];
+            if (iL !== 1) summLayers += layers[iL].data[i];
         }
 
         if (summLayers > 0) {
@@ -24,7 +24,7 @@ function setFinderEmpty(map: typeof tilemap1) {
 
     for (let i = 0; i < height; i += 2) {
         for (let j = 0; j < width; j += 2) {
-            if (checkXY(i, j) && checkXY(i + 1, j) && checkXY(i, j + 1) && checkXY(i + 1, j + 1)) {
+            if (checkXY(j, i) && checkXY(j + 1, i) && checkXY(j, i + 1) && checkXY(j + 1, i + 1)) {
                 const x = (j + 3) * tilewidth; // * size * 2 + size;
                 const y = (i + 3) * tilewidth; // * size * 2 + size;
                 result.push({ x, y });

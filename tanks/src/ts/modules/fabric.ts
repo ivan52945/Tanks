@@ -1,5 +1,5 @@
 import IBattleScene from '../interfaces/battle-scene';
-import { randIntFrZ } from './functions';
+import { randIntFrZ, shuffle } from './functions';
 import { FabticConfig } from '../interfaces/based';
 import Light from '../entities/light';
 import Wheeled from '../entities/wheeled';
@@ -14,31 +14,36 @@ class Fabric {
 
     private plan: FabticConfig['plan'];
 
-    readonly min = 3;
+    private treshold = 3;
 
-    readonly max = 5;
+    private qeue = 0;
 
-    private counter = 20;
+    private counter = 0;
+
+    private setTimeout: (callback: () => void, delay: number) => void;
 
     constructor(scene: IBattleScene, config: FabticConfig) {
         this.scene = scene;
-        this.plan = config.plan.reverse();
+        this.plan = config.plan.reverse().concat(new Array(3).fill('light'));
+
         this.coords = config.coords;
-        for (let i = 0; i < 1; i += 1) {
-            setTimeout(() => {
-                this.coords.forEach((coord) => {
-                    this.produceSingle(coord.x, coord.y, 'light');
-                });
-            }, 3000 * i);
-        }
+
+        this.setTimeout = (function memoizer() {
+            const delayerBind = scene.time.delayedCall.bind(scene.time);
+            return (callback: () => void, delay: number) => delayerBind(delay, callback);
+        })();
+
+        this.replanish(0);
     }
 
-    produceSingle(x: number, y: number, type?: string) {
+    produceSingle(coords: { x: number; y: number }, type?: string) {
         if (!type) return;
+
+        const { x, y } = coords;
 
         const star = this.scene.add.sprite(x, y, 'starImg').play('starImgAnimation');
 
-        setTimeout(() => {
+        this.setTimeout(() => {
             let tank: Tank;
 
             switch (type) {
@@ -59,12 +64,14 @@ class Fabric {
                     break;
                 }
             }
+
             star.destroy();
             this.scene.addTank(tank);
+            this.counter += 1;
+
             if (this.counter % 4 === 0) {
                 this.setBonused(tank);
             }
-            this.counter -= 1;
         }, 1000);
     }
 
@@ -74,14 +81,47 @@ class Fabric {
         tank.startBlink('bonus');
     }
 
+    replanish(current: number) {
+        if (current >= this.treshold) return;
+
+        let needToProduce = this.treshold - current;
+
+        const countQeue = Math.ceil(needToProduce / this.coords.length);
+
+        const start = this.qeue;
+        this.qeue += countQeue;
+
+        for (let i = start; i < this.qeue; i += 1) {
+            const balance = Math.min(needToProduce, this.coords.length);
+
+            needToProduce -= balance;
+
+            const spawns = shuffle(Array.from(Array(3).keys())).splice(0, balance);
+
+            this.setTimeout(() => {
+                spawns
+                    .map((s) => this.coords[s])
+                    .forEach((coord) => {
+                        this.producePlan(coord);
+                    });
+
+                this.qeue -= 1;
+            }, 3000 * i);
+        }
+    }
+
+    producePlan(coord: { x: number; y: number }) {
+        this.produceSingle(coord, this.plan.pop());
+    }
+
     produce() {
         const coord = this.coords[randIntFrZ(this.coords.length - 1)];
 
-        this.produceSingle(coord.x, coord.y, this.plan.pop());
+        this.produceSingle(coord, this.plan.pop());
     }
 
     get planSize() {
-        return this.plan.length;
+        return this.plan.length + this.qeue * 3;
     }
 }
 export default Fabric;
