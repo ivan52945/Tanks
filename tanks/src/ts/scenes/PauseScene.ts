@@ -18,10 +18,10 @@ class PauseScene extends Phaser.Scene {
                 this.scene.stop('PauseScene');
             }
         });
-    }
 
-    update() {
-        // console.log('PauseScene');
+        this.events.once('shutdown', () => {
+            this.input.keyboard.removeListener('keydown');
+        });
     }
 }
 export default PauseScene;

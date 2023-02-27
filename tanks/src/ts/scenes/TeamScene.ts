@@ -66,8 +66,11 @@ class TeamScene extends Phaser.Scene {
                 gameObjects[0].clearTint();
             }
         );
+        this.events.once('shutdown', () => {
+            this.input.keyboard.removeListener('pointerout');
+            this.input.keyboard.removeListener('pointerover');
+            this.input.keyboard.removeListener('pointerup');
+        });
     }
-
-    update() {}
 }
 export default TeamScene;

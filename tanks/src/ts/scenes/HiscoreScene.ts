@@ -1,5 +1,4 @@
 class HiscoreScene extends Phaser.Scene {
-    keys: unknown;
 
     private stageNumber = 1;
 
@@ -25,17 +24,6 @@ class HiscoreScene extends Phaser.Scene {
         setTimeout(() => {
             this.scene.start('StageNumberScene', { stage: this.stageNumber });
         }, 3000);
-
-        this.input.keyboard.on('keydown', (event: { key: string }) => {
-            if (event.key === 'q') {
-                // ------- Инструмент разработчика. Переключатель сцен на англ. 'q'
-                this.scene.start('GameOverScene');
-            }
-        });
-    }
-
-    update() {
-        console.log('HiscoreScene');
     }
 }
 export default HiscoreScene;

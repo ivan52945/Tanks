@@ -1,6 +1,4 @@
 class StageNumberScene extends Phaser.Scene {
-    keys: unknown;
-
     private stageNumber = 1;
 
     constructor() {
@@ -22,7 +20,5 @@ class StageNumberScene extends Phaser.Scene {
             this.scene.start('GameScene', { stage: this.stageNumber });
         }, 2000);
     }
-
-    update() {}
 }
 export default StageNumberScene;

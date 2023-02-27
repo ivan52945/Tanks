@@ -18,15 +18,10 @@ class GameOverScene extends Phaser.Scene {
             if (event.key === ' ') {
                 this.scene.start('StartScene');
             }
-            if (event.key === 'q') {
-                // ------- Инструмент разработчика. Переключатель сцен на англ. 'q'
-                this.scene.start('StartScene');
-            }
         });
-    }
-
-    update() {
-        console.log('GameOverScene');
+        this.events.once('shutdown', () => {
+            this.input.keyboard.removeListener('keydown');
+        });
     }
 }
 export default GameOverScene;
