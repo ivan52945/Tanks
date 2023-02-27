@@ -9,6 +9,7 @@ import GameOverScene from './ts/scenes/GameOverScene';
 import StageNumberScene from './ts/scenes/StageNumberScene';
 import TeamScene from './ts/scenes/TeamScene';
 import PauseScene from './ts/scenes/PauseScene';
+import InformationScene from './ts/scenes/InformationScene';
 
 const config = {
     type: Phaser.AUTO,
@@ -48,6 +49,7 @@ const config = {
         GameOverScene,
         TeamScene,
         PauseScene,
+        InformationScene,
     ],
 };
 

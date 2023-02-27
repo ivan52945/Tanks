@@ -30,23 +30,19 @@ class TeamScene extends Phaser.Scene {
             }
         });
 
-        const one = this.add.image(200, 400, 'tankMan1', tankMan1).setInteractive();
-        const two = this.add.image(200, 500, 'tankMan2', tankMan2).setInteractive();
-        const three = this.add.image(200, 600, 'tankMan3', tankMan3).setInteractive();
+        const one = this.add
+            .image(200, 400, 'tankMan1', tankMan1)
+            .setInteractive({ draggable: false, cursor: 'pointer' });
+        const two = this.add
+            .image(200, 500, 'tankMan2', tankMan2)
+            .setInteractive({ draggable: false, cursor: 'pointer' });
+        const three = this.add
+            .image(200, 600, 'tankMan3', tankMan3)
+            .setInteractive({ draggable: false, cursor: 'pointer' });
 
         one.setOrigin(0, 0);
         two.setOrigin(0, 0);
         three.setOrigin(0, 0);
-
-        one.on('pointerup', () => {
-            window.open('https://github.com/ivan52945');
-        });
-        two.on('pointerup', () => {
-            window.open('https://github.com/ivan-kaliaskin');
-        });
-        three.on('pointerup', () => {
-            window.open('https://github.com/guschins');
-        });
 
         this.input.on(
             'pointerover',
@@ -66,6 +62,17 @@ class TeamScene extends Phaser.Scene {
                 gameObjects[0].clearTint();
             }
         );
+
+        one.on('pointerup', () => {
+            window.open('https://github.com/ivan52945');
+        });
+        two.on('pointerup', () => {
+            window.open('https://github.com/ivan-kaliaskin');
+        });
+        three.on('pointerup', () => {
+            window.open('https://github.com/guschins');
+        });
+
         this.events.once('shutdown', () => {
             this.input.keyboard.removeListener('pointerout');
             this.input.keyboard.removeListener('pointerover');
