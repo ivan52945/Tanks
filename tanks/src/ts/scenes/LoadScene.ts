@@ -6,7 +6,7 @@ class LoadScene extends Phaser.Scene {
     }
 
     preload() {
-        this.add.text(300, 500, 'loading...', { font: '20px Pixel' });
+        this.add.text(350, 500, 'loading...', { font: '20px Pixel' });
     }
 
     create() {

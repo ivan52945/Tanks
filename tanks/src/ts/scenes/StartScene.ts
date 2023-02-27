@@ -25,10 +25,11 @@ class StartScene extends Phaser.Scene {
         this.load.atlas('tanks', tanksPlayerImge, tanksPlayerJSON);
 
         this.add.text(350, 500, 'START GAME', main32);
-        this.add.text(350, 550, 'CONSTRUCTION', main32);
+        this.add.text(350, 550, 'INFORMATION', main32);
         this.add.text(400, 600, 'NAMCOT', { font: '40px Namco', color: '#680000' });
         this.add.text(150, 650, '© 1980 1985 NAMCO LTD.', main32);
         this.add.text(180, 700, 'ALL RIGHTS RESERVED', main32);
+        this.add.text(280, 800, 'press space to start', { font: '20px Pixel' });
 
         this.load.audio('startSound', startSound);
     }
@@ -57,7 +58,7 @@ class StartScene extends Phaser.Scene {
                 this.scene.start('StageNumberScene', { stage: 1 });
                 this.sound.add('startSound').play(); // звук начала игры
             } else if (event.key === ' ' && this.cursor.y === 565) {
-                console.log('Construction');
+                this.scene.start('InformationScene');
             } else if (event.key === 't') {
                 team.push('t');
             } else if (event.key === 'e') {
