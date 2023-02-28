@@ -84,14 +84,18 @@ class Fabric {
     }
 
     replanish(current: number) {
-        if (current >= this.treshold) return;
+        if (current >= this.treshold || this.plan.length <= 0) return;
 
         let needToProduce = this.treshold - current;
 
-        const countQeue = Math.ceil(needToProduce / this.coords.length);
+        const countNeededQeue = Math.ceil(needToProduce / this.coords.length);
+
+        const planQeue = Math.ceil(this.plan.length / this.coords.length);
+
+        const futureQeue = Math.min(countNeededQeue, planQeue);
 
         const start = this.qeue;
-        this.qeue += countQeue;
+        this.qeue += futureQeue;
 
         for (let i = start; i < this.qeue; i += 1) {
             const balance = Math.min(needToProduce, this.coords.length);
