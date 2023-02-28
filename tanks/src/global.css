@@ -1,0 +1,32 @@
+@font-face {
+  font-family: "Pixel";
+  src: url("./assets/fonts/Emulogic.ttf") format("truetype");
+  font-style: 500;
+  font-weight: normal;
+}
+@font-face {
+  font-family: "Namco";
+  src: url("./assets/fonts/Hemico.ttf") format("truetype");
+  font-style: 500;
+  font-weight: normal;
+}
+
+body {
+  background-color: black;
+  overflow: hidden;
+}
+
+#app {
+  display: flex;
+  justify-content: center;
+  animation: 6s ease-out 2s slideInFromBottom;
+}
+
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
