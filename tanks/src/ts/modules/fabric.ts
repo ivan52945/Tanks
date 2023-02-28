@@ -28,8 +28,6 @@ class Fabric {
 
         this.coords = config.coords;
 
-        console.log(this.coords);
-
         this.setTimeout = (function memoizer() {
             const delayerBind = scene.time.delayedCall.bind(scene.time);
             return (callback: () => void, delay: number) => delayerBind(delay, callback);
