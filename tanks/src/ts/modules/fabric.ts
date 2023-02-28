@@ -28,6 +28,8 @@ class Fabric {
 
         this.coords = config.coords;
 
+        console.log(this.coords);
+
         this.setTimeout = (function memoizer() {
             const delayerBind = scene.time.delayedCall.bind(scene.time);
             return (callback: () => void, delay: number) => delayerBind(delay, callback);
@@ -96,7 +98,7 @@ class Fabric {
 
             needToProduce -= balance;
 
-            const spawns = shuffle(Array.from(Array(3).keys())).splice(0, balance);
+            const spawns = shuffle(Array.from(Array(this.coords.length).keys())).splice(0, balance);
 
             this.setTimeout(() => {
                 spawns
