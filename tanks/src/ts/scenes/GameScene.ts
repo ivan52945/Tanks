@@ -55,6 +55,7 @@ import { Enemies } from '../modules/score-config';
 import ITank from '../interfaces/tank';
 import { fCos, fSin, randIntFrZ } from '../modules/functions';
 import setFinderEmpty from '../modules/find-free-space';
+import findSpawns from '../modules/find-spawns';
 import Bonus from '../interfaces/bonuses';
 
 class GameScene extends Phaser.Scene implements IBattleScene {
@@ -205,20 +206,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         walls.setCollisionByProperty({ collides: true });
         water.setCollisionByProperty({ collides: true });
 
-        function getSpawnCoords(){
-            let result:{x:number,y:number}[] = []
-            maps[mapKeyNum].layers[0].data.forEach((el,i,arr)=>{
-                if(arr[i] === 4){
-                    result.push({x: ((i%26)*32)+64+32, y: ((Math.floor(i/26)*32)+64+32)})
-                    const xxl=0
-                } 
-            }) 
-            return result   
-        }
-        console.log(getSpawnCoords())
-
-        console.log(maps[mapKeyNum]);
-
+        const result = findSpawns(maps[mapKeyNum], 0);
         const find = setFinderEmpty(maps[mapKeyNum]);
 
         this.anims.create({
@@ -246,7 +234,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         this.addTank(this.player);
 
         const fabricConfig = {
-            coords: getSpawnCoords(),
+            coords: result,
             plan: planJson.plans[this.stage - 1].plan.slice(),
         };
 
