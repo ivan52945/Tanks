@@ -235,7 +235,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
 
         const fabricConfig = {
             coords: result,
-            plan: [], // planJson.plans[this.stage - 1].plan.slice(),
+            plan: planJson.plans[this.stage - 1].plan.slice(),
         };
 
         const factory = new Fabric(this, fabricConfig);
