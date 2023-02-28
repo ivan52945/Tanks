@@ -297,6 +297,7 @@ class GameScene extends Phaser.Scene implements IBattleScene {
                 const tile = walls.getTileAtWorldXY(xT + fCos(dirAOE) * 8, yT + fSin(dirAOE) * 8);
 
                 if (!tile || (tile.index === 1 && (shot as Shot).durability < 2)) return;
+                // tile.index = 0;
 
                 walls.removeTileAtWorldXY(xT + fCos(dirAOE) * 8, yT + fSin(dirAOE) * 8);
             });
