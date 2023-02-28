@@ -207,9 +207,6 @@ class GameScene extends Phaser.Scene implements IBattleScene {
         water.setCollisionByProperty({ collides: true });
 
         const result = findSpawns(maps[mapKeyNum], 0);
-
-        console.log(result);
-
         const find = setFinderEmpty(maps[mapKeyNum]);
 
         this.anims.create({
