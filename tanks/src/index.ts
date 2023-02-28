@@ -17,26 +17,11 @@ const config = {
     width: 1024,
     height: 960,
     physics: {
-        //*
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: true,
+            debug: false,
         },
-        // */
-        /*
-        default: 'matter',
-        matter: {
-            enableSleeping: true,
-            gravity: {
-                y: 0,
-            },
-            debug: {
-                showBody: true,
-                showStaticBody: true,
-            },
-        },
-        // */
     },
 
     scene: [
